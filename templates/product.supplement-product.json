@@ -1,0 +1,260 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "share"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "inverse",
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "stacked",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "mobile_thumbnails": "hide",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 12
+      }
+    },
+    "animated_divider_nEfLnm": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "250",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/pixel_divider_10_07173bfa-81b2-4674-93e0-397b79ac7898.png"
+      }
+    },
+    "multirow_kVTWME": {
+      "type": "multirow",
+      "blocks": {
+        "row_6ky6pG": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/coffee-beans-from-above.jpg",
+            "caption": "250 mg",
+            "heading": "Caffeine Anhydrous",
+            "text": "<p>Caffeine Anhydrous is a powerful stimulant that enhances alertness and reduces the perception of effort during exercise, making it easier to sustain intense workouts [1]. By stimulating the central nervous system, caffeine can significantly improve endurance and performance across a variety of exercise modalities. The inclusion of 250mg in Zenith ensures a potent boost in energy levels and focus, aiding athletes in achieving peak performance.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_g7aTdt": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/metal-strainer-with-loose-tea-next-to-a-tea-towel.jpg",
+            "caption": "200 mg",
+            "heading": "L-Theanine",
+            "text": "<p>L-Theanine, in synergy with caffeine, offers a unique advantage by promoting relaxation without drowsiness, improving focus, and mental clarity [5]. This ingredient can help mitigate the jittery effects of caffeine, ensuring a balanced and focused energy boost conducive to high-performance workouts.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_BpfnXQ": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/FHodgCJITn.png",
+            "caption": "2.4 g",
+            "heading": "Alpha-GPC 50%",
+            "text": "<p>Alpha-GPC increases the production of acetylcholine, a vital neurotransmitter for brain-to-muscle signaling. This enhancement in cognitive function and muscle coordination can lead to significant improvements in power output and overall athletic performance, making Alpha-GPC a critical ingredient in Zenith [8].</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_YhH7DC": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/sfufzUphAZ.png",
+            "caption": "6 g",
+            "heading": "L-Citrulline",
+            "text": "<p>L-Citrulline, when dosed at 6000mg, plays a pivotal role in the body's conversion processes, transforming into L-arginine. This transformation is crucial for the increased synthesis of nitric oxide (NO), a compound that significantly enhances vasodilation and blood flow to the muscles. The result of this enhanced blood flow is improved oxygen delivery to muscle tissues, which effectively reduces fatigue during workouts. This makes L-Citrulline a valuable supplement for those looking to improve their endurance and performance during exercise.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_CMWB6U": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/QunBcmmjRO.png",
+            "caption": "2 g",
+            "heading": "Malic Acid",
+            "text": "<p>Malic Acid, when used in conjunction with L-Citrulline, as seen in the formulation of Citrulline Malate, significantly boosts the efficacy of L-Citrulline. This synergistic effect promotes aerobic energy production within exercising muscles more effectively. The presence of Malic Acid in this combination supports not only improved endurance and strength during physical activities but also plays a crucial role in the quicker recovery post-exercise. It achieves this by facilitating the removal of ammonia and lactate from the bloodstream, which are by-products of intense physical activity that can contribute to fatigue and slower recovery times.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_JEEfRC": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/mvSWNIVtaI.png",
+            "caption": "5 g",
+            "heading": "L-Tyrosine",
+            "text": "<p>L-Tyrosine is a precursor to neurotransmitters such as dopamine and norepinephrine, which play key roles in alertness and focus. At a dosage of 5g, it helps maintain cognitive function under stress and enhances mental focus during demanding workouts, contributing to overall better performance and endurance [4].</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_8fXiXY": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/YSdxdlZCWz.png",
+            "caption": "1 g",
+            "heading": "Acetyl L-Carnitine HCL (ALCAR)",
+            "text": "<p>ALCAR facilitates the transport of fatty acids into mitochondria, enhancing fat metabolism and energy production. This process is crucial for endurance athletes who rely on efficient fat utilization for long-duration events. At 1000 mg, it supports improved endurance and reduces exercise-induced muscle damage, making it a valuable component of Zenith [6].</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_XaFh9k": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/kjgnaVlLTd.png",
+            "caption": "2.5 g",
+            "heading": "Betaine Anhydrous",
+            "text": "<p>Betaine Anhydrous acts as a methyl donor in key physiological processes, including the conversion of homocysteine to methionine, which is essential for muscle repair and growth. Research suggests that betaine supplementation can enhance muscle strength, power, and endurance, contributing to better performance and recovery [7].</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_XqkYih": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/flavored-salt-spills-from-jar.jpg",
+            "caption": "200 mg",
+            "heading": "Potassium Citrate",
+            "text": "<p>Potassium Citrate, at a dose of 200mg, is a key electrolyte that plays a critical role in muscle contractions and maintaining the body's fluid balance. This mineral is essential for helping to prevent dehydration and muscle cramps, which can significantly impact an athlete's performance. By ensuring a proper balance of potassium, athletes can maintain optimal function during their activities, especially in scenarios that demand high endurance or involve long-duration workouts. The presence of potassium citrate in a supplement can thus be crucial for athletes looking to sustain their performance levels without interruptions caused by muscle cramps or dehydration.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "row_LLcyUg": {
+          "type": "row",
+          "settings": {
+            "image": "shopify://shop_images/CwDBEJgDra.png",
+            "caption": "400 mg",
+            "heading": "Sodium Chloride",
+            "text": "<p>Sodium Chloride, dosed at 400mg, is another vital electrolyte that contributes significantly to the maintenance of fluid balance and supports muscle contractions. Its role in preventing dehydration is paramount, especially during intense physical activities where sweat loss can lead to a significant reduction in sodium levels. By replenishing sodium chloride, athletes can ensure that they maintain the proper electrolyte balance necessary for peak performance and endurance during long or high-intensity workouts. This makes sodium chloride an essential component for athletes aiming to perform at their best without the risk of dehydration or muscle cramps interrupting their activities.</p>",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "row_6ky6pG",
+        "row_g7aTdt",
+        "row_BpfnXQ",
+        "row_YhH7DC",
+        "row_CMWB6U",
+        "row_JEEfRC",
+        "row_8fXiXY",
+        "row_XaFh9k",
+        "row_XqkYih",
+        "row_LLcyUg"
+      ],
+      "settings": {
+        "image_height": "medium",
+        "desktop_image_width": "medium",
+        "heading_size": "h1",
+        "text_style": "body",
+        "button_style": "secondary",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "image_layout": "alternate-left",
+        "section_color_scheme": "inverse",
+        "row_color_scheme": "inverse",
+        "mobile_content_alignment": "left",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "inverse",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "animated_divider_nEfLnm",
+    "multirow_kVTWME",
+    "related-products"
+  ]
+}

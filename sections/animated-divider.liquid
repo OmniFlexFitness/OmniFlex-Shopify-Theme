@@ -1,0 +1,72 @@
+{{ 'section-animated-divider.css' | asset_url | stylesheet_tag }}
+
+{% assign divider_height = section.settings.divider_height | times: 1 %}
+<div class="animated-divider-container" style="--divider-height: {{ divider_height }}px;">
+  {% if section.settings.use_image %}
+    {% if section.settings.divider_image != blank %}
+      {%- assign img_url = section.settings.divider_image | img_url: 'master' -%}
+      <img 
+        src="{{ img_url }}"
+        alt="Divider"
+        class="animated-divider-image"
+        width="{{ section.settings.divider_image.width }}"
+        height="{{ divider_height }}"
+        loading="lazy"
+      >
+    {% else %}
+      <div class="animated-divider" style="--divider-color: {{ section.settings.divider_color }};">
+        <div class="divider-line"></div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="animated-divider" style="--divider-color: {{ section.settings.divider_color }};">
+      <div class="divider-line"></div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Animated Divider",
+  "settings": [
+    {
+      "type": "select",
+      "id": "divider_height",
+      "label": "Divider Height",
+      "options": [
+        { "value": "50", "label": "50px" },
+        { "value": "100", "label": "100px" },
+        { "value": "150", "label": "150px" },
+        { "value": "200", "label": "200px" },
+        { "value": "250", "label": "250px" },
+        { "value": "300", "label": "300px" }
+      ],
+      "default": "100"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider Color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_image",
+      "label": "Use Image as Divider",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "divider_image",
+      "label": "Divider Image",
+      "info": "Upload a PNG image with transparency to use as the divider"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Animated Divider",
+      "category": "Decorative"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,270 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner_DbzVwt": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_PebJGq": {
+          "type": "heading",
+          "settings": {
+            "heading": "Shop Activewear",
+            "heading_size": "h0"
+          }
+        },
+        "text_LV3ggU": {
+          "type": "text",
+          "settings": {
+            "text": "Browse our latest products",
+            "text_style": "subtitle"
+          }
+        },
+        "buttons_EcdT3P": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop Men",
+            "button_link_1": "shopify://collections/mens-activewear",
+            "button_style_secondary_1": false,
+            "button_label_2": "Shop Women",
+            "button_link_2": "shopify://collections/womens-collection",
+            "button_style_secondary_2": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_PebJGq",
+        "text_LV3ggU",
+        "buttons_EcdT3P"
+      ],
+      "custom_css": [
+        ".banner__content {background: none !important;}",
+        ".gradient {background-image: none !important;}",
+        "a.button.button--secondary {background-image: none !important; background-color: transparent !important;}"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/FX302549-Enhanced-NR_6090b590-3650-4981-b433-d5930ff6fa1f.jpg",
+        "image_overlay_opacity": 20,
+        "image_height": "large",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true
+      }
+    },
+    "slideshow_iRj3B6": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_Mxbg3y": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/FX302549-Enhanced-NR_2_7b425185-b822-4f05-b665-25528158cbb4.jpg",
+            "heading": "Shop Activewear",
+            "heading_size": "h0",
+            "subheading": "Browse our latest products",
+            "button_label": "Shop",
+            "link": "shopify://collections/all",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": false,
+            "text_alignment": "center",
+            "image_overlay_opacity": 40,
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+            "text_alignment_mobile": "center"
+          }
+        },
+        "slide_bfVabj": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/FX301816_extended.png",
+            "heading": "Women's Activewear",
+            "heading_size": "h0",
+            "subheading": "Browse the latest women's activewear products",
+            "button_label": "Shop",
+            "link": "shopify://collections/womens-collection",
+            "button_style_secondary": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "image_overlay_opacity": 0,
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+            "text_alignment_mobile": "center"
+          }
+        }
+      },
+      "block_order": [
+        "slide_Mxbg3y",
+        "slide_bfVabj"
+      ],
+      "disabled": true,
+      "custom_css": [
+        ".slideshow__text.banner__box {background: none !important;}",
+        ".slideshow__controls.slideshow__controls--top.slider-buttons.no-js-hidden {position: absolute; bottom: 0; left: 0; right: 0; color: white !important;}"
+      ],
+      "settings": {
+        "layout": "full_bleed",
+        "slide_height": "large",
+        "slider_visual": "dots",
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "image_behavior": "none",
+        "show_text_below": false,
+        "accessibility_info": "Shop Slideshow"
+      }
+    },
+    "animated_divider_iypFNW": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "200",
+        "divider_color": "#242833",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/pixel_divider_10.png"
+      }
+    },
+    "featured_product_BdLKAM": {
+      "type": "featured-product",
+      "blocks": {
+        "text_m69XN4": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_hdWrUK": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price_FUirEg": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_hCB7k3": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity_selector_VHjBxA": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_6aMBmm": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "share_Jfz9p9": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "text_m69XN4",
+        "title_hdWrUK",
+        "price_FUirEg",
+        "variant_picker_hCB7k3",
+        "quantity_selector_VHjBxA",
+        "buy_buttons_6aMBmm",
+        "share_Jfz9p9"
+      ],
+      "custom_css": [],
+      "settings": {
+        "product": "zenith-pre-workout",
+        "color_scheme": "inverse",
+        "secondary_background": false,
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "animated_divider_dNxqEA": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "200",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/pixel_divider_10_f39beaf0-d86a-4788-a4e5-bdf6ef36fd84.png"
+      }
+    },
+    "collection_list_FrVcEa": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_dR9GHM": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "mens-activewear"
+          }
+        },
+        "featured_collection_zwbeMh": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "womens-collection"
+          }
+        },
+        "featured_collection_aRwYei": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "accessories"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_dR9GHM",
+        "featured_collection_zwbeMh",
+        "featured_collection_aRwYei"
+      ],
+      "settings": {
+        "title": "Shop",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "inverse",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "animated_divider_PRkxRR": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "2",
+        "divider_color": "#000000",
+        "use_image": false
+      }
+    }
+  },
+  "order": [
+    "image_banner_DbzVwt",
+    "slideshow_iRj3B6",
+    "animated_divider_iypFNW",
+    "featured_product_BdLKAM",
+    "animated_divider_dNxqEA",
+    "collection_list_FrVcEa",
+    "animated_divider_PRkxRR"
+  ]
+}

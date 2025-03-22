@@ -1,0 +1,77 @@
+<style>
+  .slideshow_banner{
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+  }
+  .banner_area{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+  }
+  .banner_area img{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+  }
+</style>
+
+<div class="slideshow_banner">
+  {% for block in section.blocks %}
+  <div class="banner_area">
+    <a href="{{ block.settings.ban_link }}">
+    <img src="{{ block.settings.ban_img | img_url:'' }}"/>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="http://kenwheeler.github.io/slick/slick/slick.css" type="text/css"/>
+<link rel="stylesheet" href="http://kenwheeler.github.io/slick/slick/slick-theme.css" type="text/css"/>
+<script src="http://kenwheeler.github.io/slick/slick/slick.js"></script>
+<script>
+  // $('.slideshow_banner').slick()
+</script>
+<script>
+  $('.slideshow_banner').slick({
+    dots: true,
+    autoplay: true,
+    autoplaySpeed: 3000
+  });
+</script>
+
+{% schema %}
+  {
+    "name": "Slideshow Banner",
+    "settings": [],
+    "blocks":[{
+      "name":"Slideshow Banner",
+      "type": "banner_slider",
+      "settings":[
+        {
+          "type":"image_picker",
+          "id":"ban_img",
+          "label": "Select Image"
+        },
+        {
+          "type":"url",
+          "id":"ban_link",
+          "label": "Select Link"
+        }
+      ]
+    }],
+    "presets": [{
+      "name": "Banner Slider"
+    }]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,67 @@
+.animated-divider-container {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 100%;
+  transform: translateY(-50%);
+  height: 0;
+  z-index: 10;
+  overflow: visible;
+}
+
+.animated-divider-image {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: var(--divider-height, 100px);
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.animated-divider {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: var(--divider-height, 100px);
+  background-color: var(--divider-color, #000000);
+}
+
+.divider-line {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: slide 2s infinite linear;
+}
+
+@keyframes slide {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Ensure sections have relative positioning and proper z-index */
+.shopify-section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure the section containing the divider has a higher z-index */
+.shopify-section:has(.animated-divider-container) {
+  z-index: 2;
+}
+
+/* Remove any default margins between sections */
+.shopify-section + .shopify-section {
+  margin-top: 0;
+}
