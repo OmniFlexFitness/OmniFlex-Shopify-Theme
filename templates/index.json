@@ -131,15 +131,6 @@
         "accessibility_info": "Shop Slideshow"
       }
     },
-    "animated_divider_iypFNW": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "200",
-        "divider_color": "#242833",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/pixel_divider_10.png"
-      }
-    },
     "featured_product_BdLKAM": {
       "type": "featured-product",
       "blocks": {
@@ -271,7 +262,6 @@
     "animated_divider_Gh7Mhg",
     "image_banner_DbzVwt",
     "slideshow_iRj3B6",
-    "animated_divider_iypFNW",
     "featured_product_BdLKAM",
     "animated_divider_dNxqEA",
     "collection_list_FrVcEa",
