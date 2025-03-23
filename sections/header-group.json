@@ -29,9 +29,22 @@
         "padding_top": 20,
         "padding_bottom": 20
       }
+    },
+    "animated_divider_bhKa6h": {
+      "type": "animated-divider",
+      "custom_css": [
+        ".animated-divider {z-index: 9999;}"
+      ],
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/pixel_divider_10_f39beaf0-d86a-4788-a4e5-bdf6ef36fd84.png"
+      }
     }
   },
   "order": [
-    "header"
+    "header",
+    "animated_divider_bhKa6h"
   ]
 }

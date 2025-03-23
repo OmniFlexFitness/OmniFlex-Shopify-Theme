@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "animated_divider_Gh7Mhg": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/pixel_divider_10_f39beaf0-d86a-4788-a4e5-bdf6ef36fd84.png"
+      }
+    },
     "image_banner_DbzVwt": {
       "type": "image-banner",
       "blocks": {
@@ -259,6 +268,7 @@
     }
   },
   "order": [
+    "animated_divider_Gh7Mhg",
     "image_banner_DbzVwt",
     "slideshow_iRj3B6",
     "animated_divider_iypFNW",
