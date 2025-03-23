@@ -209,6 +209,14 @@
         "padding_bottom": 36
       }
     },
+    "animated_divider_PRkxRR": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "2",
+        "divider_color": "#000000",
+        "use_image": false
+      }
+    },
     "animated_divider_dNxqEA": {
       "type": "animated-divider",
       "settings": {
@@ -258,12 +266,13 @@
         "padding_bottom": 36
       }
     },
-    "animated_divider_PRkxRR": {
+    "animated_divider_d4TARy": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "2",
+        "divider_height": "100",
         "divider_color": "#000000",
-        "use_image": false
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Divider_1.png"
       }
     }
   },
@@ -273,8 +282,9 @@
     "slideshow_iRj3B6",
     "animated_divider_TRPpgW",
     "featured_product_BdLKAM",
+    "animated_divider_PRkxRR",
     "animated_divider_dNxqEA",
     "collection_list_FrVcEa",
-    "animated_divider_PRkxRR"
+    "animated_divider_d4TARy"
   ]
 }
