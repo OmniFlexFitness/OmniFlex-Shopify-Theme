@@ -2957,8 +2957,9 @@ details-disclosure > details {
     background: var(--gradient-background);
     background-attachment: absolute;
     /* background-image: url(https://cdn.shopify.com/s/files/1/0853/8236/5481/files/default-background.jpg?v=1728697457) !important; */
-    background-image: url(https://cdn.shopify.com/s/files/1/0853/8236/5481/files/pw_maze_black_200x200.png?v=1742624898) !important;
+    /* background-image: url(https://cdn.shopify.com/s/files/1/0853/8236/5481/files/pw_maze_black_200x200.png?v=1742624898) !important; */
     /* background-image: url(https://cdn.shopify.com/s/files/1/0853/8236/5481/files/webb-dark.png?v=1742626652) !important; */
+    background-image: url(https://cdn.shopify.com/s/files/1/0853/8236/5481/files/subtle_carbon.webp?v=1742693882) !important;
     background-color: transparent !important;
     background-position: top left !important;
     background-size: auto !important;
