@@ -85,3 +85,16 @@
 .mega-menu__list--condensed .mega-menu__link {
   font-weight: normal;
 }
+/* Add hover styles for the mega menu */
+.mega-menu:hover > .mega-menu__content {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+}
+
+.mega-menu__content {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
