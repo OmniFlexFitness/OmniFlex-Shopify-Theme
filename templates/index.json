@@ -128,7 +128,7 @@
         "divider_height": "150",
         "divider_color": "#000000",
         "use_image": true,
-        "divider_image": "shopify://shop_images/Pink_Divider.png"
+        "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
     },
     "featured_product_BdLKAM": {
@@ -214,7 +214,7 @@
         "divider_height": "200",
         "divider_color": "#000000",
         "use_image": true,
-        "divider_image": "shopify://shop_images/pixel_divider_10_f39beaf0-d86a-4788-a4e5-bdf6ef36fd84.png"
+        "divider_image": "shopify://shop_images/Pink_Divider.png"
       }
     },
     "collection_list_FrVcEa": {
@@ -263,7 +263,7 @@
         "divider_height": "100",
         "divider_color": "#000000",
         "use_image": true,
-        "divider_image": "shopify://shop_images/Divider_1.png"
+        "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     }
   },
