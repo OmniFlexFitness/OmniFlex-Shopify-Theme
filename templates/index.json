@@ -125,10 +125,10 @@
     "animated_divider_TRPpgW": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "100",
+        "divider_height": "150",
         "divider_color": "#000000",
         "use_image": true,
-        "divider_image": "shopify://shop_images/Divider_1.png"
+        "divider_image": "shopify://shop_images/Pink_Divider.png"
       }
     },
     "featured_product_BdLKAM": {
