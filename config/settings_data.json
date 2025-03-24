@@ -414,7 +414,7 @@
   },
   "platform_customizations": {
     "custom_css": [
-      "button.timesact-button-cs {background-color: transparent !important;}"
+      "button.timesact-button-cs {background-image: none!important;}"
     ]
   }
 }
