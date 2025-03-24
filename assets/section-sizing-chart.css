@@ -1,0 +1,60 @@
+/* General table styling */
+.sizing-chart__table {
+    width: var(--table-width, 100%); /* Allow customization of table width */
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.sizing-chart__table th,
+.sizing-chart__table td {
+    border: 1px solid var(--table-border-color, #ddd);
+    padding: 10px;
+    text-align: center;
+}
+
+.sizing-chart__table th {
+    background-color: var(--table-header-background-color, #f4f4f4); /* Customizable header color */
+    font-weight: bold;
+}
+
+.sizing-chart__table td {
+    background-color: var(--table-cell-background-color, #ffffff);
+    color: var(--table-text-color, #000000);
+}
+
+/* Ensure rows stack properly */
+.sizing-chart__table tr {
+    display: table-row; /* Default table row behavior */
+}
+
+/* Title styling */
+.sizing-chart__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Responsive adjustments for smaller screens */
+@media screen and (max-width: 750px) {
+    .sizing-chart__table {
+        display: block; /* Make the table block-level for stacking */
+    }
+
+    .sizing-chart__table tr {
+        display: block; /* Stack rows vertically */
+        margin-bottom: 10px; /* Add spacing between rows */
+    }
+
+    .sizing-chart__table th,
+    .sizing-chart__table td {
+        display: block; /* Make cells block-level for stacking */
+        text-align: left; /* Align text to the left for better readability */
+        width: 100%; /* Ensure cells take up full width */
+        box-sizing: border-box; /* Include padding and border in width */
+    }
+
+    .sizing-chart__table td {
+        border-top: none; /* Remove top border for stacked cells */
+    }
+}
