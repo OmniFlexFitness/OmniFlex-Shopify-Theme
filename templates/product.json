@@ -81,6 +81,15 @@
         "padding_bottom": 12
       }
     },
+    "custom_liquid_TtzUWq": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<iframe src=\"https://docs.google.com/spreadsheets/d/e/2PACX-1vT-tOnaFcRu8okuAETrCvF-Oy7rgLJNyHeyG8MWPMoQ8mO_n1B0EO8CjrT_CBZuP7YHnW1kDndy8BCI/pubhtml?widget=true&amp;headers=false&range=B2:D8\"></iframe>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "rich_text_krRAnw": {
       "type": "rich-text",
       "blocks": {
@@ -144,6 +153,7 @@
   },
   "order": [
     "main",
+    "custom_liquid_TtzUWq",
     "rich_text_krRAnw",
     "related-products"
   ]
