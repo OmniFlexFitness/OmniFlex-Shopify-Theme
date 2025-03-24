@@ -188,14 +188,14 @@
       "settings": {
         "product": "zenith-pre-workout",
         "color_scheme": "inverse",
-        "secondary_background": false,
+        "secondary_background": true,
         "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "media_position": "left",
         "image_zoom": "lightbox",
         "hide_variants": false,
-        "enable_video_looping": false,
+        "enable_video_looping": true,
         "padding_top": 36,
         "padding_bottom": 36
       }
