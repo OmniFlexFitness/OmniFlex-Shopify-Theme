@@ -65,6 +65,9 @@
         "description",
         "share"
       ],
+      "custom_css": [
+        ".product-form__buttons button.timesact-button-cs {background-color: transparent !important;}"
+      ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "inverse",
