@@ -188,7 +188,7 @@
       "settings": {
         "product": "zenith-pre-workout",
         "color_scheme": "inverse",
-        "secondary_background": true,
+        "secondary_background": false,
         "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",
