@@ -9,6 +9,15 @@
  */
 {
   "sections": {
+    "animated_divider_QJJ4Xf": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Gradient_Divider.png"
+      }
+    },
     "image_banner_DbzVwt": {
       "type": "image-banner",
       "blocks": {
@@ -52,13 +61,13 @@
         "image": "shopify://shop_images/FX302549-Enhanced-NR_6090b590-3650-4981-b433-d5930ff6fa1f.jpg",
         "image_overlay_opacity": 20,
         "image_height": "large",
-        "desktop_content_position": "middle-center",
-        "show_text_box": true,
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
         "image_behavior": "none",
-        "mobile_content_alignment": "center",
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
         "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
         "show_text_below": true
       }
     },
@@ -69,36 +78,36 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/FX302549-Enhanced-NR_2_7b425185-b822-4f05-b665-25528158cbb4.jpg",
+            "image_overlay_opacity": 40,
             "heading": "Shop Activewear",
             "heading_size": "h0",
             "subheading": "Browse our latest products",
             "button_label": "Shop",
             "link": "shopify://collections/all",
             "button_style_secondary": false,
-            "box_align": "middle-center",
             "show_text_box": false,
+            "box_align": "middle-center",
             "text_alignment": "center",
-            "image_overlay_opacity": 40,
-            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
-            "text_alignment_mobile": "center"
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
           }
         },
         "slide_bfVabj": {
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/FX301816_extended.png",
+            "image_overlay_opacity": 0,
             "heading": "Women's Activewear",
             "heading_size": "h0",
             "subheading": "Browse the latest women's activewear products",
             "button_label": "Shop",
             "link": "shopify://collections/womens-collection",
             "button_style_secondary": false,
-            "box_align": "middle-center",
             "show_text_box": true,
+            "box_align": "middle-center",
             "text_alignment": "center",
-            "image_overlay_opacity": 0,
-            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
-            "text_alignment_mobile": "center"
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
           }
         }
       },
@@ -120,15 +129,6 @@
         "image_behavior": "none",
         "show_text_below": false,
         "accessibility_info": "Shop Slideshow"
-      }
-    },
-    "animated_divider_TRPpgW": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "150",
-        "divider_color": "#000000",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
     },
     "featured_product_BdLKAM": {
@@ -154,7 +154,8 @@
         "variant_picker_hCB7k3": {
           "type": "variant_picker",
           "settings": {
-            "picker_type": "button"
+            "picker_type": "button",
+            "swatch_shape": "circle"
           }
         },
         "quantity_selector_VHjBxA": {
@@ -195,26 +196,9 @@
         "media_position": "left",
         "image_zoom": "lightbox",
         "hide_variants": false,
-        "enable_video_looping": true,
+        "enable_video_looping": false,
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "animated_divider_PRkxRR": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "2",
-        "divider_color": "#000000",
-        "use_image": false
-      }
-    },
-    "animated_divider_dNxqEA": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "200",
-        "divider_color": "#000000",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Pink_Divider.png"
       }
     },
     "collection_list_FrVcEa": {
@@ -256,25 +240,13 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
-    },
-    "animated_divider_d4TARy": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "100",
-        "divider_color": "#000000",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Gradient_Divider.png"
-      }
     }
   },
   "order": [
+    "animated_divider_QJJ4Xf",
     "image_banner_DbzVwt",
     "slideshow_iRj3B6",
-    "animated_divider_TRPpgW",
     "featured_product_BdLKAM",
-    "animated_divider_PRkxRR",
-    "animated_divider_dNxqEA",
-    "collection_list_FrVcEa",
-    "animated_divider_d4TARy"
+    "collection_list_FrVcEa"
   ]
 }

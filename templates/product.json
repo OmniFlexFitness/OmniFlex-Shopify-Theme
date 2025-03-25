@@ -15,7 +15,7 @@
         "vendor": {
           "type": "text",
           "settings": {
-            "text": "{{ product.vendor }}",
+            "text": "{{ product.metafields.shopify[\"clothing-features\"] | metafield_text: field: 'label' }}",
             "text_style": "uppercase"
           }
         },
@@ -30,7 +30,8 @@
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
-            "picker_type": "button"
+            "picker_type": "button",
+            "swatch_shape": "square"
           }
         },
         "quantity_selector": {
@@ -65,9 +66,6 @@
         "description",
         "share"
       ],
-      "custom_css": [
-        ".product-form__buttons button.timesact-button-cs {background-color: transparent !important;}"
-      ],
       "settings": {
         "enable_sticky_info": true,
         "color_scheme": "inverse",
@@ -75,9 +73,9 @@
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
         "media_position": "left",
         "image_zoom": "lightbox",
-        "mobile_thumbnails": "hide",
         "hide_variants": true,
         "enable_video_looping": false,
         "padding_top": 36,
@@ -91,13 +89,13 @@
         "heading_size": "h2",
         "products_to_show": 4,
         "columns_desktop": 4,
+        "columns_mobile": "2",
         "color_scheme": "inverse",
         "image_ratio": "square",
         "image_shape": "default",
         "show_secondary_image": true,
         "show_vendor": false,
         "show_rating": false,
-        "columns_mobile": "2",
         "padding_top": 36,
         "padding_bottom": 28
       }
