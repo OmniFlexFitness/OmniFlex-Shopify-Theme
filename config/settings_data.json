@@ -414,7 +414,7 @@
   "platform_customizations": {
     "custom_css": [
       "button.timesact-button-cs {background-image: none !important;}",
-      "div[id*=\"animated_divider\"] {z-index: 1000;}"
+      "div[id*=\"animated_divider\"] {z-index: 1000!important;}"
     ]
   }
 }
