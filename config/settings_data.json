@@ -410,5 +410,10 @@
         }
       }
     }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      "button.timesact-button-cs {background-image: none!important;}"
+    ]
   }
 }

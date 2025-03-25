@@ -13,7 +13,9 @@
   "sections": {
     "header": {
       "type": "header",
-      "custom_css": [],
+      "custom_css": [
+        "div[id*=\"animated_divider\"] {z-index: 1000;}"
+      ],
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
@@ -25,17 +27,13 @@
         "menu_color_scheme": "inverse",
         "enable_country_selector": true,
         "enable_language_selector": true,
-        "enable_customer_avatar": true,
         "margin_bottom": 0,
         "padding_top": 20,
         "padding_bottom": 20
       }
     },
-    "animated_divider_8mBBfk": {
+    "animated_divider_gjiDUT": {
       "type": "animated-divider",
-      "custom_css": [
-        ".animated-divider-container {z-index: 999!important;}"
-      ],
       "settings": {
         "divider_height": "100",
         "divider_color": "#000000",
@@ -46,6 +44,6 @@
   },
   "order": [
     "header",
-    "animated_divider_8mBBfk"
+    "animated_divider_gjiDUT"
   ]
 }
