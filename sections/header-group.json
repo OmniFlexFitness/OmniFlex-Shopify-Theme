@@ -34,6 +34,7 @@
     },
     "animated_divider_gjiDUT": {
       "type": "animated-divider",
+      "custom_css": [],
       "settings": {
         "divider_height": "100",
         "divider_color": "#000000",
