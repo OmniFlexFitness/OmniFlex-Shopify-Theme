@@ -1,6 +1,7 @@
 {{ 'section-animated-divider.css' | asset_url | stylesheet_tag }}
 
 {% assign divider_height = section.settings.divider_height | times: 1 %}
+{% assign z_index_value = 1000 %}
 <div class="animated-divider-container" style="--divider-height: {{ divider_height }}px;">
   {% if section.settings.use_image %}
     {% if section.settings.divider_image != blank %}

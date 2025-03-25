@@ -2938,6 +2938,9 @@ details-disclosure > details {
   background-attachment: fixed;
 }
 */
+div[id^="shopify-section-sections--24124352495913__animated_divider_"] {
+  z-index: 1000!important;
+}
 
 .gradient {
     background: var(--gradient-background);

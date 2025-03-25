@@ -1,3 +1,7 @@
+div[id^="shopify-section-sections--24124352495913__animated_divider_"] {
+  z-index: 1000!important;
+}
+
 .animated-divider-container {
   position: absolute;
   width: 100%;
