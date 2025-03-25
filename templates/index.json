@@ -71,6 +71,15 @@
         "show_text_below": true
       }
     },
+    "animated_divider_qV6AGr": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Blue_Divider.png"
+      }
+    },
     "slideshow_iRj3B6": {
       "type": "slideshow",
       "blocks": {
@@ -245,6 +254,7 @@
   "order": [
     "animated_divider_QJJ4Xf",
     "image_banner_DbzVwt",
+    "animated_divider_qV6AGr",
     "slideshow_iRj3B6",
     "featured_product_BdLKAM",
     "collection_list_FrVcEa"
