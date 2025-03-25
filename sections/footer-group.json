@@ -11,6 +11,15 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
+    "animated_divider_YGT7e8": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Gradient_Divider.png"
+      }
+    },
     "footer": {
       "type": "footer",
       "settings": {
@@ -30,6 +39,7 @@
     }
   },
   "order": [
+    "animated_divider_YGT7e8",
     "footer"
   ]
 }
