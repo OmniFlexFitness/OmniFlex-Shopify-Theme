@@ -23,7 +23,7 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "color_scheme": "accent-2",
+        "color_scheme": "inverse",
         "newsletter_enable": true,
         "newsletter_heading": "Subscribe for updates",
         "enable_follow_on_shop": true,
