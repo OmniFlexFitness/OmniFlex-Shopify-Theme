@@ -271,17 +271,6 @@
     },
     "sizing_chart_CjaiYU": {
       "type": "sizing-chart",
-      "blocks": {
-        "dynamic_source_4pnBXx": {
-          "type": "dynamic_source",
-          "settings": {
-            "metaobject_id": "core-padded-sports-bra-sizing"
-          }
-        }
-      },
-      "block_order": [
-        "dynamic_source_4pnBXx"
-      ],
       "custom_css": [
         ".sizing-chart-section {color: white !important;}"
       ],
