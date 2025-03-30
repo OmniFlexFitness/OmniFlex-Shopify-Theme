@@ -276,7 +276,7 @@
       ],
       "settings": {
         "title": "Sizing Chart{{ metaobjects.sizing_chart[\"core-padded-sports-bra-sizing\"].title.value }}",
-        "csv_text": "Size,Chest,Underbust\nXS,33.1 in,28.75 in\nS,34.6 in,29.5 in\nM,36.3 in,30.25 in\nL,39.4 in,31.875 in\nXL,42.5 in,33.5 in\n2XL,45.6 in,35 in"
+        "csv_text": "Size,Chest,Underbust\\n\nXS,33.1 in,28.75 in\\n\nS,34.6 in,29.5 in\\n\nM,36.3 in,30.25 in\\n\nL,39.4 in,31.875 in\\n\nXL,42.5 in,33.5 in\\n\n2XL,45.6 in,35 in\\n"
       }
     }
   },
