@@ -1,6 +1,23 @@
-{% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
-{% endschema %}
+<div class="sizing-chart-section">
+  {% if section.settings.metaobject_id %}
+    {% assign metaobject = shop.metaobjects['sizing_chart'][section.settings.metaobject_id] %}
+    {% if metaobject and metaobject.fields.table_data %}
+      <h2>{{ metaobject.fields.title }}</h2>
+      <table class="sizing-chart-table">
+        {% assign rows = metaobject.fields.table_data | split: '\n' %}
+        {% for row in rows %}
+          <tr>
+            {% assign columns = row | split: ',' %}
+            {% for column in columns %}
+              <td>{{ column | strip }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>No table data provided for this sizing chart.</p>
+    {% endif %}
+  {% else %}
+    <p>Please select a sizing chart to display.</p>
+  {% endif %}
+</div>
