@@ -14,14 +14,24 @@
     <h2>{{ chart_title }}</h2>
     <table class="sizing-chart-table">
       {% assign rows = csv_data | split: '\n' %}
-      {% for row in rows %}
+      {% assign headers = rows[0] | split: ',' %}
+      <thead>
         <tr>
-          {% assign columns = row | split: ',' %}
-          {% for column in columns %}
-            <td>{{ column | strip }}</td>
+          {% for header in headers %}
+            <th>{{ header | strip }}</th>
           {% endfor %}
         </tr>
-      {% endfor %}
+      </thead>
+      <tbody>
+        {% for row in rows offset:1 %}
+          <tr>
+            {% assign columns = row | split: ',' %}
+            {% for column in columns %}
+              <td>{{ column | strip }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
   {% else %}
     <p>No table data provided for this sizing chart.</p>
