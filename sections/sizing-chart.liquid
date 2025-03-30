@@ -1,8 +1,19 @@
 <div class="sizing-chart-section">
-  {% if section.settings.csv_text %}
-    <h2>{{ section.settings.title }}</h2>
+  {% assign csv_data = section.settings.csv_text %}
+  {% assign chart_title = section.settings.title %}
+
+  {% if block.settings.metaobject_id %}
+    {% assign metaobject = shop.metaobjects['sizing_chart'][block.settings.metaobject_id] %}
+    {% if metaobject %}
+      {% assign csv_data = metaobject.fields.table_data %}
+      {% assign chart_title = metaobject.fields.title %}
+    {% endif %}
+  {% endif %}
+
+  {% if csv_data %}
+    <h2>{{ chart_title }}</h2>
     <table class="sizing-chart-table">
-      {% assign rows = section.settings.csv_text | split: '\n' %}
+      {% assign rows = csv_data | split: '\n' %}
       {% for row in rows %}
         <tr>
           {% assign columns = row | split: ',' %}
@@ -16,6 +27,37 @@
     <p>No table data provided for this sizing chart.</p>
   {% endif %}
 </div>
+
+<style>
+  .sizing-chart-section {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .sizing-chart-section h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .sizing-chart-table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .sizing-chart-table th,
+  .sizing-chart-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  .sizing-chart-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+</style>
+
 {% schema %}
 {
   "name": "Sizing Chart",
