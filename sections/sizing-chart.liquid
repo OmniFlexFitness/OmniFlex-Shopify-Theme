@@ -1,35 +1,52 @@
 <div class="sizing-chart-section">
-  {% if section.settings.metaobject_id %}
-    {% assign metaobject = shop.metaobjects['sizing_chart'][section.settings.metaobject_id] %}
-    {% if metaobject and metaobject.fields.table_data %}
-      <h2>{{ metaobject.fields.title }}</h2>
-      <table class="sizing-chart-table">
-        {% assign rows = metaobject.fields.table_data | split: '\n' %}
-        {% for row in rows %}
-          <tr>
-            {% assign columns = row | split: ',' %}
-            {% for column in columns %}
-              <td>{{ column | strip }}</td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </table>
-    {% else %}
-      <p>No table data provided for this sizing chart.</p>
-    {% endif %}
+  {% if section.settings.csv_text %}
+    <h2>{{ section.settings.title }}</h2>
+    <table class="sizing-chart-table">
+      {% assign rows = section.settings.csv_text | split: '\n' %}
+      {% for row in rows %}
+        <tr>
+          {% assign columns = row | split: ',' %}
+          {% for column in columns %}
+            <td>{{ column | strip }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
   {% else %}
-    <p>Please select a sizing chart to display.</p>
+    <p>No table data provided for this sizing chart.</p>
   {% endif %}
 </div>
 {% schema %}
-  {
+{
   "name": "Sizing Chart",
   "settings": [
     {
-      "type": "metaobject",
-      "id": "metaobject_id",
-      "label": "Select Sizing Chart",
-      "metaobject_type": "sizing_chart"
+      "type": "text",
+      "id": "title",
+      "label": "Sizing Chart Title",
+      "default": "Sizing Chart",
+      "info": "This is the title that will appear above the sizing chart."
+    },
+    {
+      "type": "textarea",
+      "id": "csv_text",
+      "label": "CSV Text",
+      "default": "Size,Chest,Underbust\nXS,33.1 in,28.75 in\nS,34.6 in,29.5 in\nM,36.3 in,30.25 in\nL,39.4 in,31.875 in\nXL,42.5 in,33.5 in\n2XL,45.6 in,35 in",
+      "info": "Paste CSV data here (rows separated by newlines, columns separated by commas)."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "dynamic_source",
+      "name": "Dynamic Metaobject Source",
+      "settings": [
+        {
+          "type": "metaobject",
+          "id": "metaobject_id",
+          "label": "Select Sizing Chart Metaobject",
+          "metaobject_type": "sizing_chart"
+        }
+      ]
     }
   ],
   "presets": [
@@ -38,5 +55,4 @@
     }
   ]
 }
-
 {% endschema %}
