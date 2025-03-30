@@ -52,6 +52,7 @@
         "text_LV3ggU",
         "buttons_EcdT3P"
       ],
+      "disabled": true,
       "custom_css": [
         ".banner__content {background: none !important;}",
         ".gradient {background-image: none !important;}",
@@ -124,7 +125,6 @@
         "slide_Mxbg3y",
         "slide_bfVabj"
       ],
-      "disabled": true,
       "custom_css": [
         ".slideshow__text.banner__box {background: none !important;}",
         ".slideshow__controls.slideshow__controls--top.slider-buttons.no-js-hidden {position: absolute; bottom: 0; left: 0; right: 0; color: white !important;}"
@@ -272,8 +272,7 @@
     "sizing_chart_CjaiYU": {
       "type": "sizing-chart",
       "custom_css": [
-        ".sizing-chart-table {color: #4524db;}",
-        "thead {background-color: purple!important;}"
+        ".sizing-chart-table {color: #4524db;}"
       ],
       "settings": {
         "title": "Sizing Chart{{ metaobjects.sizing_chart[\"core-padded-sports-bra-sizing\"].title.value }}",
@@ -283,9 +282,9 @@
   },
   "order": [
     "animated_divider_QJJ4Xf",
+    "slideshow_iRj3B6",
     "image_banner_DbzVwt",
     "animated_divider_qV6AGr",
-    "slideshow_iRj3B6",
     "featured_product_BdLKAM",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
