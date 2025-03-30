@@ -210,6 +210,12 @@
         "padding_bottom": 36
       }
     },
+    "sizing_chart_rtg7Mc": {
+      "type": "sizing-chart",
+      "settings": {
+        "metaobject_id": "core-padded-sports-bra-sizing"
+      }
+    },
     "animated_divider_HCAgLg": {
       "type": "animated-divider",
       "settings": {
@@ -217,15 +223,6 @@
         "divider_color": "#000000",
         "use_image": true,
         "divider_image": "shopify://shop_images/Pink_Divider.png"
-      }
-    },
-    "animated_divider_g4gLgF": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "100",
-        "divider_color": "#000000",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
     "collection_list_FrVcEa": {
@@ -267,6 +264,15 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "animated_divider_g4gLgF": {
+      "type": "animated-divider",
+      "settings": {
+        "divider_height": "100",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Gradient_Divider.png"
+      }
     }
   },
   "order": [
@@ -275,6 +281,7 @@
     "animated_divider_qV6AGr",
     "slideshow_iRj3B6",
     "featured_product_BdLKAM",
+    "sizing_chart_rtg7Mc",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
     "animated_divider_g4gLgF"
