@@ -272,7 +272,8 @@
     "sizing_chart_CjaiYU": {
       "type": "sizing-chart",
       "custom_css": [
-        ".sizing-chart-table {color: #4524DB;}"
+        ".sizing-chart-table {color: #4524db;}",
+        "thead {background-color: purple!important;}"
       ],
       "settings": {
         "title": "Sizing Chart{{ metaobjects.sizing_chart[\"core-padded-sports-bra-sizing\"].title.value }}",
