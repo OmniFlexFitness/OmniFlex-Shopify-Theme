@@ -261,9 +261,7 @@
     },
     "animated_divider_g4gLgF": {
       "type": "animated-divider",
-      "custom_css": [
-        ".sizing-chart-section {color: white!important;}"
-      ],
+      "custom_css": [],
       "settings": {
         "divider_height": "100",
         "divider_color": "#000000",
@@ -273,7 +271,9 @@
     },
     "sizing_chart_CjaiYU": {
       "type": "sizing-chart",
-      "custom_css": [],
+      "custom_css": [
+        ".sizing-chart-section {color: white !important;}"
+      ],
       "settings": {
         "metaobject_id": "core-padded-sports-bra-sizing"
       }
