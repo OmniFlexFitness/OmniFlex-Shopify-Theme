@@ -21,3 +21,22 @@
     <p>Please select a sizing chart to display.</p>
   {% endif %}
 </div>
+{% schema %}
+  {
+  "name": "Sizing Chart",
+  "settings": [
+    {
+      "type": "metaobject",
+      "id": "metaobject_id",
+      "label": "Select Sizing Chart",
+      "metaobject_type": "sizing_chart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sizing Chart"
+    }
+  ]
+}
+
+{% endschema %}
