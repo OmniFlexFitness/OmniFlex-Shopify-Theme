@@ -210,12 +210,6 @@
         "padding_bottom": 36
       }
     },
-    "sizing_chart_rtg7Mc": {
-      "type": "sizing-chart",
-      "settings": {
-        "metaobject_id": "core-padded-sports-bra-sizing"
-      }
-    },
     "animated_divider_HCAgLg": {
       "type": "animated-divider",
       "settings": {
@@ -281,7 +275,6 @@
     "animated_divider_qV6AGr",
     "slideshow_iRj3B6",
     "featured_product_BdLKAM",
-    "sizing_chart_rtg7Mc",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
     "animated_divider_g4gLgF"
