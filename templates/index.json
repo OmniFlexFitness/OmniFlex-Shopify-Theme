@@ -267,6 +267,12 @@
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
+    },
+    "sizing_chart_CjaiYU": {
+      "type": "sizing-chart",
+      "settings": {
+        "metaobject_id": "core-padded-sports-bra-sizing"
+      }
     }
   },
   "order": [
@@ -277,6 +283,7 @@
     "featured_product_BdLKAM",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
-    "animated_divider_g4gLgF"
+    "animated_divider_g4gLgF",
+    "sizing_chart_CjaiYU"
   ]
 }
