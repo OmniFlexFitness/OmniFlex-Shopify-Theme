@@ -36,7 +36,7 @@
 
   .sizing-chart-section h2 {
     font-size: 1.5em;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .sizing-chart-table {
@@ -44,17 +44,32 @@
     margin: 0 auto;
     border-collapse: collapse;
     text-align: left;
+    table-layout: fixed;
   }
 
   .sizing-chart-table th,
   .sizing-chart-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
   }
 
   .sizing-chart-table th {
     background-color: #f4f4f4;
     font-weight: bold;
+  }
+
+  .sizing-chart-table tr {
+    height: 50px; /* Ensures vertical spacing between rows */
+  }
+
+  .sizing-chart-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .sizing-chart-table tr:hover {
+    background-color: #f1f1f1;
   }
 </style>
 
