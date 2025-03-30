@@ -262,7 +262,7 @@
     "animated_divider_g4gLgF": {
       "type": "animated-divider",
       "custom_css": [
-        ".sizing-chart-table {color: white;}"
+        ".sizing-chart-section {color: white!important;}"
       ],
       "settings": {
         "divider_height": "100",
