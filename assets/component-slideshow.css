@@ -120,11 +120,11 @@ slideshow-component .slideshow.banner {
   border-bottom: none;
 }
 
-@media screen and (min-width: 750px) {
+/* @media screen and (min-width: 750px) {
   .slideshow__controls {
     position: relative;
   }
-}
+} */
 
 slideshow-component:not(.page-width) .slider-buttons {
   border-right: 0;
@@ -140,6 +140,7 @@ slideshow-component:not(.page-width) .slider-buttons {
   right: 0;
   border-left: none;
   display: flex;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
 }
@@ -198,4 +199,43 @@ slideshow-component:not(.page-width) .slider-buttons {
   visibility: hidden;
   opacity: 0;
   transform: scale(0.8);
+}
+
+/* Add styles for slider buttons to ensure they are visible and positioned correctly */
+.slider-button {
+  color: rgba(var(--color-foreground), 0.75);
+  background: rgba(var(--color-background), 0.5); /* Add background for better visibility */
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute; /* Position the arrows */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%);
+  z-index: 10; /* Ensure they appear above other elements */
+}
+
+.slider-button--prev {
+  left: 1rem; /* Position to the left */
+}
+
+.slider-button--next {
+  right: 1rem; /* Position to the right */
+}
+
+.slider-button:not([disabled]):hover {
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-background), 0.75); /* Enhance hover visibility */
+}
+
+.slider-button .icon {
+  height: 0.6rem;
+}
+
+.slider-button[disabled] .icon {
+  color: rgba(var(--color-foreground), 0.3);
+  cursor: not-allowed;
 }

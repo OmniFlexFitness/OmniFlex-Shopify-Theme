@@ -247,6 +247,36 @@ slider-component.slider-component-full-width {
   min-width: 4.4rem;
 }
 
+/* Position the slider-counter on top of the section image and align it to the bottom */
+.slider-counter {
+  position: absolute;
+  bottom: 2%; /* Align to the bottom of the image with some spacing */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for centering */
+  z-index: 10; /* Ensure it appears above the image */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent; /* Semi-transparent white background */
+  padding: 0.5rem 1rem; /* Add some padding for spacing */
+  border-radius: 0.5rem; /* Optional: Add rounded corners */
+  color: rgba(255, 255, 255, 0.8); /* Semi-transparent white color for arrows */
+  font-size: 0.875rem; /* Adjust font size as needed */
+}
+.slider-counter .link,
+.slider-counter .customer a {
+  cursor: pointer;
+  display: inline-block;
+  border: none;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: .3rem;
+  color: rgba(255, 255, 255, 0.8)!important; /* Semi-transparent white color for arrows */
+  background-color: transparent;
+  font-size: 1.4rem;
+  font-family: inherit;
+}
+
 @media screen and (min-width: 750px) {
   .slider-counter--dots {
     margin: 0 1.2rem;
@@ -267,18 +297,20 @@ slider-component.slider-component-full-width {
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  border: 0.1rem solid rgba(var(--color-foreground), 0.5);
+  border: 0.1rem solid rgba(255, 255, 255, 0.8);
   padding: 0;
   display: block;
 }
 
 .slider-counter__link--active.slider-counter__link--dots .dot {
-  background-color: rgb(var(--color-foreground));
+  background-color: rgba(255, 255, 255, 0.8)!important; /* Semi-transparent white color for arrows */
+  border-color: rgba(255, 255, 255, 0.8)!important; /* Semi-transparent white color for arrows */
 }
 
 @media screen and (forced-colors: active) {
   .slider-counter__link--active.slider-counter__link--dots .dot {
-    background-color: CanvasText;
+    background-color: rgba(255, 255, 255, 0.8)!important; /* Semi-transparent white color for arrows */
+    border-color: rgba(255, 255, 255, 0.8)!important; /* Semi-transparent white color for arrows */
   }
 }
 
@@ -311,6 +343,11 @@ slider-component.slider-component-full-width {
   color: rgb(var(--color-foreground));
 }
 
+/* Update the active slider color to white */
+.slider-counter__link--active {
+  color: rgba(255, 255, 255, 1); /* Fully opaque white color */
+}
+
 .slider-buttons {
   display: flex;
   align-items: center;
@@ -334,32 +371,43 @@ slider-component.slider-component-full-width {
     display: none;
   }
 }
-
 .slider-button {
-  color: rgba(var(--color-foreground), 0.75);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  width: 44px;
-  height: 44px;
+  position: absolute;
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%);
+  z-index: 10; /* Ensure they appear above other elements */
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8); /* Semi-transparent white color for arrows */
+}
+
+.slider-button--prev {
+  left: 1rem; /* Position the left arrow */
+}
+
+.slider-button--next {
+  right: 1rem; /* Position the right arrow */
 }
 
 .slider-button:not([disabled]):hover {
-  color: rgb(var(--color-foreground));
+  background: rgba(255, 255, 255, 0.4); /* Slightly darker on hover */
+  color: rgba(255, 255, 255, 1); /* Fully opaque white on hover */
 }
 
 .slider-button .icon {
   height: 0.6rem;
 }
 
-.slider-button[disabled] .icon {
-  color: rgba(var(--color-foreground), 0.3);
+.slider-button[disabled] {
   cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.3); /* Dimmed color for disabled state */
 }
-
 .slider-button--next .icon {
   transform: rotate(-90deg);
 }
