@@ -2,6 +2,8 @@
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 {{ 'component-slideshow.css' | asset_url | stylesheet_tag }}
 
+/* Center slider buttons vertically and ensure both arrows are visible */
+
 {%- if section.settings.slide_height == 'adapt_image' and section.blocks.first.settings.image != blank -%}
   {%- style -%}
     @media screen and (max-width: 749px) {
@@ -22,7 +24,7 @@
         display: block;
       }
     }
-  {%- endstyle -%}
+  {%- endstyle -%} MJ   
 {%- endif -%}
 
 <slideshow-component
@@ -81,7 +83,7 @@
       </button>
 
       {%- if section.settings.auto_rotate -%}
-        <button
+        {% comment %} <button
           type="button"
           class="slideshow__autoplay slider-button{% if section.settings.auto_rotate == false %} slideshow__autoplay--paused{% endif %}"
           aria-label="{{ 'sections.slideshow.pause_slideshow' | t }}"
@@ -92,7 +94,7 @@
           <span class="svg-wrapper">
             {{- 'icon-play.svg' | inline_asset_content -}}
           </span>
-        </button>
+        </button> {% endcomment %}
       {%- endif -%}
     </div>
   {%- endif -%}
@@ -240,7 +242,7 @@
       </button>
 
       {%- if section.settings.auto_rotate -%}
-        <button
+        {% comment %} <button
           type="button"
           class="slideshow__autoplay slider-button{% if section.settings.auto_rotate == false %} slideshow__autoplay--paused{% endif %}"
           aria-label="{{ 'sections.slideshow.pause_slideshow' | t }}"
@@ -251,7 +253,7 @@
           <span class="svg-wrapper">
             {{- 'icon-play.svg' | inline_asset_content -}}
           </span>
-        </button>
+        </button> {% endcomment %}
       {%- endif -%}
     </div>
   {%- endif -%}
