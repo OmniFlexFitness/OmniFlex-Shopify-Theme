@@ -82,15 +82,6 @@
         "padding_bottom": 12
       }
     },
-    "custom_liquid_DNBVUa": {
-      "type": "custom-liquid",
-      "settings": {
-        "custom_liquid": "<div style=\"display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px;\">\n  <table style=\"border-collapse: collapse; width: 60%; background-color: #1e1e1e; color: #ffffff; border: 1px solid #333;\">\n    <thead>\n      <tr>\n        <th style=\"text-align: left; padding: 12px; background-color: #333333;\">Size</th>\n        <th style=\"text-align: left; padding: 12px; background-color: #333333;\">Chest</th>\n        <th style=\"text-align: left; padding: 12px; background-color: #333333;\">Underbust</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr style=\"background-color: #2a2a2a;\">\n        <td style=\"padding: 12px;\">XS</td>\n        <td style=\"padding: 12px;\">33.1 in</td>\n        <td style=\"padding: 12px;\">28.75 in</td>\n      </tr>\n      <tr style=\"background-color: #1e1e1e;\">\n        <td style=\"padding: 12px;\">S</td>\n        <td style=\"padding: 12px;\">34.6 in</td>\n        <td style=\"padding: 12px;\">29.5 in</td>\n      </tr>\n      <tr style=\"background-color: #2a2a2a;\">\n        <td style=\"padding: 12px;\">M</td>\n        <td style=\"padding: 12px;\">36.3 in</td>\n        <td style=\"padding: 12px;\">30.25 in</td>\n      </tr>\n      <tr style=\"background-color: #1e1e1e;\">\n        <td style=\"padding: 12px;\">L</td>\n        <td style=\"padding: 12px;\">39.4 in</td>\n        <td style=\"padding: 12px;\">31.875 in</td>\n      </tr>\n      <tr style=\"background-color: #2a2a2a;\">\n        <td style=\"padding: 12px;\">XL</td>\n        <td style=\"padding: 12px;\">42.5 in</td>\n        <td style=\"padding: 12px;\">33.5 in</td>\n      </tr>\n      <tr style=\"background-color: #1e1e1e;\">\n        <td style=\"padding: 12px;\">2XL</td>\n        <td style=\"padding: 12px;\">45.6 in</td>\n        <td style=\"padding: 12px;\">35 in</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
-        "color_scheme": "inverse",
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
-    },
     "related-products": {
       "type": "related-products",
       "settings": {
@@ -113,13 +104,12 @@
       "type": "sizing-chart",
       "settings": {
         "title": "Sizing Chart",
-        "csv_text": "Size,Chest,Underbust\nXS,33.1 in,28.75 in\nS,34.6 in,29.5 in\nM,36.3 in,30.25 in\nL,39.4 in,31.875 in\nXL,42.5 in,33.5 in\n2XL,45.6 in,35 in"
+        "csv_text": "Size,Chest,Underbust\\n\nXS,33.1 in,28.75 in\\n\nS,34.6 in,29.5 in\\n\nM,36.3 in,30.25 in\\n\nL,39.4 in,31.875 in\\n\nXL,42.5 in,33.5 in\\n\n2XL,45.6 in,35 in\\n"
       }
     }
   },
   "order": [
     "main",
-    "custom_liquid_DNBVUa",
     "related-products",
     "sizing_chart_Ayb4fN"
   ]
