@@ -13,7 +13,7 @@
   {% if csv_data %}
     <h2>{{ chart_title }}</h2>
     <table class="sizing-chart-table">
-      {% assign rows = csv_data | split: '\n' %}
+     {% assign rows = csv_data | split: '\n' %}
       {% assign headers = rows[0] | split: ',' %}
       <thead>
         <tr>
