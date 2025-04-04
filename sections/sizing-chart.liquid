@@ -13,7 +13,7 @@
   {% if csv_data %}
     <h2>{{ chart_title }}</h2>
     <table class="sizing-chart-table">
-      {% assign rows = csv_data | split: '\n' %}
+      {% assign rows = csv_data | split: ',' %}
       {% assign headers = rows[0] | split: ',' %}
       <thead>
         <tr>
@@ -23,15 +23,13 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in rows %}
-          {% unless row == rows[0] %}
-            <tr>
-              {% assign columns = row | split: ',' %}
-              {% for column in columns %}
-                <td>{{ column | strip }}</td>
-              {% endfor %}
-            </tr>
-          {% endunless %}
+        {% for row in rows offset:1 %}
+          <tr>
+            {% assign columns = row | split: ',' %}
+            {% for column in columns %}
+              <td>{{ column | strip }}</td>
+            {% endfor %}
+          </tr>
         {% endfor %}
       </tbody>
     </table>
