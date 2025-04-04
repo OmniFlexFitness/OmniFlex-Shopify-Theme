@@ -18,6 +18,65 @@
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
+    "slideshow_iRj3B6": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_Mxbg3y": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/FX302549-Enhanced-NR_2_7b425185-b822-4f05-b665-25528158cbb4.jpg",
+            "image_overlay_opacity": 40,
+            "heading": "Shop Activewear",
+            "heading_size": "h0",
+            "subheading": "Browse our latest products",
+            "button_label": "Shop",
+            "link": "shopify://collections/all",
+            "button_style_secondary": false,
+            "show_text_box": false,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
+          }
+        },
+        "slide_bfVabj": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/FX301816_extended.png",
+            "image_overlay_opacity": 0,
+            "heading": "Women's Activewear",
+            "heading_size": "h0",
+            "subheading": "Browse the latest women's activewear products",
+            "button_label": "Shop",
+            "link": "shopify://collections/womens-collection",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
+          }
+        }
+      },
+      "block_order": [
+        "slide_Mxbg3y",
+        "slide_bfVabj"
+      ],
+      "custom_css": [
+        ".slideshow__text.banner__box {background: none !important;}",
+        ".slideshow__controls.slideshow__controls--top.slider-buttons.no-js-hidden {position: absolute; bottom: 0; left: 0; right: 0; color: white !important;}"
+      ],
+      "settings": {
+        "layout": "full_bleed",
+        "slide_height": "large",
+        "slider_visual": "dots",
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "image_behavior": "none",
+        "show_text_below": false,
+        "accessibility_info": "Shop Slideshow"
+      }
+    },
     "image_banner_DbzVwt": {
       "type": "image-banner",
       "blocks": {
@@ -79,65 +138,6 @@
         "divider_color": "#000000",
         "use_image": true,
         "divider_image": "shopify://shop_images/Blue_Divider.png"
-      }
-    },
-    "slideshow_iRj3B6": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_Mxbg3y": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/FX302549-Enhanced-NR_2_7b425185-b822-4f05-b665-25528158cbb4.jpg",
-            "image_overlay_opacity": 40,
-            "heading": "Shop Activewear",
-            "heading_size": "h0",
-            "subheading": "Browse our latest products",
-            "button_label": "Shop",
-            "link": "shopify://collections/all",
-            "button_style_secondary": false,
-            "show_text_box": false,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
-          }
-        },
-        "slide_bfVabj": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/FX301816_extended.png",
-            "image_overlay_opacity": 0,
-            "heading": "Women's Activewear",
-            "heading_size": "h0",
-            "subheading": "Browse the latest women's activewear products",
-            "button_label": "Shop",
-            "link": "shopify://collections/womens-collection",
-            "button_style_secondary": false,
-            "show_text_box": true,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
-          }
-        }
-      },
-      "block_order": [
-        "slide_Mxbg3y",
-        "slide_bfVabj"
-      ],
-      "custom_css": [
-        ".slideshow__text.banner__box {background: none !important;}",
-        ".slideshow__controls.slideshow__controls--top.slider-buttons.no-js-hidden {position: absolute; bottom: 0; left: 0; right: 0; color: white !important;}"
-      ],
-      "settings": {
-        "layout": "full_bleed",
-        "slide_height": "large",
-        "slider_visual": "dots",
-        "auto_rotate": true,
-        "change_slides_speed": 5,
-        "image_behavior": "none",
-        "show_text_below": false,
-        "accessibility_info": "Shop Slideshow"
       }
     },
     "featured_product_BdLKAM": {
@@ -268,16 +268,6 @@
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
-    },
-    "sizing_chart_CjaiYU": {
-      "type": "sizing-chart",
-      "custom_css": [
-        ".sizing-chart-table {color: #4524db;}"
-      ],
-      "settings": {
-        "title": "Sizing Chart{{ metaobjects.sizing_chart[\"core-padded-sports-bra-sizing\"].title.value }}",
-        "csv_text": "Size,Chest,Underbust\\n\nXS,33.1 in,28.75 in\\n\nS,34.6 in,29.5 in\\n\nM,36.3 in,30.25 in\\n\nL,39.4 in,31.875 in\\n\nXL,42.5 in,33.5 in\\n\n2XL,45.6 in,35 in\\n"
-      }
     }
   },
   "order": [
@@ -288,7 +278,6 @@
     "featured_product_BdLKAM",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
-    "animated_divider_g4gLgF",
-    "sizing_chart_CjaiYU"
+    "animated_divider_g4gLgF"
   ]
 }
