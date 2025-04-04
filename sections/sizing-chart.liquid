@@ -23,13 +23,15 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in rows offset: 1 %}
-          <tr>
-            {% assign columns = row | split: ',' %}
-            {% for column in columns %}
-              <td>{{ column | strip }}</td>
-            {% endfor %}
-          </tr>
+        {% for row in rows %}
+          {% unless row == rows[0] %}
+            <tr>
+              {% assign columns = row | split: ',' %}
+              {% for column in columns %}
+                <td>{{ column | strip }}</td>
+              {% endfor %}
+            </tr>
+          {% endunless %}
         {% endfor %}
       </tbody>
     </table>
