@@ -108,11 +108,19 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "sizing_chart_Ayb4fN": {
+      "type": "sizing-chart",
+      "settings": {
+        "title": "Sizing Chart",
+        "csv_text": "Size,Chest,Underbust\nXS,33.1 in,28.75 in\nS,34.6 in,29.5 in\nM,36.3 in,30.25 in\nL,39.4 in,31.875 in\nXL,42.5 in,33.5 in\n2XL,45.6 in,35 in"
+      }
     }
   },
   "order": [
     "main",
     "custom_liquid_DNBVUa",
-    "related-products"
+    "related-products",
+    "sizing_chart_Ayb4fN"
   ]
 }
