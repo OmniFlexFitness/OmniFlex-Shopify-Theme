@@ -3,7 +3,7 @@
   {% assign chart_title = section.settings.title %}
 
   {% if block.settings.metaobject_id %}
-    {% assign metaobject = shop.metaobjects.sizing_chart[block.settings.metaobject_id] %}
+    {% assign metaobject = shop.metaobjects['sizing_chart'][block.settings.metaobject_id] %}
     {% if metaobject %}
       {% assign csv_data = metaobject.fields.table_data %}
       {% assign chart_title = metaobject.fields.title %}
@@ -13,7 +13,7 @@
   {% if csv_data %}
     <h2>{{ chart_title }}</h2>
     <table class="sizing-chart-table">
-     {% assign rows = csv_data | split: '\n' %}
+      {% assign rows = csv_data | split: '\n' %}
       {% assign headers = rows[0] | split: ',' %}
       <thead>
         <tr>
