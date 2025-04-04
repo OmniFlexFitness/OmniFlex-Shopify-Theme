@@ -99,15 +99,10 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
-    },
-    "sizing_chart_WPrb64": {
-      "type": "sizing-chart",
-      "settings": {}
     }
   },
   "order": [
     "main",
-    "related-products",
-    "sizing_chart_WPrb64"
+    "related-products"
   ]
 }
