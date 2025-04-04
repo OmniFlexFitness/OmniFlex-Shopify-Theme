@@ -3,7 +3,7 @@
   {% assign chart_title = section.settings.title %}
 
   {% if block.settings.metaobject_id %}
-    {% assign metaobject = shop.metaobjects['sizing_chart'][block.settings.metaobject_id] %}
+    {% assign metaobject = shop.metaobjects.sizing_chart[block.settings.metaobject_id] %}
     {% if metaobject %}
       {% assign csv_data = metaobject.fields.table_data %}
       {% assign chart_title = metaobject.fields.title %}
@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in rows offset:1 %}
+        {% for row in rows offset: 1 %}
           <tr>
             {% assign columns = row | split: ',' %}
             {% for column in columns %}
@@ -42,31 +42,40 @@
   .sizing-chart-section {
     margin: 20px 0;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
   }
 
   .sizing-chart-section h2 {
     font-size: 1.5em;
     margin-bottom: 20px;
+    color: #ffffff;
   }
 
   .sizing-chart-table {
-    width: 90%;
+    width: 60%;
     margin: 0 auto;
     border-collapse: collapse;
-    text-align: left;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #333;
+    text-align: center;
     table-layout: fixed;
   }
 
   .sizing-chart-table th,
   .sizing-chart-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #333;
     padding: 12px;
     text-align: center;
     vertical-align: middle;
   }
 
   .sizing-chart-table th {
-    background-color: #f4f4f4;
+    background-color: #333333;
     font-weight: bold;
   }
 
@@ -75,11 +84,15 @@
   }
 
   .sizing-chart-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #2a2a2a;
+  }
+
+  .sizing-chart-table tr:nth-child(odd) {
+    background-color: #1e1e1e;
   }
 
   .sizing-chart-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #444444;
   }
 </style>
 
