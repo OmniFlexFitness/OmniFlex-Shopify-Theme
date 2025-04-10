@@ -36,7 +36,7 @@
     "animated_divider_4BLeDz": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "50",
+        "divider_height": "100",
         "divider_color": "#000000",
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
