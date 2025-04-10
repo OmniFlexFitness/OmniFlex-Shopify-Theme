@@ -11,6 +11,7 @@
   "sections": {
     "animated_divider_QJJ4Xf": {
       "type": "animated-divider",
+      "disabled": true,
       "settings": {
         "divider_height": "50",
         "divider_color": "#000000",
