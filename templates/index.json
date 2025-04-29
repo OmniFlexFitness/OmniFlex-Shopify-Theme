@@ -63,7 +63,6 @@
         "slide_Mxbg3y",
         "slide_bfVabj"
       ],
-      "disabled": true,
       "custom_css": [
         ".slideshow__text.banner__box {background: none !important;}",
         ".slideshow__controls.slideshow__controls--top.slider-buttons.no-js-hidden {position: absolute; bottom: 0; left: 0; right: 0; color: white !important;}"
