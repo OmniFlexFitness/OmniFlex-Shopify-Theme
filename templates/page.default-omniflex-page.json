@@ -27,7 +27,7 @@
       "settings": {
         "image": "shopify://shop_images/Glowing_Marble_Background.png",
         "image_overlay_opacity": 0,
-        "image_height": "medium",
+        "image_height": "small",
         "image_behavior": "none",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
@@ -38,8 +38,42 @@
         "show_text_below": true
       }
     },
+    "animated_divider_hmVaBm": {
+      "type": "animated-divider",
+      "name": "Animated Divider",
+      "settings": {
+        "divider_height": "200",
+        "divider_color": "#000000",
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Blue_Divider.png"
+      }
+    },
+    "rich_text_RGBfPY": {
+      "type": "rich-text",
+      "blocks": {
+        "text_fVx3KJ": {
+          "type": "text",
+          "settings": {
+            "text": "<p></p>{{ page.content }}"
+          }
+        }
+      },
+      "block_order": [
+        "text_fVx3KJ"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "main": {
       "type": "main-page",
+      "disabled": true,
       "custom_css": [
         "h1 {color: white !important;}",
         ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}"
@@ -48,68 +82,12 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
-    },
-    "image_with_text_yWEpWC": {
-      "type": "image-with-text",
-      "blocks": {
-        "heading_xmDBDi": {
-          "type": "heading",
-          "settings": {
-            "heading": "Zenith V1",
-            "heading_size": "h1"
-          }
-        },
-        "text_GhLDmW": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
-            "text_style": "body"
-          }
-        },
-        "button_cTXmte": {
-          "type": "button",
-          "settings": {
-            "button_label": "Pre-order",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_xmDBDi",
-        "text_GhLDmW",
-        "button_cTXmte"
-      ],
-      "settings": {
-        "image": "shopify://shop_images/Supplement_Facts_Square_Label_Designed_811406f0-3e37-482d-9b4b-7b1716fb523b.png",
-        "height": "adapt",
-        "desktop_image_width": "medium",
-        "layout": "image_first",
-        "image_behavior": "none",
-        "content_layout": "no-overlap",
-        "desktop_content_position": "middle",
-        "desktop_content_alignment": "left",
-        "mobile_content_alignment": "left",
-        "section_color_scheme": "inverse",
-        "color_scheme": "inverse",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "custom_liquid_iMHAEr": {
-      "type": "custom-liquid",
-      "settings": {
-        "custom_liquid": "",
-        "color_scheme": "inverse",
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
     }
   },
   "order": [
     "image_banner_BkrEGm",
-    "main",
-    "image_with_text_yWEpWC",
-    "custom_liquid_iMHAEr"
+    "animated_divider_hmVaBm",
+    "rich_text_RGBfPY",
+    "main"
   ]
 }
