@@ -12,7 +12,8 @@
     "main": {
       "type": "main-page",
       "custom_css": [
-        "h1 {color: white !important;}"
+        "h1 {color: white !important;}",
+        ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}"
       ],
       "settings": {
         "padding_top": 28,
