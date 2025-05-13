@@ -9,6 +9,34 @@
  */
 {
   "sections": {
+    "image_banner_BkrEGm": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_88GzHC": {
+          "type": "heading",
+          "settings": {
+            "heading": "{{ page.title }}",
+            "heading_size": "hxxl"
+          }
+        }
+      },
+      "block_order": [
+        "heading_88GzHC"
+      ],
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
+      }
+    },
     "main": {
       "type": "main-page",
       "custom_css": [
@@ -78,6 +106,7 @@
     }
   },
   "order": [
+    "image_banner_BkrEGm",
     "main",
     "image_with_text_yWEpWC",
     "custom_liquid_iMHAEr"
