@@ -25,6 +25,7 @@
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
+        "image": "shopify://shop_images/Glowing_Marble_Background.png",
         "image_overlay_opacity": 0,
         "image_height": "medium",
         "image_behavior": "none",
