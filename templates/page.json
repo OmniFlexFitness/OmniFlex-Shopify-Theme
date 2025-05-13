@@ -9,6 +9,16 @@
  */
 {
   "sections": {
+    "main": {
+      "type": "main-page",
+      "custom_css": [
+        "h1 {color: white !important;}"
+      ],
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
     "image_with_text_yWEpWC": {
       "type": "image-with-text",
       "blocks": {
@@ -63,13 +73,6 @@
         "color_scheme": "inverse",
         "padding_top": 40,
         "padding_bottom": 52
-      }
-    },
-    "main": {
-      "type": "main-page",
-      "settings": {
-        "padding_top": 28,
-        "padding_bottom": 28
       }
     }
   },
