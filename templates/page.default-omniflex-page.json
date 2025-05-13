@@ -15,13 +15,16 @@
         "heading_88GzHC": {
           "type": "heading",
           "settings": {
-            "heading": "{{ page.title }}",
+            "heading": "<strong>{{ page.title }}</strong>",
             "heading_size": "hxxl"
           }
         }
       },
       "block_order": [
         "heading_88GzHC"
+      ],
+      "custom_css": [
+        "div.gradient {background-image: none !important;}"
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
