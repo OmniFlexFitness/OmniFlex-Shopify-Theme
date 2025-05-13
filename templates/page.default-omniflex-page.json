@@ -42,10 +42,10 @@
       "type": "animated-divider",
       "name": "Animated Divider",
       "settings": {
-        "divider_height": "200",
-        "divider_color": "#000000",
+        "divider_height": "50",
+        "divider_color": "#c13afa",
         "use_image": true,
-        "divider_image": "shopify://shop_images/Blue_Divider.png"
+        "divider_image": "shopify://shop_images/Glowing_Marble_Background.png"
       }
     },
     "rich_text_RGBfPY": {
