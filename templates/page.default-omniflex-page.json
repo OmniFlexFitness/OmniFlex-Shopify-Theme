@@ -42,9 +42,9 @@
       "type": "animated-divider",
       "name": "Animated Divider",
       "settings": {
-        "divider_height": "50",
-        "divider_color": "#c13afa",
-        "use_image": true,
+        "divider_height": "10",
+        "divider_color": "#7a00ff",
+        "use_image": false,
         "divider_image": "shopify://shop_images/Glowing_Marble_Background.png"
       }
     },
