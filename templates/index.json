@@ -141,76 +141,6 @@
         "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
     },
-    "featured_product_8c8phW": {
-      "type": "featured-product",
-      "blocks": {
-        "text_LfyJnm": {
-          "type": "text",
-          "settings": {
-            "text": "{{ section.settings.product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
-        "title_jrbjij": {
-          "type": "title",
-          "settings": {
-            "heading_size": "h1"
-          }
-        },
-        "price_D7qMVT": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker_h4G9Dz": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "quantity_selector_twMf4b": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons_UzLjkn": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
-        "share_gqGgD8": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
-          }
-        }
-      },
-      "block_order": [
-        "text_LfyJnm",
-        "title_jrbjij",
-        "price_D7qMVT",
-        "variant_picker_h4G9Dz",
-        "quantity_selector_twMf4b",
-        "buy_buttons_UzLjkn",
-        "share_gqGgD8"
-      ],
-      "name": "t:sections.featured-product.presets.name",
-      "settings": {
-        "product": "creatine-monohydrate-supplement-300g-10-58oz",
-        "color_scheme": "",
-        "secondary_background": false,
-        "media_size": "medium",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "hide_variants": false,
-        "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "featured_product_BdLKAM": {
       "type": "featured-product",
       "blocks": {
@@ -346,7 +276,6 @@
     "slideshow_iRj3B6",
     "image_banner_DbzVwt",
     "animated_divider_qV6AGr",
-    "featured_product_8c8phW",
     "featured_product_BdLKAM",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
