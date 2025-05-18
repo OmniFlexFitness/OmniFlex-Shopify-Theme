@@ -79,6 +79,45 @@
         "padding_bottom": 36
       }
     },
+    "image_with_text_mmKRHt": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_FCWRd3": {
+          "type": "heading",
+          "settings": {
+            "heading": "Supplement Facts",
+            "heading_size": "h1"
+          }
+        },
+        "text_cqdE7F": {
+          "type": "text",
+          "source": "{{ metaobject }}",
+          "settings": {
+            "text": ""
+          }
+        }
+      },
+      "block_order": [
+        "heading_FCWRd3",
+        "text_cqdE7F"
+      ],
+      "name": "Supplement Facts",
+      "settings": {
+        "image": "{{ metaobject.supplement_facts_img.value }}",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "image_behavior": "none",
+        "content_layout": "no-overlap",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "left",
+        "mobile_content_alignment": "left",
+        "section_color_scheme": "",
+        "color_scheme": "",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "image_banner_wnqPpU": {
       "type": "image-banner",
       "blocks": {
@@ -188,6 +227,7 @@
   },
   "order": [
     "featured_product_Ncmied",
+    "image_with_text_mmKRHt",
     "image_banner_wnqPpU",
     "multirow_njRxUc"
   ]
