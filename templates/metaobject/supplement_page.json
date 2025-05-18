@@ -79,28 +79,32 @@
         "padding_bottom": 36
       }
     },
-    "rich_text_iWBVRN": {
-      "type": "rich-text",
+    "image_banner_wnqPpU": {
+      "type": "image-banner",
       "blocks": {
-        "heading_drGxbh": {
+        "heading_TBfiAV": {
           "type": "heading",
           "settings": {
-            "heading": "Ingredients",
-            "heading_size": "hxxl"
+            "heading": "{{ metaobject.ingredient_section_title.value }}",
+            "heading_size": "h1"
           }
         }
       },
       "block_order": [
-        "heading_drGxbh"
+        "heading_TBfiAV"
       ],
-      "name": "t:sections.rich-text.presets.name",
+      "name": "t:sections.image-banner.presets.name",
       "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "inverse",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
       }
     },
     "multirow_njRxUc": {
@@ -184,7 +188,7 @@
   },
   "order": [
     "featured_product_Ncmied",
-    "rich_text_iWBVRN",
+    "image_banner_wnqPpU",
     "multirow_njRxUc"
   ]
 }
