@@ -8,6 +8,79 @@
  * ------------------------------------------------------------
  */
 {
-  "sections": {},
-  "order": []
+  "sections": {
+    "featured_product_Ncmied": {
+      "type": "featured-product",
+      "blocks": {
+        "text_NP9Dej": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_FzzErY": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price_BUt8Mt": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_eYTLHe": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector_a8R9Cd": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_8FE88k": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "share_DBkEmi": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "text_NP9Dej",
+        "title_FzzErY",
+        "price_BUt8Mt",
+        "variant_picker_eYTLHe",
+        "quantity_selector_a8R9Cd",
+        "buy_buttons_8FE88k",
+        "share_DBkEmi"
+      ],
+      "name": "t:sections.featured-product.presets.name",
+      "settings": {
+        "product": "creatine-monohydrate-supplement-300g-10-58oz",
+        "color_scheme": "inverse",
+        "secondary_background": false,
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "featured_product_Ncmied"
+  ]
 }
