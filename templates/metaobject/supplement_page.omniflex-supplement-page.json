@@ -96,10 +96,9 @@
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "image": "shopify://shop_images/Glowing_Marble_Background.png",
-        "image_2": "shopify://shop_images/Zenith_Pre-Workout_Label.png",
         "image_overlay_opacity": 0,
-        "image_height": "medium",
-        "image_behavior": "none",
+        "image_height": "small",
+        "image_behavior": "fixed",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
         "show_text_box": true,
