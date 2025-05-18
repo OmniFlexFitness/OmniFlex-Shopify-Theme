@@ -65,10 +65,10 @@
       ],
       "name": "t:sections.featured-product.presets.name",
       "settings": {
-        "product": "creatine-monohydrate-supplement-300g-10-58oz",
+        "product": "zenith-pre-workout",
         "color_scheme": "inverse",
         "secondary_background": false,
-        "media_size": "medium",
+        "media_size": "large",
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "media_position": "left",
