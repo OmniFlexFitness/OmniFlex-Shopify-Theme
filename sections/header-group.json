@@ -32,19 +32,9 @@
         "padding_top": 20,
         "padding_bottom": 20
       }
-    },
-    "animated_divider_4BLeDz": {
-      "type": "animated-divider",
-      "settings": {
-        "divider_height": "20",
-        "divider_color": "#7a00ff",
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Gradient_Divider.png"
-      }
     }
   },
   "order": [
-    "header",
-    "animated_divider_4BLeDz"
+    "header"
   ]
 }
