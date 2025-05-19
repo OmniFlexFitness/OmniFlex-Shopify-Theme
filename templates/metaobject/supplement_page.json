@@ -134,6 +134,7 @@
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
+        "image": "{{ metaobject.banner_img.value }}",
         "image_overlay_opacity": 0,
         "image_height": "medium",
         "image_behavior": "none",
