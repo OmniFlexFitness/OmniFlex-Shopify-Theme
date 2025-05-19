@@ -85,7 +85,7 @@
         "heading_FCWRd3": {
           "type": "heading",
           "settings": {
-            "heading": "{{ metaobject.supplement_title.value }}",
+            "heading": "",
             "heading_size": "h1"
           }
         },
