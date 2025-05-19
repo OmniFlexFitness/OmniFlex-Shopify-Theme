@@ -85,12 +85,12 @@
         "heading_FCWRd3": {
           "type": "heading",
           "settings": {
-            "heading": "{{ metaobject.supplement_facts_title.value }}"
+            "heading": "{{ metaobject.supplement_facts_title.value }}",
+            "heading_size": "h1"
           }
         },
         "text_cqdE7F": {
           "type": "text",
-          "source": "{{ metaobject }}",
           "settings": {
             "text": "{{ metaobject.supplement_facts_desc | metafield_tag }}",
             "text_style": "body"
