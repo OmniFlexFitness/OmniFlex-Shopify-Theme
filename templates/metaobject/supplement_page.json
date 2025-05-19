@@ -65,7 +65,7 @@
       ],
       "name": "t:sections.featured-product.presets.name",
       "settings": {
-        "product": "zenith-pre-workout",
+        "product": "{{ metaobject.product.value }}",
         "color_scheme": "inverse",
         "secondary_background": false,
         "media_size": "large",
@@ -85,7 +85,7 @@
         "heading_FCWRd3": {
           "type": "heading",
           "settings": {
-            "heading": "Supplement Facts",
+            "heading": "{{ metaobject.supplement_title.value }}",
             "heading_size": "h1"
           }
         },
@@ -93,7 +93,8 @@
           "type": "text",
           "source": "{{ metaobject }}",
           "settings": {
-            "text": ""
+            "text": "",
+            "text_style": "body"
           }
         }
       },
@@ -112,8 +113,8 @@
         "desktop_content_position": "top",
         "desktop_content_alignment": "left",
         "mobile_content_alignment": "left",
-        "section_color_scheme": "",
-        "color_scheme": "",
+        "section_color_scheme": "inverse",
+        "color_scheme": "inverse",
         "padding_top": 36,
         "padding_bottom": 36
       }
