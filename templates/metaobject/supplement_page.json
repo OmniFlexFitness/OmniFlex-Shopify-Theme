@@ -104,10 +104,10 @@
       "name": "Supplement Facts",
       "settings": {
         "image": "{{ metaobject.supplement_facts_img.value }}",
-        "height": "adapt",
+        "height": "medium",
         "desktop_image_width": "medium",
         "layout": "image_first",
-        "image_behavior": "zoom-in",
+        "image_behavior": "none",
         "content_layout": "no-overlap",
         "desktop_content_position": "middle",
         "desktop_content_alignment": "left",
