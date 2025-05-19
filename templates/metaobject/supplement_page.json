@@ -105,7 +105,7 @@
       "settings": {
         "image": "{{ metaobject.supplement_facts_img.value }}",
         "height": "adapt",
-        "desktop_image_width": "small",
+        "desktop_image_width": "medium",
         "layout": "image_first",
         "image_behavior": "zoom-in",
         "content_layout": "no-overlap",
