@@ -132,16 +132,19 @@
       "block_order": [
         "heading_TBfiAV"
       ],
+      "custom_css": [
+        "div.gradient {background-image: none !important;}"
+      ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "image": "{{ metaobject.banner_img.value }}",
         "image_overlay_opacity": 0,
-        "image_height": "medium",
+        "image_height": "small",
         "image_behavior": "none",
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
         "show_text_box": true,
-        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "color_scheme": "inverse",
         "stack_images_on_mobile": true,
         "mobile_content_alignment": "center",
         "show_text_below": true
