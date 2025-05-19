@@ -68,7 +68,7 @@
         "product": "{{ metaobject.product.value }}",
         "color_scheme": "inverse",
         "secondary_background": false,
-        "media_size": "large",
+        "media_size": "medium",
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "media_position": "left",
@@ -85,15 +85,14 @@
         "heading_FCWRd3": {
           "type": "heading",
           "settings": {
-            "heading": "",
-            "heading_size": "h1"
+            "heading": "{{ metaobject.supplement_facts_title.value }}"
           }
         },
         "text_cqdE7F": {
           "type": "text",
           "source": "{{ metaobject }}",
           "settings": {
-            "text": "",
+            "text": "{{ metaobject.supplement_facts_desc | metafield_tag }}",
             "text_style": "body"
           }
         }
