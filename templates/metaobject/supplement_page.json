@@ -133,7 +133,8 @@
         "heading_TBfiAV"
       ],
       "custom_css": [
-        "div.gradient {background-image: none !important;}"
+        "div.gradient {background-image: none !important;}",
+        "h2{font-family: \"Proxima Nova\"; font-size: 12rem; font-weight: bolder;}"
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
