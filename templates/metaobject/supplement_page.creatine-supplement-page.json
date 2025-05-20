@@ -65,7 +65,7 @@
       ],
       "name": "t:sections.featured-product.presets.name",
       "settings": {
-        "product": "{{ metaobject.product.value }}",
+        "product": "creatine-monohydrate-supplement-300g-10-58oz-1",
         "color_scheme": "inverse",
         "secondary_background": false,
         "media_size": "medium",
