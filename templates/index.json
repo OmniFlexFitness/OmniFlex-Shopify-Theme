@@ -134,9 +134,9 @@
     "animated_divider_qV6AGr": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "30",
-        "divider_color": "#000000",
-        "use_image": true,
+        "divider_height": "10",
+        "divider_color": "#55a5e6",
+        "use_image": false,
         "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
     },
