@@ -12,8 +12,11 @@
     "animated_divider_QJJ4Xf": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "50",
         "divider_color": "#000000",
+        "gradient_color": "#ffffff",
+        "use_gradient": false,
+        "animate_gradient": false,
+        "gradient_speed": 5,
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
@@ -134,8 +137,12 @@
     "animated_divider_qV6AGr": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "10",
-        "divider_color": "#55a5e6",
+        "divider_height": 10,
+        "divider_color": "#b935ff",
+        "gradient_color": "#7b40d9",
+        "use_gradient": true,
+        "animate_gradient": true,
+        "gradient_speed": 8.5,
         "use_image": false,
         "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
@@ -213,8 +220,11 @@
     "animated_divider_HCAgLg": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": "10",
         "divider_color": "#d759e9",
+        "gradient_color": "#ffffff",
+        "use_gradient": false,
+        "animate_gradient": false,
+        "gradient_speed": 5,
         "use_image": false,
         "divider_image": "shopify://shop_images/Pink_Divider.png"
       }
@@ -263,8 +273,11 @@
       "type": "animated-divider",
       "custom_css": [],
       "settings": {
-        "divider_height": "100",
         "divider_color": "#000000",
+        "gradient_color": "#ffffff",
+        "use_gradient": false,
+        "animate_gradient": false,
+        "gradient_speed": 5,
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
