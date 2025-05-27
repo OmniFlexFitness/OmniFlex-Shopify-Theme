@@ -12,6 +12,7 @@
     "animated_divider_QJJ4Xf": {
       "type": "animated-divider",
       "settings": {
+        "divider_height": 50,
         "divider_color": "#000000",
         "gradient_color": "#ffffff",
         "use_gradient": false,
@@ -274,6 +275,7 @@
       "type": "animated-divider",
       "custom_css": [],
       "settings": {
+        "divider_height": 15,
         "divider_color": "#000000",
         "gradient_color": "#ffffff",
         "use_gradient": false,
