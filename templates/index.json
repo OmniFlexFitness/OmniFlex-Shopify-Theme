@@ -137,7 +137,7 @@
     "animated_divider_qV6AGr": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": 10,
+        "divider_height": 6,
         "divider_color": "#b935ff",
         "gradient_color": "#7b40d9",
         "use_gradient": true,
@@ -220,7 +220,7 @@
     "animated_divider_HCAgLg": {
       "type": "animated-divider",
       "settings": {
-        "divider_height": 10,
+        "divider_height": 6,
         "divider_color": "#59a9e9",
         "gradient_color": "#1741f1",
         "use_gradient": true,
