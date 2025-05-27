@@ -220,10 +220,11 @@
     "animated_divider_HCAgLg": {
       "type": "animated-divider",
       "settings": {
-        "divider_color": "#d759e9",
-        "gradient_color": "#ffffff",
-        "use_gradient": false,
-        "animate_gradient": false,
+        "divider_height": 10,
+        "divider_color": "#59a9e9",
+        "gradient_color": "#1741f1",
+        "use_gradient": true,
+        "animate_gradient": true,
         "gradient_speed": 5,
         "use_image": false,
         "divider_image": "shopify://shop_images/Pink_Divider.png"
