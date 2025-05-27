@@ -142,7 +142,7 @@
         "gradient_color": "#7b40d9",
         "use_gradient": true,
         "animate_gradient": true,
-        "gradient_speed": 8.5,
+        "gradient_speed": 5.1,
         "use_image": false,
         "divider_image": "shopify://shop_images/Blue_Divider.png"
       }
