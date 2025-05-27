@@ -54,6 +54,30 @@ div[id^="shopify-section-sections--24124352495913__animated_divider_"] {
   }
 }
 
+.animated-gradient {
+  background: linear-gradient(to right, var(--divider-color-1), var(--divider-color-2), var(--divider-color-1)),
+              url('https://cdn.shopify.com/s/files/1/0853/8236/5481/files/white_carbon.webp?v=1748305797');
+  background-size: 200% 200%, repeat;
+  background-blend-mode: normal, overlay;
+  opacity: 1;
+}
+
+.animated-gradient.animated {
+  animation: color-cycle var(--gradient-speed, 6s) ease-in-out infinite;
+}
+
+@keyframes color-cycle {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Ensure sections have relative positioning and proper z-index */
 .shopify-section {
   position: relative;
