@@ -48,17 +48,17 @@
           "settings": {
             "image": "shopify://shop_images/Caroline_Banner_Image.jpg",
             "image_overlay_opacity": 0,
-            "heading": "Racerback V-Neck Sports Bra",
+            "heading": "<strong>Racerback V-Neck Sports Bra</strong>",
             "heading_size": "h1",
-            "subheading": "Secure your discount by pre-ordering now!",
+            "subheading": "Get 20% OFF by pre-ordering now!",
             "button_label": "Pre-Order",
             "link": "shopify://products/racer-back-halter-neck-v-neck-sports-bra",
-            "button_style_secondary": true,
+            "button_style_secondary": false,
             "show_text_box": true,
             "box_align": "middle-center",
             "text_alignment": "center",
             "text_alignment_mobile": "center",
-            "color_scheme": "accent-1"
+            "color_scheme": "inverse"
           }
         },
         "slide_bfVabj": {
