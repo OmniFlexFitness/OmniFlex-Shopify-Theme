@@ -38,6 +38,16 @@
         "name": "list.metaobject_reference",
         "category": "REFERENCE"
       }
+    },
+    {
+      "key": "default_banner_image",
+      "namespace": "custom",
+      "name": "Default Banner Image",
+      "description": "The default image that will be displayed for banners on pages",
+      "type": {
+        "name": "file_reference",
+        "category": "REFERENCE"
+      }
     }
   ],
   "product": [
@@ -186,6 +196,36 @@
       "namespace": "shopify",
       "name": "Material",
       "description": "Defines a product's primary material, such as cotton or wool",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "outerwear-clothing-features",
+      "namespace": "shopify",
+      "name": "Outerwear clothing features",
+      "description": "Identifies special characteristics of outerwear, like insulated or waterproof",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "application-method",
+      "namespace": "shopify",
+      "name": "Application method",
+      "description": "Defines how a product is applied or used, e.g. gel, liquid, spray",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "flavor",
+      "namespace": "shopify",
+      "name": "Flavor",
+      "description": "Specifies the taste or flavor of a product, e.g. vanilla, mint",
       "type": {
         "name": "list.metaobject_reference",
         "category": "REFERENCE"

@@ -132,13 +132,13 @@
       "main-password-header": {
         "type": "main-password-header",
         "settings": {
-          "color_scheme": "background-1"
+          "color_scheme": "scheme-1"
         }
       },
       "main-password-footer": {
         "type": "main-password-footer",
         "settings": {
-          "color_scheme": "background-1"
+          "color_scheme": "scheme-1"
         }
       }
     },
@@ -156,7 +156,7 @@
       }
     },
     "color_schemes": {
-      "background-1": {
+      "scheme-1": {
         "settings": {
           "background": "#ffffff",
           "background_gradient": "",
