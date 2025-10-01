@@ -1,0 +1,392 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "rich_text_about_header": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "OmniFlex Fitness — Defy Limits. Build Strength. Own Your Story.",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Founded in 2024 by software engineer and creator Bertin Kenol, OmniFlex bridges science and strength to deliver tools, activewear, and education that empower the modern woman to train with confidence.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_about_mission": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Mission",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We exist to make evidence-based training accessible, stylish, and sustainable—so you can transform with clarity, not confusion. We combine research-driven education with performance design and habit-centric coaching to help you progress for life.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "multicolumn_about_offer": {
+      "type": "multicolumn",
+      "blocks": {
+        "column1": {
+          "type": "column",
+          "settings": {
+            "title": "Activewear",
+            "text": "<p>Performance Meets Aesthetics<br\/>- Aerolite Belted Sports Bra: engineered support with breathable, cool-touch fabric.<br\/>- Arched Waist Mini Sports Skirt: mobility-first design with a flattering, secure fit.<br\/>- Advanced textiles to keep you cool, dry, and confident under pressure.<\/p>"
+          }
+        },
+        "column2": {
+          "type": "column",
+          "settings": {
+            "title": "Education",
+            "text": "<p>Science You Can Use<br\/>- Evidence-based content on strength, hypertrophy, nutrition, and recovery.<br\/>- Actionable frameworks: rep ranges, progression models, and habit systems.<br\/>- Video demos and breakdowns designed for clarity and confidence in the gym.<\/p>"
+          }
+        },
+        "column3": {
+          "type": "column",
+          "settings": {
+            "title": "Coaching & Tools",
+            "text": "<p>Habit-Centric Progress<br\/>- Personal training and programs tailored to women building physique and strength.<br\/>- Nutrition guidance for performance, recovery, and sustainable body recomposition.<br\/>- Software-led experiences on the horizon to enhance training and community.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "column1",
+        "column2",
+        "column3"
+      ],
+      "settings": {
+        "title": "What We Offer",
+        "heading_size": "h1",
+        "image_width": "full",
+        "image_ratio": "adapt",
+        "columns_desktop": 3,
+        "column_alignment": "center",
+        "background_style": "primary",
+        "button_label": "",
+        "button_link": "",
+        "color_scheme": "background-1",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "rich_text_about_philosophy": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Philosophy",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Principles We Train By<br\/>- Consistency beats perfection—habits create outcomes.<br\/>- Progressive overload drives adaptions—measured, not random.<br\/>- Form, intent, and recovery matter as much as intensity.<br\/>- Data and intuition co-exist—listen to your body, track your wins.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_about_women_lift": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "For Women Who Lift",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Whether you’re building glutes, sculpting your physique, or establishing a training rhythm, we create pathways that respect female physiology and real-life demands—so progress fits your life, not the other way around.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_about_community": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Community & Movement",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>OmniFlex is more than a brand—it’s a community of lifters who choose courage over comfort. Join the conversation, learn with us, and share your milestones. Every drop of sweat is a step toward greatness.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "about_founder_section": {
+      "type": "about-founder",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Meet the Founder",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<h3>Bertin Kenol<\/h3><p>Bertin is a New York University–educated Software Engineer and creator who founded OmniFlex in 2024 to bridge the gap between rigorous science and real-world strength training. A lifelong learner with a passion for physical fitness, music composition, travel, and visual storytelling, he brings a unique blend of technical precision and creative energy to every product and program.<\/p><p>His focus: turning research-backed principles into simple, repeatable systems that help women lift with confidence, build resilient habits, and enjoy the process. When he’s not refining training frameworks or exploring supplement science, you’ll find him experimenting with video—slow-motion, frame rates, and form analysis—to make movement more understandable and empowering.<\/p>"
+          }
+        },
+        "socials": {
+          "type": "socials",
+          "settings": {
+            "linkedin_url": "https:\/\/linkedin.com\/in\/bertinkenol",
+            "github_url": "https:\/\/github.com\/bkenol",
+            "instagram_url": "https:\/\/instagram.com\/omniflexfitness"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text",
+        "socials"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/founder-placeholder.svg",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "color_scheme": "background-1"
+      }
+    },
+    "rich_text_about_how_we_work": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "How We Work",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<h4>Evidence → Execution<\/h4><p>We translate research into practical playbooks—clear rep ranges, load progressions, exercise selection, and recovery guidelines.<\/p><h4>Design for Performance<\/h4><p>Products are stress-tested for comfort, temperature regulation, and freedom of movement—so form and focus stay sharp.<\/p><h4>Habit Systems<\/h4><p>We prioritize routines you can repeat: session templates, weekly structures, and small wins that compound.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_about_whats_next": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "What’s Next",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We’re building software that elevates the training experience—from smarter progress tracking to community-driven support. We’re also exploring a fitness-first social and dating layer to connect people who value wellness, strength, and growth.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_about_join_movement": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Join the Movement",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ready to push boundaries and rewrite your limits? Follow @OmniFlexFitness, explore our activewear, and dive into our educational content. Let’s conquer the world of fitness—together.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "contact_form_about": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Contact Us",
+        "heading_size": "h1",
+        "color_scheme": "background-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "rich_text_about_credits": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Details & Credits",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Founded: 2024 · HQ: United States · Focus: Activewear, Education, Supplements, Coaching, Software Tools<\/p><p>For press and partnerships, please use the contact form above.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "background-1",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_about_header",
+    "rich_text_about_mission",
+    "multicolumn_about_offer",
+    "rich_text_about_philosophy",
+    "rich_text_about_women_lift",
+    "rich_text_about_community",
+    "about_founder_section",
+    "rich_text_about_how_we_work",
+    "rich_text_about_whats_next",
+    "rich_text_about_join_movement",
+    "contact_form_about",
+    "rich_text_about_credits"
+  ]
+}
