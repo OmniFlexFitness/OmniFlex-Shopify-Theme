@@ -26,14 +26,14 @@
         "heading_xmDBDi": {
           "type": "heading",
           "settings": {
-            "heading": "Zenith V1",
+            "heading": "Zenith",
             "heading_size": "h1"
           }
         },
         "text_GhLDmW": {
           "type": "text",
           "settings": {
-            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "text": "<p>Elevate Your Store's Offerings with Zenith - Triggering a Health Revolution!</p>",
             "text_style": "body"
           }
         },
@@ -52,7 +52,7 @@
         "button_cTXmte"
       ],
       "settings": {
-        "image": "shopify://shop_images/Supplement_Facts_Square_Label_Designed_811406f0-3e37-482d-9b4b-7b1716fb523b.png",
+        "image": "shopify://shop_images/Zenith_Bottle_Label_Label_Canvas.png",
         "height": "adapt",
         "desktop_image_width": "medium",
         "layout": "image_first",
