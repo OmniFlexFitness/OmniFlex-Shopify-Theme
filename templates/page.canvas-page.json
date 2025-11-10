@@ -13,7 +13,8 @@
       "type": "main-page",
       "custom_css": [
         "h1 {color: white !important;}",
-        ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}"
+        ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}",
+        ".page-width--narrow {padding: 0 !important; max-width: 100%;}"
       ],
       "settings": {
         "padding_top": 28,
