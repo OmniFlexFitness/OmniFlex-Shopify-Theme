@@ -20,53 +20,6 @@
         "padding_bottom": 28
       }
     },
-    "image_with_text_yWEpWC": {
-      "type": "image-with-text",
-      "blocks": {
-        "heading_xmDBDi": {
-          "type": "heading",
-          "settings": {
-            "heading": "Zenith",
-            "heading_size": "h1"
-          }
-        },
-        "text_GhLDmW": {
-          "type": "text",
-          "settings": {
-            "text": "<p>Elevate Your Store's Offerings with Zenith - Triggering a Health Revolution!</p>",
-            "text_style": "body"
-          }
-        },
-        "button_cTXmte": {
-          "type": "button",
-          "settings": {
-            "button_label": "Pre-order",
-            "button_link": "",
-            "button_style_secondary": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_xmDBDi",
-        "text_GhLDmW",
-        "button_cTXmte"
-      ],
-      "settings": {
-        "image": "shopify://shop_images/Zenith_Bottle_Label_Label_Canvas.png",
-        "height": "adapt",
-        "desktop_image_width": "medium",
-        "layout": "image_first",
-        "image_behavior": "none",
-        "content_layout": "no-overlap",
-        "desktop_content_position": "middle",
-        "desktop_content_alignment": "left",
-        "mobile_content_alignment": "left",
-        "section_color_scheme": "inverse",
-        "color_scheme": "inverse",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "custom_liquid_iMHAEr": {
       "type": "custom-liquid",
       "settings": {
@@ -79,7 +32,6 @@
   },
   "order": [
     "main",
-    "image_with_text_yWEpWC",
     "custom_liquid_iMHAEr"
   ]
 }
