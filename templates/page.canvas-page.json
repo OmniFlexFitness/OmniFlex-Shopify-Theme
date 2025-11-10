@@ -1,0 +1,85 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "custom_css": [
+        "h1 {color: white !important;}",
+        ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}"
+      ],
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "image_with_text_yWEpWC": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_xmDBDi": {
+          "type": "heading",
+          "settings": {
+            "heading": "Zenith",
+            "heading_size": "h1"
+          }
+        },
+        "text_GhLDmW": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Elevate Your Store's Offerings with Zenith - Triggering a Health Revolution!</p>",
+            "text_style": "body"
+          }
+        },
+        "button_cTXmte": {
+          "type": "button",
+          "settings": {
+            "button_label": "Pre-order",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_xmDBDi",
+        "text_GhLDmW",
+        "button_cTXmte"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/Zenith_Bottle_Label_Label_Canvas.png",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "image_behavior": "none",
+        "content_layout": "no-overlap",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "left",
+        "mobile_content_alignment": "left",
+        "section_color_scheme": "inverse",
+        "color_scheme": "inverse",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "custom_liquid_iMHAEr": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "",
+        "color_scheme": "inverse",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "main",
+    "image_with_text_yWEpWC",
+    "custom_liquid_iMHAEr"
+  ]
+}
