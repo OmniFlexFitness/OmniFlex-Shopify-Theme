@@ -85,128 +85,19 @@
     "multirow_kVTWME": {
       "type": "multirow",
       "blocks": {
-        "row_6ky6pG": {
+        "row_4kU6yh": {
           "type": "row",
           "settings": {
-            "image": "shopify://shop_images/coffee-beans-from-above.jpg",
-            "caption": "250 mg",
-            "heading": "Caffeine Anhydrous",
-            "text": "<p>Caffeine Anhydrous is a powerful stimulant that enhances alertness and reduces the perception of effort during exercise, making it easier to sustain intense workouts [1]. By stimulating the central nervous system, caffeine can significantly improve endurance and performance across a variety of exercise modalities. The inclusion of 250mg in Zenith ensures a potent boost in energy levels and focus, aiding athletes in achieving peak performance.</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_g7aTdt": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/metal-strainer-with-loose-tea-next-to-a-tea-towel.jpg",
-            "caption": "200 mg",
-            "heading": "L-Theanine",
-            "text": "<p>L-Theanine, in synergy with caffeine, offers a unique advantage by promoting relaxation without drowsiness, improving focus, and mental clarity [5]. This ingredient can help mitigate the jittery effects of caffeine, ensuring a balanced and focused energy boost conducive to high-performance workouts.</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_BpfnXQ": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/FHodgCJITn.png",
-            "caption": "2.4 g",
-            "heading": "Alpha-GPC 50%",
-            "text": "<p>Alpha-GPC increases the production of acetylcholine, a vital neurotransmitter for brain-to-muscle signaling. This enhancement in cognitive function and muscle coordination can lead to significant improvements in power output and overall athletic performance, making Alpha-GPC a critical ingredient in Zenith [8].</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_YhH7DC": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/sfufzUphAZ.png",
-            "caption": "6 g",
-            "heading": "L-Citrulline",
-            "text": "<p>L-Citrulline, when dosed at 6000mg, plays a pivotal role in the body's conversion processes, transforming into L-arginine. This transformation is crucial for the increased synthesis of nitric oxide (NO), a compound that significantly enhances vasodilation and blood flow to the muscles. The result of this enhanced blood flow is improved oxygen delivery to muscle tissues, which effectively reduces fatigue during workouts. This makes L-Citrulline a valuable supplement for those looking to improve their endurance and performance during exercise.</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_CMWB6U": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/QunBcmmjRO.png",
-            "caption": "2 g",
-            "heading": "Malic Acid",
-            "text": "<p>Malic Acid, when used in conjunction with L-Citrulline, as seen in the formulation of Citrulline Malate, significantly boosts the efficacy of L-Citrulline. This synergistic effect promotes aerobic energy production within exercising muscles more effectively. The presence of Malic Acid in this combination supports not only improved endurance and strength during physical activities but also plays a crucial role in the quicker recovery post-exercise. It achieves this by facilitating the removal of ammonia and lactate from the bloodstream, which are by-products of intense physical activity that can contribute to fatigue and slower recovery times.</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_JEEfRC": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/mvSWNIVtaI.png",
-            "caption": "5 g",
-            "heading": "L-Tyrosine",
-            "text": "<p>L-Tyrosine is a precursor to neurotransmitters such as dopamine and norepinephrine, which play key roles in alertness and focus. At a dosage of 5g, it helps maintain cognitive function under stress and enhances mental focus during demanding workouts, contributing to overall better performance and endurance [4].</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_8fXiXY": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/YSdxdlZCWz.png",
-            "caption": "1 g",
-            "heading": "Acetyl L-Carnitine HCL (ALCAR)",
-            "text": "<p>ALCAR facilitates the transport of fatty acids into mitochondria, enhancing fat metabolism and energy production. This process is crucial for endurance athletes who rely on efficient fat utilization for long-duration events. At 1000 mg, it supports improved endurance and reduces exercise-induced muscle damage, making it a valuable component of Zenith [6].</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_XaFh9k": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/kjgnaVlLTd.png",
-            "caption": "2.5 g",
-            "heading": "Betaine Anhydrous",
-            "text": "<p>Betaine Anhydrous acts as a methyl donor in key physiological processes, including the conversion of homocysteine to methionine, which is essential for muscle repair and growth. Research suggests that betaine supplementation can enhance muscle strength, power, and endurance, contributing to better performance and recovery [7].</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_XqkYih": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/flavored-salt-spills-from-jar.jpg",
-            "caption": "200 mg",
-            "heading": "Potassium Citrate",
-            "text": "<p>Potassium Citrate, at a dose of 200mg, is a key electrolyte that plays a critical role in muscle contractions and maintaining the body's fluid balance. This mineral is essential for helping to prevent dehydration and muscle cramps, which can significantly impact an athlete's performance. By ensuring a proper balance of potassium, athletes can maintain optimal function during their activities, especially in scenarios that demand high endurance or involve long-duration workouts. The presence of potassium citrate in a supplement can thus be crucial for athletes looking to sustain their performance levels without interruptions caused by muscle cramps or dehydration.</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_LLcyUg": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/CwDBEJgDra.png",
-            "caption": "400 mg",
-            "heading": "Sodium Chloride",
-            "text": "<p>Sodium Chloride, dosed at 400mg, is another vital electrolyte that contributes significantly to the maintenance of fluid balance and supports muscle contractions. Its role in preventing dehydration is paramount, especially during intense physical activities where sweat loss can lead to a significant reduction in sodium levels. By replenishing sodium chloride, athletes can ensure that they maintain the proper electrolyte balance necessary for peak performance and endurance during long or high-intensity workouts. This makes sodium chloride an essential component for athletes aiming to perform at their best without the risk of dehydration or muscle cramps interrupting their activities.</p>",
-            "button_label": "",
+            "caption": "Caption",
+            "heading": "Row",
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "button_label": "Button label",
             "button_link": ""
           }
         }
       },
       "block_order": [
-        "row_6ky6pG",
-        "row_g7aTdt",
-        "row_BpfnXQ",
-        "row_YhH7DC",
-        "row_CMWB6U",
-        "row_JEEfRC",
-        "row_8fXiXY",
-        "row_XaFh9k",
-        "row_XqkYih",
-        "row_LLcyUg"
+        "row_4kU6yh"
       ],
       "settings": {
         "image_height": "medium",
