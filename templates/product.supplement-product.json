@@ -91,9 +91,10 @@
           "settings": {
             "image": "{{ block.repeater.image.value }}",
             "caption": "{{ block.repeater.button_label.value }}",
-            "heading": "{{ block.repeater.dose.value }}",
+            "heading": "{{ block.repeater.title.value }}",
             "text": "{{ block.repeater.description | metafield_tag }}",
-            "button_label": "{{ block.repeater.title.value }}"
+            "button_label": "",
+            "button_link": ""
           }
         }
       },
