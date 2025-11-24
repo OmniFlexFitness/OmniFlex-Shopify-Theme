@@ -92,7 +92,7 @@
             "image": "{{ block.repeater.image.value }}",
             "caption": "{{ block.repeater.dose.value }}",
             "heading": "{{ block.repeater.title.value }}",
-            "text": "{{ block.repeater.description | metafield_tag }}",
+            "text": "<p>{{ block.repeater.description | metafield_tag }}</p>",
             "button_label": "",
             "button_link": ""
           }
@@ -102,7 +102,7 @@
         "row_4kU6yh"
       ],
       "settings": {
-        "image_height": "medium",
+        "image_height": "large",
         "desktop_image_width": "medium",
         "image_layout": "alternate-left",
         "heading_size": "h1",
