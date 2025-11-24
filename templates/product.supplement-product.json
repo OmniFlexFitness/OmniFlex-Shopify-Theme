@@ -90,7 +90,7 @@
           "repeater": "{{ product.metafields.custom.zenith_ingredients.value }}",
           "settings": {
             "image": "{{ block.repeater.image.value }}",
-            "caption": "{{ block.repeater.button_label.value }}",
+            "caption": "{{ block.repeater.dose.value }}",
             "heading": "{{ block.repeater.title.value }}",
             "text": "{{ block.repeater.description | metafield_tag }}",
             "button_label": "",
