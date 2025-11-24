@@ -102,7 +102,7 @@
         "row_4kU6yh"
       ],
       "settings": {
-        "image_height": "medium",
+        "image_height": "adapt",
         "desktop_image_width": "medium",
         "image_layout": "alternate-left",
         "heading_size": "h1",
