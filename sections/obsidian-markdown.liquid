@@ -12,14 +12,20 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="page-width section-{{ section.id }}-padding">
-    {% render 'obsidian-markdown-renderer',
-      markdown_content: section.settings.markdown_content,
-      enable_obsidian_style: section.settings.enable_obsidian_style
-    %}
+{%- liquid
+  assign markdown_content = section.settings.markdown_content | to_string | strip
+-%}
+
+{%- if markdown_content != blank -%}
+  <div class="isolate color-{{ section.settings.color_scheme }} gradient">
+    <div class="page-width section-{{ section.id }}-padding" {{ section.shopify_attributes }}>
+      {% render 'obsidian-markdown-renderer',
+        markdown_content: markdown_content,
+        enable_obsidian_style: section.settings.enable_obsidian_style
+      %}
+    </div>
   </div>
-</div>
+{%- endif -%}
 
 {% schema %}
 {

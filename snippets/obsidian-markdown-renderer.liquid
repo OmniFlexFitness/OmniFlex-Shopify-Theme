@@ -12,7 +12,7 @@
     {{ 'obsidian-markdown.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
-  <div class="obsidian-markdown{% if enable_styles %} obsidian-markdown--enabled{% endif %}">
+  <div class="obsidian-markdown rte{% if enable_styles %} obsidian-markdown--enabled{% endif %}">
     {{ content | markdownify }}
   </div>
 {%- endif -%}
