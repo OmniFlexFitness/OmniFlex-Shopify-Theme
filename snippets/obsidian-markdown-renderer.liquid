@@ -1,0 +1,18 @@
+{%- comment -%}
+  Renders markdown content using Shopify's markdown filter and optionally applies
+  Obsidian-inspired styling.
+{%- endcomment -%}
+{%- liquid
+  assign content = markdown_content | to_string | strip
+  assign enable_styles = enable_obsidian_style | default: false
+-%}
+
+{%- if content != blank -%}
+  {%- if enable_styles -%}
+    {{ 'obsidian-markdown.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
+
+  <div class="obsidian-markdown{% if enable_styles %} obsidian-markdown--enabled{% endif %}">
+    {{ content | markdownify }}
+  </div>
+{%- endif -%}

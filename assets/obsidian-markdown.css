@@ -1,0 +1,123 @@
+/* Obsidian-inspired markdown styling */
+.obsidian-markdown--enabled {
+  --obsidian-bg: #1e1e2a;
+  --obsidian-surface: #2a2a3c;
+  --obsidian-border: #3b3b52;
+  --obsidian-accent: #7f9cf5;
+  --obsidian-text: #e4e8f0;
+  --obsidian-muted: #a0a8c3;
+  color: var(--obsidian-text);
+}
+
+.obsidian-markdown--enabled a {
+  color: var(--obsidian-accent);
+  text-decoration: none;
+}
+
+.obsidian-markdown--enabled a:hover {
+  text-decoration: underline;
+}
+
+.obsidian-markdown--enabled p,
+.obsidian-markdown--enabled ul,
+.obsidian-markdown--enabled ol {
+  margin: 0 0 1.2em;
+  line-height: 1.7;
+  color: var(--obsidian-text);
+}
+
+.obsidian-markdown--enabled h1,
+.obsidian-markdown--enabled h2,
+.obsidian-markdown--enabled h3,
+.obsidian-markdown--enabled h4,
+.obsidian-markdown--enabled h5,
+.obsidian-markdown--enabled h6 {
+  color: var(--obsidian-text);
+  margin: 1.2em 0 0.5em;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.obsidian-markdown--enabled h1 { font-size: 2.25rem; }
+.obsidian-markdown--enabled h2 { font-size: 1.9rem; }
+.obsidian-markdown--enabled h3 { font-size: 1.6rem; }
+.obsidian-markdown--enabled h4 { font-size: 1.35rem; }
+.obsidian-markdown--enabled h5 { font-size: 1.1rem; }
+.obsidian-markdown--enabled h6 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.obsidian-markdown--enabled blockquote {
+  margin: 0 0 1.4em;
+  padding: 0.8em 1.2em;
+  border-left: 3px solid var(--obsidian-accent);
+  background: var(--obsidian-surface);
+  color: var(--obsidian-muted);
+  font-style: italic;
+}
+
+.obsidian-markdown--enabled code {
+  background: var(--obsidian-surface);
+  color: var(--obsidian-accent);
+  padding: 0.1em 0.3em;
+  border-radius: 6px;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95em;
+}
+
+.obsidian-markdown--enabled pre {
+  background: var(--obsidian-surface);
+  color: var(--obsidian-text);
+  border: 1px solid var(--obsidian-border);
+  border-radius: 12px;
+  padding: 1em;
+  overflow: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.obsidian-markdown--enabled pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.obsidian-markdown--enabled hr {
+  border: 0;
+  border-top: 1px solid var(--obsidian-border);
+  margin: 2em 0;
+}
+
+.obsidian-markdown--enabled ul,
+.obsidian-markdown--enabled ol {
+  padding-left: 1.3em;
+}
+
+.obsidian-markdown--enabled ul li::marker,
+.obsidian-markdown--enabled ol li::marker {
+  color: var(--obsidian-accent);
+}
+
+.obsidian-markdown--enabled table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2em 0;
+  color: var(--obsidian-text);
+}
+
+.obsidian-markdown--enabled table th,
+.obsidian-markdown--enabled table td {
+  border: 1px solid var(--obsidian-border);
+  padding: 0.75em;
+  background: rgba(42, 42, 60, 0.5);
+}
+
+.obsidian-markdown--enabled table th {
+  text-align: left;
+  background: rgba(42, 42, 60, 0.8);
+}
+
+.obsidian-markdown--enabled .task-list-item {
+  list-style: none;
+}
+
+.obsidian-markdown--enabled .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
