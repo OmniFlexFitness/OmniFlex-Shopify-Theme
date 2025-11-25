@@ -1,95 +1,120 @@
 .multirow--obsidian .image-with-text__heading {
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  color: #d2c5ff;
+  color: #d6b9ff;
   letter-spacing: -0.01em;
-  text-shadow: 0 0 10px rgba(185, 150, 255, 0.22);
+  text-shadow: 0 0 18px rgba(162, 116, 255, 0.4), 0 0 36px rgba(88, 172, 255, 0.18);
 }
 
 .multirow--obsidian .image-with-text__text {
-  color: #b2bed0;
+  color: #c9d6ff;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.7;
+  text-shadow: 0 0 10px rgba(94, 138, 255, 0.15);
 }
 
 .multirow--obsidian .image-with-text__text--caption {
   font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  color: #5aa9e6;
+  color: #72d5ff;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.78rem;
+  text-shadow: 0 0 10px rgba(114, 213, 255, 0.35);
 }
 
 .multirow--obsidian .rte a {
-  color: #5aa9e6;
+  color: #7ec7ff;
   text-decoration: none;
-  border-bottom: 1px solid rgba(90, 169, 230, 0.35);
-  transition: color 150ms ease, border-color 150ms ease;
+  border-bottom: 1px solid rgba(126, 199, 255, 0.35);
+  transition: color 150ms ease, border-color 150ms ease, text-shadow 150ms ease;
+  text-shadow: 0 0 8px rgba(126, 199, 255, 0.35);
 }
 
 .multirow--obsidian .rte a:hover {
-  color: #7ac7ff;
-  border-color: rgba(122, 199, 255, 0.6);
+  color: #b9b0ff;
+  border-color: rgba(185, 176, 255, 0.65);
+  text-shadow: 0 0 14px rgba(185, 176, 255, 0.65);
 }
 
 .multirow--obsidian .rte strong,
 .multirow--obsidian .rte b {
-  color: #f7e274;
+  color: #91ffda;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(247, 226, 116, 0.35);
+  text-shadow: 0 0 10px rgba(145, 255, 218, 0.45);
 }
 
 .multirow--obsidian .rte em,
 .multirow--obsidian .rte i {
-  color: #d9f3ff;
+  color: #f2e6ff;
   font-style: italic;
+  text-shadow: 0 0 12px rgba(211, 180, 255, 0.35);
 }
 
 .multirow--obsidian .rte u,
 .multirow--obsidian .rte ins {
   text-decoration: underline;
-  text-decoration-color: rgba(122, 199, 255, 0.6);
+  text-decoration-color: rgba(151, 204, 255, 0.75);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
-  color: #c7d6f1;
+  color: #d6e4ff;
+  text-shadow: 0 0 12px rgba(151, 204, 255, 0.5);
 }
 
 .multirow--obsidian .rte mark,
 .multirow--obsidian .rte .highlight {
-  background: rgba(247, 226, 116, 0.18);
-  color: #f7e274;
+  background: radial-gradient(circle, rgba(115, 255, 223, 0.28) 0%, rgba(66, 130, 255, 0.18) 100%);
+  color: #91ffda;
   padding: 0.05em 0.18em;
   border-radius: 4px;
-  box-shadow: 0 0 14px rgba(247, 226, 116, 0.25);
+  box-shadow: 0 0 18px rgba(115, 255, 223, 0.35), 0 0 22px rgba(109, 152, 255, 0.25);
+}
+
+.multirow--obsidian .rte sup,
+.multirow--obsidian .rte sub {
+  color: #9ed8ff;
+  font-size: 0.8em;
+  text-shadow: 0 0 10px rgba(158, 216, 255, 0.4);
+}
+
+.multirow--obsidian .rte sup {
+  vertical-align: super;
+}
+
+.multirow--obsidian .rte sub {
+  vertical-align: sub;
 }
 
 .multirow--obsidian .rte ul,
 .multirow--obsidian .rte ol {
-  color: #b2bed0;
+  color: #c9d6ff;
 }
 
 .multirow--obsidian .rte li::marker {
-  color: rgba(90, 169, 230, 0.8);
+  color: rgba(185, 176, 255, 0.85);
+  text-shadow: 0 0 10px rgba(185, 176, 255, 0.4);
 }
 
 .multirow--obsidian .button {
-  background: rgba(90, 169, 230, 0.16);
-  color: #e8ecf2;
-  border: 1px solid rgba(90, 169, 230, 0.4);
+  background: linear-gradient(135deg, rgba(126, 199, 255, 0.16), rgba(185, 176, 255, 0.14));
+  color: #f2f5ff;
+  border: 1px solid rgba(126, 199, 255, 0.45);
   border-radius: 12px;
   padding: 12px 18px;
   font-weight: 600;
   letter-spacing: 0.01em;
   text-transform: none;
-  transition: background 150ms ease, border-color 150ms ease, transform 120ms ease;
+  transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+  box-shadow: 0 10px 30px rgba(26, 31, 58, 0.5), 0 0 18px rgba(126, 199, 255, 0.35);
 }
 
 .multirow--obsidian .button:hover {
-  background: rgba(122, 199, 255, 0.25);
-  border-color: rgba(122, 199, 255, 0.55);
+  background: linear-gradient(135deg, rgba(185, 176, 255, 0.24), rgba(126, 199, 255, 0.24));
+  border-color: rgba(185, 176, 255, 0.65);
   transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(26, 31, 58, 0.55), 0 0 22px rgba(145, 255, 218, 0.35);
 }
 
 .multirow--obsidian .button:focus-visible {
-  outline: 2px solid rgba(122, 199, 255, 0.7);
+  outline: 2px solid rgba(145, 255, 218, 0.85);
   outline-offset: 2px;
+  box-shadow: 0 0 18px rgba(145, 255, 218, 0.4);
 }
