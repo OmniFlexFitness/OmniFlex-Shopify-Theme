@@ -1,12 +1,14 @@
 .multirow--obsidian .image-with-text__heading {
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  color: #e8ecf2;
+  color: #d2c5ff;
   letter-spacing: -0.01em;
+  text-shadow: 0 0 10px rgba(185, 150, 255, 0.22);
 }
 
 .multirow--obsidian .image-with-text__text {
-  color: #8d96a3;
+  color: #b2bed0;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.7;
 }
 
 .multirow--obsidian .image-with-text__text--caption {
@@ -27,6 +29,46 @@
 .multirow--obsidian .rte a:hover {
   color: #7ac7ff;
   border-color: rgba(122, 199, 255, 0.6);
+}
+
+.multirow--obsidian .rte strong,
+.multirow--obsidian .rte b {
+  color: #f7e274;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(247, 226, 116, 0.35);
+}
+
+.multirow--obsidian .rte em,
+.multirow--obsidian .rte i {
+  color: #d9f3ff;
+  font-style: italic;
+}
+
+.multirow--obsidian .rte u,
+.multirow--obsidian .rte ins {
+  text-decoration: underline;
+  text-decoration-color: rgba(122, 199, 255, 0.6);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  color: #c7d6f1;
+}
+
+.multirow--obsidian .rte mark,
+.multirow--obsidian .rte .highlight {
+  background: rgba(247, 226, 116, 0.18);
+  color: #f7e274;
+  padding: 0.05em 0.18em;
+  border-radius: 4px;
+  box-shadow: 0 0 14px rgba(247, 226, 116, 0.25);
+}
+
+.multirow--obsidian .rte ul,
+.multirow--obsidian .rte ol {
+  color: #b2bed0;
+}
+
+.multirow--obsidian .rte li::marker {
+  color: rgba(90, 169, 230, 0.8);
 }
 
 .multirow--obsidian .button {
