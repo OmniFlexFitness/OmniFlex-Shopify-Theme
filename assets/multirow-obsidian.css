@@ -37,9 +37,9 @@
 
 .multirow--obsidian .rte strong,
 .multirow--obsidian .rte b {
-  color: #91ffda;
+  color: #7ed0ff;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(145, 255, 218, 0.45);
+  text-shadow: 0 0 12px rgba(126, 199, 255, 0.55), 0 0 18px rgba(185, 176, 255, 0.35);
 }
 
 .multirow--obsidian .rte em,
@@ -61,18 +61,18 @@
 
 .multirow--obsidian .rte mark,
 .multirow--obsidian .rte .highlight {
-  background: radial-gradient(circle, rgba(115, 255, 223, 0.28) 0%, rgba(66, 130, 255, 0.18) 100%);
-  color: #91ffda;
+  background: radial-gradient(circle, rgba(126, 199, 255, 0.32) 0%, rgba(185, 176, 255, 0.26) 70%, rgba(145, 255, 218, 0.14) 100%);
+  color: #e6f0ff;
   padding: 0.05em 0.18em;
   border-radius: 4px;
-  box-shadow: 0 0 18px rgba(115, 255, 223, 0.35), 0 0 22px rgba(109, 152, 255, 0.25);
+  box-shadow: 0 0 18px rgba(126, 199, 255, 0.45), 0 0 24px rgba(185, 176, 255, 0.32), 0 0 26px rgba(145, 255, 218, 0.18);
 }
 
 .multirow--obsidian .rte sup,
 .multirow--obsidian .rte sub {
-  color: #9ed8ff;
+  color: #8ac5ff;
   font-size: 0.8em;
-  text-shadow: 0 0 10px rgba(158, 216, 255, 0.4);
+  text-shadow: 0 0 12px rgba(138, 197, 255, 0.45);
 }
 
 .multirow--obsidian .rte sup {
@@ -103,18 +103,18 @@
   letter-spacing: 0.01em;
   text-transform: none;
   transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
-  box-shadow: 0 10px 30px rgba(26, 31, 58, 0.5), 0 0 18px rgba(126, 199, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(26, 31, 58, 0.5), 0 0 18px rgba(126, 199, 255, 0.45), 0 0 20px rgba(185, 176, 255, 0.28);
 }
 
 .multirow--obsidian .button:hover {
   background: linear-gradient(135deg, rgba(185, 176, 255, 0.24), rgba(126, 199, 255, 0.24));
   border-color: rgba(185, 176, 255, 0.65);
   transform: translateY(-1px);
-  box-shadow: 0 14px 34px rgba(26, 31, 58, 0.55), 0 0 22px rgba(145, 255, 218, 0.35);
+  box-shadow: 0 14px 34px rgba(26, 31, 58, 0.55), 0 0 24px rgba(126, 199, 255, 0.55), 0 0 26px rgba(185, 176, 255, 0.32);
 }
 
 .multirow--obsidian .button:focus-visible {
-  outline: 2px solid rgba(145, 255, 218, 0.85);
+  outline: 2px solid rgba(126, 199, 255, 0.85);
   outline-offset: 2px;
-  box-shadow: 0 0 18px rgba(145, 255, 218, 0.4);
+  box-shadow: 0 0 18px rgba(126, 199, 255, 0.6), 0 0 22px rgba(185, 176, 255, 0.32);
 }
