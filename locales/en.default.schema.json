@@ -3405,6 +3405,22 @@
       "presets": {
         "name": "Collapsible content"
       }
+    },
+    "obsidian_markdown": {
+      "name": "Obsidian markdown",
+      "settings": {
+        "markdown_content": {
+          "label": "Markdown content",
+          "default": "## Obsidian note\nCapture ideas with **Markdown** headings, lists, and code fences.\n\n- Bullet lists\n- [Links](https://example.com)\n\n```javascript\nconsole.log('Hello, Obsidian');\n```"
+        },
+        "enable_obsidian_style": {
+          "label": "Enable Obsidian styling",
+          "info": "Toggle Obsidian-inspired typography, code blocks, and blockquotes."
+        }
+      },
+      "presets": {
+        "name": "Obsidian markdown"
+      }
     }
   }
 }
