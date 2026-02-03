@@ -15,7 +15,7 @@
         "h1 {color: white !important;}",
         ".rte scroll-trigger animate--slide-in scroll-trigger--design-mode {color: white !important;}",
         ".page-width--narrow {padding: 0 !important; max-width: 100%;}",
-        ".wrap {padding: 0!important; margin: 0!important;}"
+        ".wrap {padding: 0; margin: 0; max-width: 100%;}"
       ],
       "settings": {
         "padding_top": 28,
