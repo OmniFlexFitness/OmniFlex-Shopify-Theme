@@ -65,7 +65,7 @@
       ],
       "name": "t:sections.featured-product.presets.name",
       "settings": {
-        "product": "zenith-pre-workout",
+        "product": "zenith",
         "color_scheme": "inverse",
         "secondary_background": false,
         "media_size": "large",
