@@ -19,7 +19,7 @@
         "use_gradient": false,
         "animate_gradient": false,
         "gradient_speed": 5,
-        "use_image": true,
+        "use_image": false,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
