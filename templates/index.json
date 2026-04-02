@@ -32,7 +32,7 @@
             "image": "shopify://shop_images/Banner_Image_1.png",
             "image_overlay_opacity": 40,
             "heading": "Shop Activewear",
-            "heading_size": "h0",
+            "heading_size": "hxxl",
             "subheading": "Browse our latest products",
             "button_label": "Shop",
             "link": "shopify://collections/all",
