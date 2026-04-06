@@ -9,7 +9,10 @@ class ScrollVideoComponent extends HTMLElement {
     this.loadingText = null;
     this.isReady = false;
     this.animationFrameId = null;
+    this.progressInterval = null;
     this.lastDrawnTime = -1;
+    this.scrollContainer = null;
+    this.scrollContainerHeight = 0;
 
     // Configuration from data attributes
     this.zoomFactor = (parseFloat(this.dataset.zoom) || 115) / 100;
@@ -27,6 +30,7 @@ class ScrollVideoComponent extends HTMLElement {
     if (!this.canvas || !this.video) return;
 
     this.ctx = this.canvas.getContext('2d');
+    this.scrollContainer = this.querySelector('.scroll-video__scroll-container');
 
     // Bind event handlers
     this._onScroll = this.onScroll.bind(this);
@@ -44,6 +48,10 @@ class ScrollVideoComponent extends HTMLElement {
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('mousemove', this._onMouseMove);
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
+    }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
@@ -53,14 +61,15 @@ class ScrollVideoComponent extends HTMLElement {
     const video = this.video;
 
     // Track loading progress via buffered ranges
-    const progressInterval = setInterval(() => {
+    this.progressInterval = setInterval(() => {
       if (video.buffered.length > 0 && video.duration > 0) {
         const bufferedEnd = video.buffered.end(video.buffered.length - 1);
         const percent = Math.min(Math.round((bufferedEnd / video.duration) * 100), 100);
         this.updateLoadingProgress(percent);
 
         if (percent >= 99) {
-          clearInterval(progressInterval);
+          clearInterval(this.progressInterval);
+          this.progressInterval = null;
         }
       }
     }, 100);
@@ -78,7 +87,10 @@ class ScrollVideoComponent extends HTMLElement {
 
     // When video can play through without buffering
     video.addEventListener('canplaythrough', () => {
-      clearInterval(progressInterval);
+      if (this.progressInterval) {
+        clearInterval(this.progressInterval);
+        this.progressInterval = null;
+      }
       this.onVideoReady();
     });
 
@@ -93,7 +105,10 @@ class ScrollVideoComponent extends HTMLElement {
 
     // Error handling
     video.addEventListener('error', () => {
-      clearInterval(progressInterval);
+      if (this.progressInterval) {
+        clearInterval(this.progressInterval);
+        this.progressInterval = null;
+      }
       this.hideLoading();
     });
 
@@ -116,6 +131,7 @@ class ScrollVideoComponent extends HTMLElement {
 
     this.updateLoadingProgress(100);
     this.initCanvas();
+    this.cacheScrollDimensions();
     this.drawFrame();
 
     // Small delay for the 100% to show before hiding
@@ -129,8 +145,8 @@ class ScrollVideoComponent extends HTMLElement {
     // Start listening for mouse parallax
     if (this.parallaxEnabled && typeof gsap !== 'undefined') {
       window.addEventListener('mousemove', this._onMouseMove, { passive: true });
-      // Apply initial scale for parallax edge hiding
-      this.canvas.style.transform = 'scale(' + this.zoomFactor + ')';
+      // Apply initial scale for parallax edge hiding (use gsap.set to keep transform cache in sync)
+      gsap.set(this.canvas, { scale: this.zoomFactor });
     }
   }
 
@@ -165,20 +181,19 @@ class ScrollVideoComponent extends HTMLElement {
     });
   }
 
+  cacheScrollDimensions() {
+    if (!this.scrollContainer) return;
+    this.scrollContainerHeight = this.scrollContainer.offsetHeight;
+  }
+
   updateVideoTime() {
-    if (!this.video || !this.video.duration) return;
+    if (!this.video || !this.video.duration || !this.scrollContainer) return;
 
-    const scrollContainer = this.querySelector('.scroll-video__scroll-container');
-    if (!scrollContainer) return;
-
-    const rect = scrollContainer.getBoundingClientRect();
-    const containerTop = rect.top;
-    const containerHeight = rect.height;
+    // Use cached height, only need getBoundingClientRect for top position
+    const containerTop = this.scrollContainer.getBoundingClientRect().top;
     const viewportHeight = window.innerHeight;
 
-    // Calculate scroll fraction: 0 when container top is at viewport bottom,
-    // 1 when container bottom is at viewport top
-    const scrollableDistance = containerHeight - viewportHeight;
+    const scrollableDistance = this.scrollContainerHeight - viewportHeight;
     if (scrollableDistance <= 0) return;
 
     // How far into the container we've scrolled
@@ -188,8 +203,8 @@ class ScrollVideoComponent extends HTMLElement {
     // Map scroll fraction to video time
     const targetTime = scrollFraction * this.video.duration;
 
-    // Only seek if time has changed meaningfully (avoid redundant seeks)
-    if (Math.abs(targetTime - this.lastDrawnTime) > 0.03) {
+    // Only seek if time has changed meaningfully and video isn't already seeking
+    if (!this.video.seeking && Math.abs(targetTime - this.lastDrawnTime) > 0.03) {
       this.video.currentTime = targetTime;
       this.lastDrawnTime = targetTime;
     }
@@ -204,9 +219,6 @@ class ScrollVideoComponent extends HTMLElement {
     const ch = this.canvasHeight;
 
     if (!cw || !ch) return;
-
-    // Clear canvas
-    this.ctx.clearRect(0, 0, cw, ch);
 
     // Calculate object-fit: cover dimensions with zoom
     const videoAspect = vw / vh;
@@ -255,6 +267,7 @@ class ScrollVideoComponent extends HTMLElement {
 
   onResize() {
     this.initCanvas();
+    this.cacheScrollDimensions();
     if (this.isReady) {
       this.drawFrame();
     }
