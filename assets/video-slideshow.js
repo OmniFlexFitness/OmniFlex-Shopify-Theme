@@ -90,4 +90,6 @@ class VideoSlideshowComponent extends SlideshowComponent {
   }
 }
 
-customElements.define('video-slideshow-component', VideoSlideshowComponent);
+if (!customElements.get('video-slideshow-component')) {
+  customElements.define('video-slideshow-component', VideoSlideshowComponent);
+}

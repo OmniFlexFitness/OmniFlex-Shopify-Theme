@@ -274,4 +274,6 @@ class ScrollVideoComponent extends HTMLElement {
   }
 }
 
-customElements.define('scroll-video-component', ScrollVideoComponent);
+if (!customElements.get('scroll-video-component')) {
+  customElements.define('scroll-video-component', ScrollVideoComponent);
+}
