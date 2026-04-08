@@ -86,6 +86,7 @@
         style="--image-overlay-opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }}; --video-tint-color: {{ block.settings.tint_color }};"
         data-start-time="{{ block.settings.video_start_time }}"
         data-end-time="{{ block.settings.video_end_time }}"
+        data-loop="{{ block.settings.enable_video_looping }}"
       >
         <div class="slideshow__media banner__media media">
           {%- if block.settings.video != blank -%}

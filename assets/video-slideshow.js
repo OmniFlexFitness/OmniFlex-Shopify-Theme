@@ -72,17 +72,22 @@ class VideoSlideshowComponent extends SlideshowComponent {
     // Play native video
     const video = activeSlide.querySelector('video');
     if (video) {
-      // Set start time
-      if (startTime > 0) {
-        video.currentTime = startTime;
-      }
+      // Always start from the configured start time
+      video.currentTime = startTime;
 
-      // Set up loop within start/end range
-      if (endTime > 0 && endTime > startTime) {
+      // Set up loop/stop within start/end range, respecting loop setting
+      if (startTime > 0 || (endTime > 0 && endTime > startTime)) {
         this._activeVideo = video;
+        const loop = activeSlide.dataset.loop === 'true';
         this._activeTimeUpdateHandler = () => {
-          if (video.currentTime >= endTime) {
-            video.currentTime = startTime;
+          const loopAt = (endTime > startTime) ? endTime : (video.duration || Infinity);
+          if (video.currentTime >= loopAt) {
+            if (loop) {
+              video.currentTime = startTime;
+            } else {
+              video.pause();
+              video.currentTime = loopAt;
+            }
           }
         };
         video.addEventListener('timeupdate', this._activeTimeUpdateHandler);

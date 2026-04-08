@@ -203,8 +203,8 @@ class ScrollVideoComponent extends HTMLElement {
     const scrollFraction = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
     // Map scroll fraction to video time (clamped to start/end range if set)
-    const start = this.startTime;
-    const end = this.endTime > start ? this.endTime : this.video.duration;
+    const start = Math.min(this.startTime, this.video.duration);
+    const end = Math.max(start, (this.endTime > start && this.endTime <= this.video.duration) ? this.endTime : this.video.duration);
     const targetTime = start + scrollFraction * (end - start);
 
     // Only seek if time has changed meaningfully and video isn't already seeking
