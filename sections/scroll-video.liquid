@@ -23,8 +23,6 @@
       data-section-id="{{ section.id }}"
       data-zoom="{{ section.settings.zoom_factor }}"
       data-parallax="{{ section.settings.enable_parallax }}"
-      data-start-time="{{ section.settings.video_start_time }}"
-      data-end-time="{{ section.settings.video_end_time }}"
     >
       {%- if has_native_video -%}
         {%- comment -%} Loading overlay - only shown for native video scroll scrub {%- endcomment -%}
@@ -78,14 +76,11 @@
           {%- endif -%}
 
           {%- comment -%} Dark overlay for text readability {%- endcomment -%}
-          <div class="scroll-video__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; background: {{ section.settings.tint_color }};"></div>
+          <div class="scroll-video__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
 
           {%- comment -%} Content overlay {%- endcomment -%}
           {%- if section.settings.heading != blank or section.settings.subheading != blank or section.settings.button_label != blank -%}
             <div class="scroll-video__content scroll-video__content--{{ section.settings.content_position }}">
-              {%- if section.settings.show_text_box -%}
-                <div class="scroll-video__text-box color-{{ section.settings.text_color_scheme }}">
-              {%- endif -%}
               {%- if section.settings.heading != blank -%}
                 <h2 class="scroll-video__heading inline-richtext {{ section.settings.heading_size }}">
                   {{ section.settings.heading }}
@@ -108,9 +103,6 @@
                   >
                     {{- section.settings.button_label | escape -}}
                   </a>
-                </div>
-              {%- endif -%}
-              {%- if section.settings.show_text_box -%}
                 </div>
               {%- endif -%}
             </div>
@@ -218,13 +210,6 @@
       "default": 20
     },
     {
-      "type": "color",
-      "id": "tint_color",
-      "label": "Tint color",
-      "info": "Color of the overlay tint applied over the video.",
-      "default": "#000000"
-    },
-    {
       "type": "checkbox",
       "id": "enable_parallax",
       "label": "Enable mouse parallax",
@@ -233,46 +218,7 @@
     },
     {
       "type": "header",
-      "content": "Video playback"
-    },
-    {
-      "type": "range",
-      "id": "video_start_time",
-      "min": 0,
-      "max": 300,
-      "step": 1,
-      "unit": "s",
-      "label": "Start time",
-      "info": "Start scrubbing from this time (in seconds).",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "video_end_time",
-      "min": 0,
-      "max": 300,
-      "step": 1,
-      "unit": "s",
-      "label": "End time",
-      "info": "Stop scrubbing at this time. Set to 0 to use the full video.",
-      "default": 0
-    },
-    {
-      "type": "header",
       "content": "Text overlay"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_text_box",
-      "label": "Show text box background",
-      "info": "When unchecked, text floats directly over the video with no background.",
-      "default": false
-    },
-    {
-      "type": "color_scheme",
-      "id": "text_color_scheme",
-      "label": "Text box color scheme",
-      "default": "scheme-1"
     },
     {
       "type": "inline_richtext",

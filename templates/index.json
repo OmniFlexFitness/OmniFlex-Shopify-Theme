@@ -23,6 +23,47 @@
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
+    "video_slideshow_GnmiVK": {
+      "type": "video-slideshow",
+      "blocks": {
+        "video_slide_n3LUXU": {
+          "type": "video_slide",
+          "disabled": true,
+          "settings": {
+            "video": "shopify://files/videos/00718354.mp4",
+            "enable_video_looping": true,
+            "image_overlay_opacity": 40,
+            "heading": "<strong>Racerback V-Neck Sports Bra</strong>",
+            "heading_size": "h0",
+            "subheading": "Get 20% OFF by pre-ordering now!",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": true,
+            "show_text_box": false,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
+          }
+        }
+      },
+      "block_order": [
+        "video_slide_n3LUXU"
+      ],
+      "custom_css": [
+        ".slideshow__text.banner__box {background: transparent !important; box-shadow: none !important;}"
+      ],
+      "name": "Video slideshow",
+      "settings": {
+        "layout": "full_bleed",
+        "slide_height": "large",
+        "slider_visual": "counter",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "show_text_below": true,
+        "accessibility_info": "Racerback V-Neck Sports Bra"
+      }
+    },
     "slideshow_iRj3B6": {
       "type": "slideshow",
       "blocks": {
@@ -308,6 +349,7 @@
   },
   "order": [
     "animated_divider_QJJ4Xf",
+    "video_slideshow_GnmiVK",
     "slideshow_iRj3B6",
     "image_banner_DbzVwt",
     "animated_divider_qV6AGr",
