@@ -10,129 +10,161 @@
 {%- liquid
   assign video_id = section.settings.video_url.id
   assign video_alt = section.settings.video_url.id | default: 'Video banner'
+  assign has_video = false
+  if section.settings.video != blank or section.settings.video_url != blank
+    assign has_video = true
+  endif
 -%}
 
-<div
-  id="Banner-{{ section.id }}"
-  class="banner video-banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.video_height }}{% if section.settings.show_text_below %} banner--mobile-bottom{% endif %}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if section.settings.show_image_on_mobile and section.settings.cover_image != blank %} video-banner--mobile-image{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+<video-banner-component
+  id="VideoBanner-{{ section.id }}"
+  {% if section.settings.pause_offscreen %}data-pause-offscreen="true"{% endif %}
 >
-  <div class="banner__media video-banner__media media{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
-    {%- if section.settings.video != blank -%}
-      {{
-        section.settings.video
-        | video_tag:
-          image_size: '1920x',
-          autoplay: true,
-          loop: section.settings.enable_video_looping,
-          controls: false,
-          muted: true,
-          playsinline: true
-      }}
-    {%- elsif section.settings.video_url != blank -%}
-      {%- if section.settings.video_url.type == 'youtube' -%}
-        {%- liquid
-          assign loop_param = ''
-          if section.settings.enable_video_looping
-            assign loop_param = '&loop=1&playlist=' | append: video_id
-          endif
-        -%}
-        <iframe
-          src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&mute=1&controls=0&showinfo=0&rel=0{{ loop_param }}"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          title="{{ video_alt | escape }}"
-        ></iframe>
-      {%- else -%}
-        {%- liquid
-          assign loop_param = ''
-          if section.settings.enable_video_looping
-            assign loop_param = '&loop=1'
-          endif
-        -%}
-        <iframe
-          src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&controls=0&background=1{{ loop_param }}"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          title="{{ video_alt | escape }}"
-        ></iframe>
-      {%- endif -%}
-    {%- elsif section.settings.cover_image != blank -%}
-      {%- liquid
-        assign cover_height = section.settings.cover_image.width | divided_by: section.settings.cover_image.aspect_ratio | round
-      -%}
-      {{
-        section.settings.cover_image
-        | image_url: width: 3840
-        | image_tag: sizes: '100vw', widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', height: cover_height
-      }}
-    {%- else -%}
-      {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
-    {%- endif -%}
-
-    {%- if section.settings.show_image_on_mobile and section.settings.cover_image != blank -%}
-      <div class="video-banner__mobile-image">
+  <div
+    id="Banner-{{ section.id }}"
+    class="banner video-banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.video_height }}{% if section.settings.show_text_below %} banner--mobile-bottom{% endif %}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if section.settings.show_image_on_mobile and section.settings.cover_image != blank %} video-banner--mobile-image{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  >
+    <div class="banner__media video-banner__media media{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+      {%- if section.settings.video != blank -%}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1920x',
+            autoplay: true,
+            loop: section.settings.enable_video_looping,
+            controls: false,
+            muted: true,
+            playsinline: true
+        }}
+      {%- elsif section.settings.video_url != blank -%}
+        {%- if section.settings.video_url.type == 'youtube' -%}
+          {%- liquid
+            assign loop_param = ''
+            if section.settings.enable_video_looping
+              assign loop_param = '&loop=1&playlist=' | append: video_id
+            endif
+          -%}
+          <iframe
+            src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&mute=1&controls=0&showinfo=0&rel=0{{ loop_param }}"
+            class="js-youtube"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            title="{{ video_alt | escape }}"
+          ></iframe>
+        {%- else -%}
+          {%- liquid
+            assign loop_param = ''
+            if section.settings.enable_video_looping
+              assign loop_param = '&loop=1'
+            endif
+          -%}
+          <iframe
+            src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&controls=0&background=1{{ loop_param }}"
+            class="js-vimeo"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            title="{{ video_alt | escape }}"
+          ></iframe>
+        {%- endif -%}
+      {%- elsif section.settings.cover_image != blank -%}
         {%- liquid
           assign cover_height = section.settings.cover_image.width | divided_by: section.settings.cover_image.aspect_ratio | round
         -%}
         {{
           section.settings.cover_image
-          | image_url: width: 1500
-          | image_tag: sizes: '100vw', widths: '375, 550, 750, 1100, 1500', height: cover_height
+          | image_url: width: 3840
+          | image_tag: sizes: '100vw', widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', height: cover_height
         }}
+      {%- else -%}
+        {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      {%- if section.settings.show_image_on_mobile and section.settings.cover_image != blank -%}
+        <div class="video-banner__mobile-image">
+          {%- liquid
+            assign cover_height = section.settings.cover_image.width | divided_by: section.settings.cover_image.aspect_ratio | round
+          -%}
+          {{
+            section.settings.cover_image
+            | image_url: width: 1500
+            | image_tag: sizes: '100vw', widths: '375, 550, 750, 1100, 1500', height: cover_height
+          }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'heading' -%}
+              <h2
+                class="banner__heading inline-richtext {{ block.settings.heading_size }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.heading }}
+              </h2>
+            {%- when 'text' -%}
+              <div class="banner__text rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
+                <p>{{ block.settings.text }}</p>
+              </div>
+            {%- when 'buttons' -%}
+              <div
+                class="banner__buttons{% if block.settings.button_label_1 != blank and block.settings.button_label_2 != blank %} banner__buttons--multiple{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.button_label_1 != blank -%}
+                  <a
+                    {% if block.settings.button_link_1 == blank %}
+                      role="link" aria-disabled="true"
+                    {% else %}
+                      href="{{ block.settings.button_link_1 }}"
+                    {% endif %}
+                    class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
+                  >
+                    {{- block.settings.button_label_1 | escape -}}
+                  </a>
+                {%- endif -%}
+                {%- if block.settings.button_label_2 != blank -%}
+                  <a
+                    {% if block.settings.button_link_2 == blank %}
+                      role="link" aria-disabled="true"
+                    {% else %}
+                      href="{{ block.settings.button_link_2 }}"
+                    {% endif %}
+                    class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}"
+                  >
+                    {{- block.settings.button_label_2 | escape -}}
+                  </a>
+                {%- endif -%}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
       </div>
+    </div>
+
+    {%- if has_video and section.settings.show_play_pause -%}
+      <button
+        type="button"
+        class="video-banner__play-pause no-js-hidden"
+        aria-label="Pause video"
+      >
+        <span class="video-banner__pause-icon">
+          <span class="svg-wrapper">
+            {{- 'icon-pause.svg' | inline_asset_content -}}
+          </span>
+        </span>
+        <span class="video-banner__play-icon" hidden>
+          <span class="svg-wrapper">
+            {{- 'icon-play.svg' | inline_asset_content -}}
+          </span>
+        </span>
+      </button>
     {%- endif -%}
   </div>
+</video-banner-component>
 
-  <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-    <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'heading' -%}
-            <h2
-              class="banner__heading inline-richtext {{ block.settings.heading_size }}"
-              {{ block.shopify_attributes }}
-            >
-              {{ block.settings.heading }}
-            </h2>
-          {%- when 'text' -%}
-            <div class="banner__text rte {{ block.settings.text_style }}" {{ block.shopify_attributes }}>
-              <p>{{ block.settings.text }}</p>
-            </div>
-          {%- when 'buttons' -%}
-            <div
-              class="banner__buttons{% if block.settings.button_label_1 != blank and block.settings.button_label_2 != blank %} banner__buttons--multiple{% endif %}"
-              {{ block.shopify_attributes }}
-            >
-              {%- if block.settings.button_label_1 != blank -%}
-                <a
-                  {% if block.settings.button_link_1 == blank %}
-                    role="link" aria-disabled="true"
-                  {% else %}
-                    href="{{ block.settings.button_link_1 }}"
-                  {% endif %}
-                  class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
-                >
-                  {{- block.settings.button_label_1 | escape -}}
-                </a>
-              {%- endif -%}
-              {%- if block.settings.button_label_2 != blank -%}
-                <a
-                  {% if block.settings.button_link_2 == blank %}
-                    role="link" aria-disabled="true"
-                  {% else %}
-                    href="{{ block.settings.button_link_2 }}"
-                  {% endif %}
-                  class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}"
-                >
-                  {{- block.settings.button_label_2 | escape -}}
-                </a>
-              {%- endif -%}
-            </div>
-        {%- endcase -%}
-      {%- endfor -%}
-    </div>
-  </div>
-</div>
+<script src="{{ 'video-banner.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
@@ -208,6 +240,24 @@
       ],
       "default": "medium",
       "label": "Height"
+    },
+    {
+      "type": "header",
+      "content": "Playback"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_play_pause",
+      "label": "Show play/pause button",
+      "info": "Displays a button so visitors can pause and resume the video.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_offscreen",
+      "label": "Pause video when not visible",
+      "info": "Automatically pauses the video when scrolled out of view to save resources.",
+      "default": true
     },
     {
       "type": "header",
