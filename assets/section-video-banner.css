@@ -1,0 +1,85 @@
+/* Video Banner - video-specific styles (layout shared via section-image-banner.css) */
+
+.video-banner video,
+.video-banner iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+.video-banner .banner__media {
+  background-color: #000;
+}
+
+/* Mobile image fallback */
+.video-banner__mobile-image {
+  display: none;
+}
+
+.video-banner__mobile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media screen and (max-width: 749px) {
+  .video-banner--mobile-image .video-banner__media video,
+  .video-banner--mobile-image .video-banner__media iframe {
+    display: none;
+  }
+
+  .video-banner--mobile-image .video-banner__mobile-image {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Play/pause button */
+.video-banner__play-pause {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 3;
+  background: rgba(var(--color-background), 0.5);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  border-radius: 50%;
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4.4rem;
+  width: 4.4rem;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.video-banner__play-pause:hover {
+  background: rgba(var(--color-background), 0.75);
+}
+
+.video-banner__play-pause .svg-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.video-banner__play-pause .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+video-banner-component {
+  display: block;
+  position: relative;
+}
