@@ -1,6 +1,8 @@
 class VideoSlideshowComponent extends SlideshowComponent {
   constructor() {
     super();
+    this._activeTimeUpdateHandler = null;
+    this._activeVideo = null;
     this.addEventListener('slideChanged', this.onSlideChanged.bind(this));
     // Initialize: only play the first slide's video
     if (this.slider) {
@@ -17,8 +19,17 @@ class VideoSlideshowComponent extends SlideshowComponent {
   }
 
   onSlideChanged() {
+    this.cleanupTimeUpdateListener();
     this.pauseAllSlideVideos();
     this.playActiveSlideVideo();
+  }
+
+  cleanupTimeUpdateListener() {
+    if (this._activeVideo && this._activeTimeUpdateHandler) {
+      this._activeVideo.removeEventListener('timeupdate', this._activeTimeUpdateHandler);
+      this._activeTimeUpdateHandler = null;
+      this._activeVideo = null;
+    }
   }
 
   pauseAllSlideVideos() {
@@ -55,9 +66,33 @@ class VideoSlideshowComponent extends SlideshowComponent {
     const activeSlide = this.sliderItemsToShow[this.currentPage - 1];
     if (!activeSlide) return;
 
+    const startTime = parseFloat(activeSlide.dataset.startTime) || 0;
+    const endTime = parseFloat(activeSlide.dataset.endTime) || 0;
+
     // Play native video
     const video = activeSlide.querySelector('video');
     if (video) {
+      // Always start from the configured start time
+      video.currentTime = startTime;
+
+      // Set up loop/stop within start/end range, respecting loop setting
+      if (startTime > 0 || (endTime > 0 && endTime > startTime)) {
+        this._activeVideo = video;
+        const loop = activeSlide.dataset.loop === 'true';
+        this._activeTimeUpdateHandler = () => {
+          const loopAt = (endTime > startTime) ? endTime : (video.duration || Infinity);
+          if (video.currentTime >= loopAt) {
+            if (loop) {
+              video.currentTime = startTime;
+            } else {
+              video.pause();
+              video.currentTime = loopAt;
+            }
+          }
+        };
+        video.addEventListener('timeupdate', this._activeTimeUpdateHandler);
+      }
+
       video.play().catch(() => {
         // Autoplay may be blocked by browser policy; this is expected
       });

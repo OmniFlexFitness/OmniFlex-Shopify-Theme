@@ -176,6 +176,25 @@
   pointer-events: auto;
 }
 
+/* Optional text box wrapper */
+.scroll-video__text-box {
+  background: rgba(var(--color-background), 0.85);
+  color: rgb(var(--color-foreground));
+  padding: 2rem 2.5rem;
+  border-radius: var(--text-boxes-radius, 0);
+  pointer-events: auto;
+  max-width: 600px;
+}
+
+.scroll-video__text-box .scroll-video__heading {
+  color: inherit;
+}
+
+.scroll-video__text-box .scroll-video__subheading {
+  color: inherit;
+  opacity: 1;
+}
+
 /* Hidden source video */
 .scroll-video__source {
   position: absolute;

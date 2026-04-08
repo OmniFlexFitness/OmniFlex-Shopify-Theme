@@ -35,9 +35,10 @@ video-slideshow-component .slideshow__text-wrapper {
   position: relative;
 }
 
-/* Overlay opacity via CSS custom property (avoids inline <style> per slide) */
+/* Overlay opacity and tint color via CSS custom properties */
 video-slideshow-component .banner__media::after {
   opacity: var(--image-overlay-opacity, 0);
+  background: var(--video-tint-color, #000);
 }
 
 /* Video background should be dark when no video loaded */

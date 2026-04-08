@@ -18,6 +18,8 @@ class ScrollVideoComponent extends HTMLElement {
     this.zoomFactor = (parseFloat(this.dataset.zoom) || 115) / 100;
     this.parallaxEnabled = this.dataset.parallax !== 'false';
     this.parallaxAmount = 20; // Max px shift
+    this.startTime = parseFloat(this.dataset.startTime) || 0;
+    this.endTime = parseFloat(this.dataset.endTime) || 0;
   }
 
   connectedCallback() {
@@ -200,8 +202,10 @@ class ScrollVideoComponent extends HTMLElement {
     const scrolled = -containerTop;
     const scrollFraction = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
-    // Map scroll fraction to video time
-    const targetTime = scrollFraction * this.video.duration;
+    // Map scroll fraction to video time (clamped to start/end range if set)
+    const start = Math.min(this.startTime, this.video.duration);
+    const end = Math.max(start, (this.endTime > start && this.endTime <= this.video.duration) ? this.endTime : this.video.duration);
+    const targetTime = start + scrollFraction * (end - start);
 
     // Only seek if time has changed meaningfully and video isn't already seeking
     if (!this.video.seeking && Math.abs(targetTime - this.lastDrawnTime) > 0.03) {

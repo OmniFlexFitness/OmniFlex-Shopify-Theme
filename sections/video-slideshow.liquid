@@ -83,7 +83,10 @@
         aria-roledescription="slide"
         aria-label="{{ forloop.index }} of {{ forloop.length }}"
         tabindex="-1"
-        style="--image-overlay-opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }};"
+        style="--image-overlay-opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }}; --video-tint-color: {{ block.settings.tint_color }};"
+        data-start-time="{{ block.settings.video_start_time }}"
+        data-end-time="{{ block.settings.video_end_time }}"
+        data-loop="{{ block.settings.enable_video_looping }}"
       >
         <div class="slideshow__media banner__media media">
           {%- if block.settings.video != blank -%}
@@ -132,9 +135,16 @@
                     if block.settings.enable_video_looping
                       assign loop_param = '&loop=1&playlist=' | append: video_id
                     endif
+                    assign yt_time_params = ''
+                    if block.settings.video_start_time > 0
+                      assign yt_time_params = yt_time_params | append: '&start=' | append: block.settings.video_start_time
+                    endif
+                    if block.settings.video_end_time > 0
+                      assign yt_time_params = yt_time_params | append: '&end=' | append: block.settings.video_end_time
+                    endif
                   -%}
                   <iframe
-                    src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&mute=1&controls=0{{ loop_param }}"
+                    src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&mute=1&controls=0{{ loop_param }}{{ yt_time_params }}"
                     class="js-youtube"
                     allow="autoplay; encrypted-media"
                     allowfullscreen
@@ -146,9 +156,13 @@
                     if block.settings.enable_video_looping
                       assign loop_param = '&loop=1'
                     endif
+                    assign vimeo_start = ''
+                    if block.settings.video_start_time > 0
+                      assign vimeo_start = '#t=' | append: block.settings.video_start_time | append: 's'
+                    endif
                   -%}
                   <iframe
-                    src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&controls=0&background=1{{ loop_param }}"
+                    src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&controls=0&background=1{{ loop_param }}{{ vimeo_start }}"
                     class="js-vimeo"
                     allow="autoplay; encrypted-media"
                     allowfullscreen
@@ -410,6 +424,39 @@
           "unit": "%",
           "label": "Overlay opacity",
           "default": 40
+        },
+        {
+          "type": "color",
+          "id": "tint_color",
+          "label": "Tint color",
+          "info": "Color of the overlay tint applied over the video.",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "Video playback"
+        },
+        {
+          "type": "range",
+          "id": "video_start_time",
+          "min": 0,
+          "max": 300,
+          "step": 1,
+          "unit": "s",
+          "label": "Loop start time",
+          "info": "Start the video loop from this time (in seconds).",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "video_end_time",
+          "min": 0,
+          "max": 300,
+          "step": 1,
+          "unit": "s",
+          "label": "Loop end time",
+          "info": "End the video loop at this time. Set to 0 to use the full video.",
+          "default": 0
         },
         {
           "type": "header",
