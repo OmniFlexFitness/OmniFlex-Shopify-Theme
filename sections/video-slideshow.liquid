@@ -87,17 +87,17 @@
         style="--image-overlay-opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }};"
       >
         <div class="slideshow__media banner__media media">
-          {%- if block.settings.video != blank -%}
-            {{
-              block.settings.video
-              | video_tag:
-                image_size: '1920x',
-                autoplay: true,
-                loop: block.settings.enable_video_looping,
-                controls: false,
-                muted: true
-            }}
-          {%- elsif block.settings.video_url != blank -%}
+                    {%- if block.settings.video != blank -%}
+                                {{
+                                              block.settings.video
+                                                            | video_tag:
+                                                                            image_size: '1920x',
+                                                                                            autoplay: true,
+                                                                                                            loop: block.settings.enable_video_looping,
+                                                                                                                            controls: false,
+                                                                                                                                            muted: true
+                                                                                                                                                        }}
+                                                                                                                                                                  {%- elsif block.settings.video_url != blank -%}
             <deferred-media
               class="video-slideshow__deferred-media deferred-media"
               data-media-id="{{ video_id }}"
