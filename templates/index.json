@@ -38,7 +38,7 @@
             "subheading": "Add a description for this video slide",
             "button_label": "Button label",
             "link": "",
-            "button_style_secondary": false,
+            "button_style_secondary": true,
             "show_text_box": true,
             "box_align": "middle-center",
             "text_alignment": "center",
