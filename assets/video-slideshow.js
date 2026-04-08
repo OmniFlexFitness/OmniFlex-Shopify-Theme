@@ -1,6 +1,8 @@
 class VideoSlideshowComponent extends SlideshowComponent {
   constructor() {
     super();
+    this._activeTimeUpdateHandler = null;
+    this._activeVideo = null;
     this.addEventListener('slideChanged', this.onSlideChanged.bind(this));
     // Initialize: only play the first slide's video
     if (this.slider) {
@@ -17,8 +19,17 @@ class VideoSlideshowComponent extends SlideshowComponent {
   }
 
   onSlideChanged() {
+    this.cleanupTimeUpdateListener();
     this.pauseAllSlideVideos();
     this.playActiveSlideVideo();
+  }
+
+  cleanupTimeUpdateListener() {
+    if (this._activeVideo && this._activeTimeUpdateHandler) {
+      this._activeVideo.removeEventListener('timeupdate', this._activeTimeUpdateHandler);
+      this._activeTimeUpdateHandler = null;
+      this._activeVideo = null;
+    }
   }
 
   pauseAllSlideVideos() {
@@ -55,9 +66,28 @@ class VideoSlideshowComponent extends SlideshowComponent {
     const activeSlide = this.sliderItemsToShow[this.currentPage - 1];
     if (!activeSlide) return;
 
+    const startTime = parseFloat(activeSlide.dataset.startTime) || 0;
+    const endTime = parseFloat(activeSlide.dataset.endTime) || 0;
+
     // Play native video
     const video = activeSlide.querySelector('video');
     if (video) {
+      // Set start time
+      if (startTime > 0) {
+        video.currentTime = startTime;
+      }
+
+      // Set up loop within start/end range
+      if (endTime > 0 && endTime > startTime) {
+        this._activeVideo = video;
+        this._activeTimeUpdateHandler = () => {
+          if (video.currentTime >= endTime) {
+            video.currentTime = startTime;
+          }
+        };
+        video.addEventListener('timeupdate', this._activeTimeUpdateHandler);
+      }
+
       video.play().catch(() => {
         // Autoplay may be blocked by browser policy; this is expected
       });
