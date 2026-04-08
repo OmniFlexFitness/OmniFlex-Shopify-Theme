@@ -7,7 +7,109 @@ rotating-featured-product {
   margin: 0;
 }
 
-/* ===== Frame container ===== */
+/* ===== 3D Viewer ===== */
+.rotating-product__viewer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--media-radius);
+  background: rgba(var(--color-foreground), 0.02);
+}
+
+.rotating-product__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: grab;
+}
+
+.rotating-product__canvas:active {
+  cursor: grabbing;
+}
+
+.rotating-product__poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== Loading overlay ===== */
+.rotating-product__loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: rgba(var(--color-background), 0.6);
+  z-index: 3;
+  transition: opacity 0.4s ease;
+}
+
+.rotating-product__loading--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rotating-product__loading-bar {
+  width: 60%;
+  max-width: 200px;
+  height: 4px;
+  background: rgba(var(--color-foreground), 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rotating-product__loading-progress {
+  width: 0%;
+  height: 100%;
+  background: rgb(var(--color-foreground));
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.rotating-product__loading-text {
+  font-size: 0.75rem;
+  color: rgb(var(--color-foreground));
+  opacity: 0.7;
+}
+
+/* ===== Error state ===== */
+.rotating-product__error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.rotating-product__error p {
+  padding: 1rem 1.5rem;
+  background: rgba(var(--color-foreground), 0.05);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: rgb(var(--color-foreground));
+  opacity: 0.7;
+}
+
+/* ===== Image sequence frame container ===== */
 .rotating-product__frame-container {
   position: relative;
   overflow: hidden;
@@ -50,7 +152,7 @@ rotating-featured-product {
   font-size: 0.8125rem;
   pointer-events: none;
   transition: opacity 0.4s ease;
-  z-index: 2;
+  z-index: 4;
   white-space: nowrap;
 }
 
