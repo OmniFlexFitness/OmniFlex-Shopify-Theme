@@ -17,6 +17,22 @@ if (!customElements.get('video-banner-component')) {
       }
     }
 
+    connectedCallback() {
+      const video = this.querySelector('.banner__media video');
+      if (video) {
+        const attemptPlay = () => {
+          if (!this.paused && !this.offscreen) {
+            video.play().catch(() => {});
+          }
+        };
+        if (video.readyState >= 2) {
+          attemptPlay();
+        } else {
+          video.addEventListener('loadeddata', attemptPlay, { once: true });
+        }
+      }
+    }
+
     setupIntersectionObserver() {
       const observer = new IntersectionObserver(
         (entries) => {
