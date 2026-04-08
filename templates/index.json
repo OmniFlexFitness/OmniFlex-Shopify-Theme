@@ -23,22 +23,6 @@
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
-    "video_kb8Lpm": {
-      "type": "video",
-      "name": "t:sections.video.presets.name",
-      "settings": {
-        "heading": "",
-        "heading_size": "hxxl",
-        "enable_video_looping": true,
-        "video": "shopify://files/videos/C3753.mp4",
-        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
-        "description": "",
-        "full_width": true,
-        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
     "video_slideshow_GnmiVK": {
       "type": "video-slideshow",
       "blocks": {
@@ -88,6 +72,7 @@
         "video_slide_Y6dwQg",
         "video_slide_n3LUXU"
       ],
+      "disabled": true,
       "custom_css": [
         ".slideshow__text.banner__box {background: transparent !important; box-shadow: none !important;}"
       ],
@@ -387,7 +372,6 @@
   },
   "order": [
     "animated_divider_QJJ4Xf",
-    "video_kb8Lpm",
     "video_slideshow_GnmiVK",
     "slideshow_iRj3B6",
     "image_banner_DbzVwt",
