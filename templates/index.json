@@ -26,11 +26,32 @@
     "video_slideshow_GnmiVK": {
       "type": "video-slideshow",
       "blocks": {
+        "video_slide_Y6dwQg": {
+          "type": "video_slide",
+          "settings": {
+            "video": "shopify://files/videos/C3753.mp4",
+            "video_url": "",
+            "enable_video_looping": true,
+            "image_overlay_opacity": 40,
+            "heading": "Video slide",
+            "heading_size": "h1",
+            "subheading": "Add a description for this video slide",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "show_text_box": true,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951"
+          }
+        },
         "video_slide_n3LUXU": {
           "type": "video_slide",
           "disabled": true,
           "settings": {
             "video": "shopify://files/videos/00718354.mp4",
+            "video_url": "",
             "enable_video_looping": true,
             "image_overlay_opacity": 40,
             "heading": "<strong>Racerback V-Neck Sports Bra</strong>",
@@ -48,6 +69,7 @@
         }
       },
       "block_order": [
+        "video_slide_Y6dwQg",
         "video_slide_n3LUXU"
       ],
       "custom_css": [
