@@ -1,0 +1,321 @@
+{{ 'scroll-video.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }} {
+    --scroll-video-padding-top: {{ section.settings.padding_top }}px;
+    --scroll-video-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign has_native_video = false
+  assign has_external_video = false
+  if section.settings.video != blank
+    assign has_native_video = true
+  elsif section.settings.video_url != blank
+    assign has_external_video = true
+  endif
+-%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}">
+  <div class="scroll-video__section-padding">
+    <scroll-video-component
+      data-section-id="{{ section.id }}"
+      data-zoom="{{ section.settings.zoom_factor }}"
+      data-parallax="{{ section.settings.enable_parallax }}"
+    >
+      {%- if has_native_video -%}
+        {%- comment -%} Loading overlay - only shown for native video scroll scrub {%- endcomment -%}
+        <div class="scroll-video__loading">
+          <div class="scroll-video__loading-bar">
+            <div class="scroll-video__loading-progress"></div>
+          </div>
+          <span class="scroll-video__loading-text">Loading... 0%</span>
+        </div>
+      {%- endif -%}
+
+      <div class="scroll-video__scroll-container" style="height: {{ section.settings.scroll_height }}vh;">
+        <div class="scroll-video__sticky">
+          {%- if has_native_video -%}
+            {%- comment -%} Canvas for scroll-controlled frame rendering {%- endcomment -%}
+            <canvas class="scroll-video__canvas"></canvas>
+          {%- elsif has_external_video -%}
+            {%- comment -%} External video (YouTube/Vimeo) - plays as embedded, no scroll scrub {%- endcomment -%}
+            {%- assign video_id = section.settings.video_url.id -%}
+            {%- if section.settings.video_url.type == 'youtube' -%}
+              <iframe
+                src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist={{ video_id }}&playsinline=1"
+                class="scroll-video__fallback-image js-youtube"
+                style="border:0; width:100%; height:100%; position:absolute; top:0; left:0;"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                title="{{ section.settings.heading | escape }}"
+              ></iframe>
+            {%- else -%}
+              <iframe
+                src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1&muted=1&controls=0&loop=1&background=1"
+                class="scroll-video__fallback-image js-vimeo"
+                style="border:0; width:100%; height:100%; position:absolute; top:0; left:0;"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                title="{{ section.settings.heading | escape }}"
+              ></iframe>
+            {%- endif -%}
+          {%- elsif section.settings.cover_image != blank -%}
+            {%- comment -%} Fallback to cover image if no video {%- endcomment -%}
+            {%- liquid
+              assign img_height = section.settings.cover_image.width | divided_by: section.settings.cover_image.aspect_ratio | round
+            -%}
+            {{
+              section.settings.cover_image
+              | image_url: width: 3840
+              | image_tag: class: 'scroll-video__fallback-image', sizes: '100vw', widths: '375, 750, 1100, 1500, 1780, 2000, 3000, 3840', height: img_height
+            }}
+          {%- else -%}
+            {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg scroll-video__fallback-image' }}
+          {%- endif -%}
+
+          {%- comment -%} Dark overlay for text readability {%- endcomment -%}
+          <div class="scroll-video__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+
+          {%- comment -%} Content overlay {%- endcomment -%}
+          {%- if section.settings.heading != blank or section.settings.subheading != blank or section.settings.button_label != blank -%}
+            <div class="scroll-video__content scroll-video__content--{{ section.settings.content_position }}">
+              {%- if section.settings.heading != blank -%}
+                <h2 class="scroll-video__heading inline-richtext {{ section.settings.heading_size }}">
+                  {{ section.settings.heading }}
+                </h2>
+              {%- endif -%}
+              {%- if section.settings.subheading != blank -%}
+                <div class="scroll-video__subheading rte">
+                  {{ section.settings.subheading }}
+                </div>
+              {%- endif -%}
+              {%- if section.settings.button_label != blank -%}
+                <div class="scroll-video__button">
+                  <a
+                    {% if section.settings.link %}
+                      href="{{ section.settings.link }}"
+                    {% else %}
+                      role="link" aria-disabled="true"
+                    {% endif %}
+                    class="button {% if section.settings.button_style_secondary %}button--secondary{% else %}button--primary{% endif %}"
+                  >
+                    {{- section.settings.button_label | escape -}}
+                  </a>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if has_native_video -%}
+        {%- comment -%} Hidden video element for canvas frame extraction {%- endcomment -%}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1920x',
+            autoplay: false,
+            loop: false,
+            controls: false,
+            muted: true,
+            class: 'scroll-video__source'
+        }}
+      {%- endif -%}
+    </scroll-video-component>
+  </div>
+</div>
+
+{%- if has_native_video and section.settings.enable_parallax -%}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer="defer"></script>
+{%- endif -%}
+<script src="{{ 'scroll-video.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Scroll video",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Shopify-hosted video"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Upload a video for scroll-controlled playback. The video plays frame-by-frame as the user scrolls."
+    },
+    {
+      "type": "header",
+      "content": "Or embed video URL"
+    },
+    {
+      "type": "paragraph",
+      "content": "External videos (YouTube/Vimeo) will play normally as a background instead of scroll-controlled. For the full scroll effect, use a Shopify-hosted video."
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "accept": ["youtube", "vimeo"],
+      "label": "Video URL",
+      "info": "Accepts YouTube and Vimeo URLs."
+    },
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image",
+      "info": "Shown as a fallback when no video is set."
+    },
+    {
+      "type": "header",
+      "content": "Scroll settings"
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "vh",
+      "label": "Scroll area height",
+      "info": "Higher values make the video scrub slower (more scrolling required).",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "zoom_factor",
+      "min": 100,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Zoom factor",
+      "info": "Slight zoom to hide letterboxing or black bars in the video.",
+      "default": 115
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "info": "Dark overlay to improve text readability over the video.",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Enable mouse parallax",
+      "info": "Adds a subtle 3D depth effect on mouse movement. Uses GSAP library.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Text overlay"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra large" },
+        { "value": "hxxl", "label": "Extra extra large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "info": "Leave blank to hide button."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_style_secondary",
+      "label": "Use outline button style",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "options": [
+        { "value": "top-left", "label": "Top left" },
+        { "value": "top-center", "label": "Top center" },
+        { "value": "top-right", "label": "Top right" },
+        { "value": "middle-left", "label": "Middle left" },
+        { "value": "middle-center", "label": "Middle center" },
+        { "value": "middle-right", "label": "Middle right" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "bottom-right", "label": "Bottom right" }
+      ],
+      "default": "middle-center",
+      "label": "Content position"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll video"
+    }
+  ]
+}
+{% endschema %}
