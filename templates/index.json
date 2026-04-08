@@ -23,6 +23,41 @@
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
+    "video_banner_RmbCF8": {
+      "type": "video-banner",
+      "blocks": {
+        "heading_wGqfTK": {
+          "type": "heading",
+          "settings": {
+            "heading": "Shop Activewear",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_wGqfTK"
+      ],
+      "disabled": true,
+      "custom_css": [
+        ".banner__box {background: transparent !important; box-shadow: none !important;}"
+      ],
+      "name": "Video banner",
+      "settings": {
+        "video": "shopify://files/videos/C3753.mp4",
+        "enable_video_looping": true,
+        "image_overlay_opacity": 40,
+        "video_height": "medium",
+        "show_play_pause": false,
+        "pause_offscreen": false,
+        "desktop_content_position": "middle-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "mobile_content_alignment": "center",
+        "show_text_below": false,
+        "show_image_on_mobile": false
+      }
+    },
     "video_slideshow_GnmiVK": {
       "type": "video-slideshow",
       "blocks": {
@@ -95,7 +130,7 @@
           "settings": {
             "image": "shopify://shop_images/Banner_Image_1.png",
             "image_overlay_opacity": 40,
-            "heading": "Shop Activewear",
+            "heading": "<strong>Shop Activewear</strong>",
             "heading_size": "hxxl",
             "subheading": "Browse our latest products",
             "button_label": "Shop",
@@ -372,6 +407,7 @@
   },
   "order": [
     "animated_divider_QJJ4Xf",
+    "video_banner_RmbCF8",
     "video_slideshow_GnmiVK",
     "slideshow_iRj3B6",
     "image_banner_DbzVwt",
