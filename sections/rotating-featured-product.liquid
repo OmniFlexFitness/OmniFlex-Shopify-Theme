@@ -1,0 +1,490 @@
+{%- liquid
+  assign product = section.settings.product
+  assign placeholder = false
+  if product == null
+    assign placeholder = true
+  endif
+  assign image_count = 0
+  unless placeholder
+    assign image_count = product.images.size
+  endunless
+  assign has_rotation = false
+  if image_count > 1
+    assign has_rotation = true
+  endif
+  assign rotation_mode = section.settings.rotation_mode
+  assign model_url = section.settings.model_url
+  assign has_model = false
+  if model_url != blank
+    assign has_model = true
+  endif
+  assign computed_scroll_height = section.settings.scroll_height
+  unless has_model
+    assign min_scroll = image_count | times: 50
+    if computed_scroll_height < min_scroll
+      assign computed_scroll_height = min_scroll
+    endif
+  endunless
+-%}
+
+{{ 'section-rotating-featured-product.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<rotating-featured-product data-section-id="{{ section.id }}">
+  <section class="color-{{ section.settings.color_scheme }} {% if section.settings.secondary_background %}background-secondary{% else %}gradient{% endif %}">
+    {%- if rotation_mode == 'scroll' and (has_model or has_rotation) -%}
+      <div class="rotating-product__scroll-container" style="height: {{ computed_scroll_height }}vh;">
+        <div class="rotating-product__sticky">
+    {%- endif -%}
+
+          <div class="page-width section-{{ section.id }}-padding">
+            <div class="rotating-product grid grid--1-col grid--2-col-tablet product--{{ section.settings.media_size }} product--{{ section.settings.media_position }}">
+              {%- comment -%} Media area {%- endcomment -%}
+              <div class="grid__item product__media-wrapper">
+                {%- if has_model -%}
+                  {%- comment -%} 3D Model Viewer {%- endcomment -%}
+                  <div class="rotating-product__viewer">
+                    <canvas class="rotating-product__canvas"></canvas>
+
+                    {%- comment -%} Poster image shown until model loads {%- endcomment -%}
+                    {%- unless placeholder -%}
+                      {%- if product.featured_image -%}
+                        <img
+                          class="rotating-product__poster"
+                          src="{{ product.featured_image | image_url: width: 1445 }}"
+                          alt="{{ product.title | escape }}"
+                          loading="eager"
+                          width="{{ product.featured_image.width }}"
+                          height="{{ product.featured_image.height }}"
+                        >
+                      {%- endif -%}
+                    {%- endunless -%}
+
+                    {%- comment -%} Loading overlay {%- endcomment -%}
+                    <div class="rotating-product__loading">
+                      <div class="rotating-product__loading-bar">
+                        <div class="rotating-product__loading-progress"></div>
+                      </div>
+                      <span class="rotating-product__loading-text">Loading model... 0%</span>
+                    </div>
+
+                    {%- comment -%} Error state {%- endcomment -%}
+                    <div class="rotating-product__error" style="display: none;">
+                      <p>Failed to load 3D model. Please check the model URL.</p>
+                    </div>
+
+                    {%- if rotation_mode == 'drag' -%}
+                      <div class="rotating-product__drag-hint">
+                        <span class="rotating-product__drag-hint-icon">&larr; &rarr;</span>
+                        <span class="rotating-product__drag-hint-text">Drag to rotate</span>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- else -%}
+                  {%- comment -%} Image sequence fallback {%- endcomment -%}
+                  <div
+                    class="rotating-product__frame-container"
+                    data-mode="{{ rotation_mode }}"
+                    {% if has_rotation %}data-rotatable{% endif %}
+                  >
+                    {%- unless placeholder -%}
+                      {%- if product.featured_image -%}
+                        <img
+                          class="rotating-product__frame"
+                          srcset="
+                            {%- if product.featured_image.width >= 550 -%}{{ product.featured_image | image_url: width: 550 }} 550w,{%- endif -%}
+                            {%- if product.featured_image.width >= 1100 -%}{{ product.featured_image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                            {%- if product.featured_image.width >= 1445 -%}{{ product.featured_image | image_url: width: 1445 }} 1445w,{%- endif -%}
+                            {%- if product.featured_image.width >= 1680 -%}{{ product.featured_image | image_url: width: 1680 }} 1680w,{%- endif -%}
+                            {%- if product.featured_image.width >= 2048 -%}{{ product.featured_image | image_url: width: 2048 }} 2048w,{%- endif -%}
+                            {{ product.featured_image | image_url }} {{ product.featured_image.width }}w
+                          "
+                          src="{{ product.featured_image | image_url: width: 1445 }}"
+                          sizes="(min-width: 990px) calc(55vw - 10rem), (min-width: 750px) 50vw, 100vw"
+                          alt="{{ product.title | escape }} - image 1 of {{ image_count }}"
+                          loading="eager"
+                          width="{{ product.featured_image.width }}"
+                          height="{{ product.featured_image.height }}"
+                          draggable="false"
+                        >
+                      {%- else -%}
+                        <div class="rotating-product__placeholder">
+                          {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        </div>
+                      {%- endif -%}
+                    {%- else -%}
+                      <div class="rotating-product__placeholder">
+                        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endunless -%}
+
+                    {%- if has_rotation and rotation_mode == 'drag' -%}
+                      <div class="rotating-product__drag-hint">
+                        <span class="rotating-product__drag-hint-icon">&larr; &rarr;</span>
+                        <span class="rotating-product__drag-hint-text">Drag to rotate</span>
+                      </div>
+                    {%- endif -%}
+
+                    {%- if has_rotation -%}
+                      <div class="rotating-product__frame-counter">
+                        <span class="rotating-product__current-frame">1</span> / {{ image_count }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Product info {%- endcomment -%}
+              <div class="grid__item product__info-wrapper">
+                <div class="rotating-product__info">
+                  {%- unless placeholder -%}
+                    <h2 class="rotating-product__title {{ section.settings.heading_size }}">
+                      {{ product.title | escape }}
+                    </h2>
+                    <a href="{{ product.url }}" class="button button--primary rotating-product__view-link">
+                      {{ section.settings.button_label | escape }}
+                    </a>
+                  {%- else -%}
+                    <h2 class="rotating-product__title {{ section.settings.heading_size }}">
+                      {{ 'onboarding.product_title' | t }}
+                    </h2>
+                    <a href="#" class="button button--primary rotating-product__view-link" aria-disabled="true">
+                      {{ section.settings.button_label | escape }}
+                    </a>
+                  {%- endunless -%}
+                </div>
+              </div>
+            </div>
+          </div>
+
+    {%- if rotation_mode == 'scroll' and (has_model or has_rotation) -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </section>
+
+  {%- comment -%} Data for JavaScript {%- endcomment -%}
+  <script type="application/json" class="rotating-product__data">
+    {
+      "mode": {{ rotation_mode | json }},
+      "autoRotate": {{ section.settings.auto_rotate | json }},
+      "autoRotateSpeed": {{ section.settings.auto_rotate_speed }},
+      {%- if has_model -%}
+        "modelUrl": {{ model_url | json }},
+        "modelScale": {{ section.settings.model_scale }},
+        "ambientColor": {{ section.settings.ambient_color | json }},
+        "ambientIntensity": {{ section.settings.ambient_intensity }},
+        "directionalColor": {{ section.settings.directional_color | json }},
+        "directionalIntensity": {{ section.settings.directional_intensity }},
+        "lightAngle": {{ section.settings.light_angle }},
+        "lightHeight": {{ section.settings.light_height }},
+        "enableShadows": {{ section.settings.enable_shadows | json }},
+        "backgroundTransparent": {{ section.settings.background_transparent | json }},
+      {%- endif -%}
+      "imageCount": {{ image_count }},
+      "images": [
+        {%- unless has_model -%}
+          {%- for image in product.images -%}
+            {%- capture image_srcset -%}
+              {%- if image.width >= 550 -%}{{ image | image_url: width: 550 }} 550w, {%- endif -%}
+              {%- if image.width >= 1100 -%}{{ image | image_url: width: 1100 }} 1100w, {%- endif -%}
+              {%- if image.width >= 1445 -%}{{ image | image_url: width: 1445 }} 1445w, {%- endif -%}
+              {%- if image.width >= 1680 -%}{{ image | image_url: width: 1680 }} 1680w, {%- endif -%}
+              {%- if image.width >= 2048 -%}{{ image | image_url: width: 2048 }} 2048w, {%- endif -%}
+              {{ image | image_url }} {{ image.width }}w
+            {%- endcapture -%}
+            {
+              "src": {{ image | image_url: width: 1445 | json }},
+              "srcset": {{ image_srcset | strip | json }},
+              "alt": {{ image.alt | default: product.title | escape | json }},
+              "width": {{ image.width }},
+              "height": {{ image.height }}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        {%- endunless -%}
+      ]
+    }
+  </script>
+
+  {%- unless has_model -%}
+    {%- if has_rotation -%}
+      {%- comment -%} Preload images for smooth transitions {%- endcomment -%}
+      <div class="rotating-product__preload" aria-hidden="true">
+        {%- for image in product.images -%}
+          {%- unless forloop.first -%}
+            <img src="{{ image | image_url: width: 1445 }}" alt="" loading="eager">
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endunless -%}
+
+  {%- if has_model or has_rotation -%}
+    {%- comment -%} Import map must appear before the module script. Rendered for all
+        instances so that a 3D section later on the page can still resolve 'three'. {%- endcomment -%}
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="{{ 'rotating-featured-product.js' | asset_url }}"></script>
+  {%- endif -%}
+</rotating-featured-product>
+
+{% schema %}
+{
+  "name": "Rotating featured product",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "3D model"
+    },
+    {
+      "type": "text",
+      "id": "model_url",
+      "label": "FBX model URL",
+      "info": "Upload your .fbx file via Settings > Files, then paste the URL here. Leave blank to use product images instead."
+    },
+    {
+      "type": "range",
+      "id": "model_scale",
+      "min": 25,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "Model scale",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "background_transparent",
+      "default": true,
+      "label": "Transparent background",
+      "info": "When disabled, uses a black background behind the model."
+    },
+    {
+      "type": "header",
+      "content": "Lighting"
+    },
+    {
+      "type": "color",
+      "id": "ambient_color",
+      "label": "Ambient light color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "ambient_intensity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Ambient light intensity",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "directional_color",
+      "label": "Directional light color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "directional_intensity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Directional light intensity",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "light_angle",
+      "min": 0,
+      "max": 360,
+      "step": 15,
+      "unit": "°",
+      "label": "Light angle",
+      "info": "Horizontal position of the directional light around the model.",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "light_height",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Light height",
+      "info": "Vertical position of the directional light.",
+      "default": 60
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_shadows",
+      "default": true,
+      "label": "Enable shadows"
+    },
+    {
+      "type": "header",
+      "content": "Rotation"
+    },
+    {
+      "type": "select",
+      "id": "rotation_mode",
+      "options": [
+        { "value": "drag", "label": "Drag" },
+        { "value": "scroll", "label": "Scroll" }
+      ],
+      "default": "drag",
+      "label": "Rotation mode",
+      "info": "Drag: click and drag to rotate. Scroll: rotates as you scroll down."
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 200,
+      "max": 600,
+      "step": 50,
+      "unit": "vh",
+      "label": "Scroll area height",
+      "info": "Only applies in scroll mode. Higher values = slower rotation.",
+      "default": 300
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "default": false,
+      "label": "Auto-rotate on load",
+      "info": "Automatically rotates the model or cycles through images. Pauses on interaction."
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate_speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Auto-rotate speed",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "media_size",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "label": "Viewer size"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left",
+      "label": "Viewer position"
+    },
+    {
+      "type": "header",
+      "content": "Product info"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "View product",
+      "label": "Button label"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "secondary_background",
+      "default": false,
+      "label": "Show secondary background"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rotating featured product"
+    }
+  ]
+}
+{% endschema %}
