@@ -225,15 +225,16 @@
       <div class="rotating-product__preload" aria-hidden="true">
         {%- for image in product.images -%}
           {%- unless forloop.first -%}
-            <img src="{{ image | image_url: width: 1445 }}" alt="" loading="lazy">
+            <img src="{{ image | image_url: width: 1445 }}" alt="" loading="eager">
           {%- endunless -%}
         {%- endfor -%}
       </div>
     {%- endif -%}
   {%- endunless -%}
 
-  {%- if has_model -%}
-    {%- comment -%} Three.js import map for 3D model rendering {%- endcomment -%}
+  {%- if has_model or has_rotation -%}
+    {%- comment -%} Import map must appear before the module script. Rendered for all
+        instances so that a 3D section later on the page can still resolve 'three'. {%- endcomment -%}
     <script type="importmap">
       {
         "imports": {
@@ -242,9 +243,6 @@
         }
       }
     </script>
-  {%- endif -%}
-
-  {%- if has_model or has_rotation -%}
     <script type="module" src="{{ 'rotating-featured-product.js' | asset_url }}"></script>
   {%- endif -%}
 </rotating-featured-product>

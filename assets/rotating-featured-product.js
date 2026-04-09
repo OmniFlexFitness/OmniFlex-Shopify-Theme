@@ -29,6 +29,10 @@ class RotatingFeaturedProduct extends HTMLElement {
     this.autoRotateRafId = null;
     this.lastAutoRotateTime = 0;
     this.scrollRafId = null;
+
+    // Pre-bound methods to avoid per-frame allocations
+    this._animate = this.animate.bind(this);
+    this._autoRotateTick = this.autoRotateTick.bind(this);
   }
 
   connectedCallback() {
@@ -51,9 +55,28 @@ class RotatingFeaturedProduct extends HTMLElement {
       this.controls.dispose();
       this.controls = null;
     }
+    if (this._onWheel && this.renderer && this.renderer.domElement) {
+      this.renderer.domElement.removeEventListener('wheel', this._onWheel);
+    }
     if (this.renderer) {
       this.renderer.dispose();
       this.renderer = null;
+    }
+    // Dispose GPU resources (geometries, materials, textures)
+    if (this.scene) {
+      this.scene.traverse((child) => {
+        if (child.geometry) child.geometry.dispose();
+        if (child.material) {
+          const materials = Array.isArray(child.material) ? child.material : [child.material];
+          materials.forEach((m) => {
+            if (m.map) m.map.dispose();
+            if (m.normalMap) m.normalMap.dispose();
+            if (m.emissiveMap) m.emissiveMap.dispose();
+            m.dispose();
+          });
+        }
+      });
+      this.scene = null;
     }
     if (this._onResize) {
       window.removeEventListener('resize', this._onResize);
@@ -62,6 +85,10 @@ class RotatingFeaturedProduct extends HTMLElement {
     // Image cleanup
     if (this._onScroll) {
       window.removeEventListener('scroll', this._onScroll);
+    }
+    if (this.frameContainer) {
+      if (this._onPointerDown) this.frameContainer.removeEventListener('pointerdown', this._onPointerDown);
+      if (this._onDragStart) this.frameContainer.removeEventListener('dragstart', this._onDragStart);
     }
     if (this._onPointerMove) {
       window.removeEventListener('pointermove', this._onPointerMove);
@@ -73,6 +100,7 @@ class RotatingFeaturedProduct extends HTMLElement {
     if (this.scrollRafId) {
       cancelAnimationFrame(this.scrollRafId);
     }
+    this.preloadedImages = null;
   }
 
   parseData() {
@@ -87,15 +115,15 @@ class RotatingFeaturedProduct extends HTMLElement {
       this.autoRotateEnabled = data.autoRotate || false;
       this.autoRotateSpeed = data.autoRotateSpeed || 3;
 
-      // 3D model config
-      this.modelUrl = data.modelUrl || '';
-      this.modelScale = data.modelScale || 100;
-      this.ambientColor = data.ambientColor || '#ffffff';
-      this.ambientIntensity = data.ambientIntensity || 60;
-      this.directionalColor = data.directionalColor || '#ffffff';
-      this.directionalIntensity = data.directionalIntensity || 80;
-      this.lightAngle = data.lightAngle || 45;
-      this.lightHeight = data.lightHeight || 60;
+      // 3D model config — use ?? so merchants can set values to 0
+      this.modelUrl = data.modelUrl ?? '';
+      this.modelScale = data.modelScale ?? 100;
+      this.ambientColor = data.ambientColor ?? '#ffffff';
+      this.ambientIntensity = data.ambientIntensity ?? 60;
+      this.directionalColor = data.directionalColor ?? '#ffffff';
+      this.directionalIntensity = data.directionalIntensity ?? 80;
+      this.lightAngle = data.lightAngle ?? 45;
+      this.lightHeight = data.lightHeight ?? 60;
       this.enableShadows = data.enableShadows !== false;
       this.bgTransparent = data.backgroundTransparent !== false;
 
@@ -304,7 +332,8 @@ class RotatingFeaturedProduct extends HTMLElement {
     this.controls.autoRotateSpeed = this.autoRotateSpeed;
 
     // Prevent page scroll while interacting with viewer
-    this.renderer.domElement.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+    this._onWheel = (e) => e.preventDefault();
+    this.renderer.domElement.addEventListener('wheel', this._onWheel, { passive: false });
   }
 
   setupScrollModelRotation() {
@@ -338,7 +367,7 @@ class RotatingFeaturedProduct extends HTMLElement {
   }
 
   animate() {
-    this.animationId = requestAnimationFrame(() => this.animate());
+    this.animationId = requestAnimationFrame(this._animate);
     if (this.controls) this.controls.update();
     if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera);
@@ -459,11 +488,10 @@ class RotatingFeaturedProduct extends HTMLElement {
     this._onPointerDown = this.onPointerDown.bind(this);
     this._onPointerMove = this.onPointerMove.bind(this);
     this._onPointerUp = this.onPointerUp.bind(this);
+    this._onDragStart = (e) => e.preventDefault();
 
     this.frameContainer.addEventListener('pointerdown', this._onPointerDown);
-    window.addEventListener('pointermove', this._onPointerMove);
-    window.addEventListener('pointerup', this._onPointerUp);
-    this.frameContainer.addEventListener('dragstart', (e) => e.preventDefault());
+    this.frameContainer.addEventListener('dragstart', this._onDragStart);
   }
 
   onPointerDown(e) {
@@ -475,6 +503,10 @@ class RotatingFeaturedProduct extends HTMLElement {
 
     this.frameContainer.classList.add('is-dragging');
     this.frameContainer.setPointerCapture(e.pointerId);
+
+    // Add move/up listeners only during drag
+    window.addEventListener('pointermove', this._onPointerMove);
+    window.addEventListener('pointerup', this._onPointerUp);
 
     if (this.dragHint && !this.dragHint.classList.contains('rotating-product__drag-hint--hidden')) {
       this.dragHint.classList.add('rotating-product__drag-hint--hidden');
@@ -488,8 +520,6 @@ class RotatingFeaturedProduct extends HTMLElement {
   }
 
   onPointerMove(e) {
-    if (!this.isDragging) return;
-
     const deltaX = e.clientX - this.startX;
     const containerWidth = this.frameContainer.offsetWidth;
     const pixelsPerFrame = Math.max(20, containerWidth / this.imageCount);
@@ -499,11 +529,13 @@ class RotatingFeaturedProduct extends HTMLElement {
   }
 
   onPointerUp(e) {
-    if (!this.isDragging) return;
-
     this.isDragging = false;
     this.frameContainer.classList.remove('is-dragging');
     this.frameContainer.releasePointerCapture(e.pointerId);
+
+    // Remove move/up listeners when drag ends
+    window.removeEventListener('pointermove', this._onPointerMove);
+    window.removeEventListener('pointerup', this._onPointerUp);
   }
 
   // ---- Image frame display ----
@@ -530,7 +562,7 @@ class RotatingFeaturedProduct extends HTMLElement {
     this.autoRotating = true;
     this.autoRotatePaused = false;
     this.lastAutoRotateTime = 0;
-    this.autoRotateRafId = requestAnimationFrame(this.autoRotateTick.bind(this));
+    this.autoRotateRafId = requestAnimationFrame(this._autoRotateTick);
   }
 
   stopAutoRotate() {
@@ -554,7 +586,7 @@ class RotatingFeaturedProduct extends HTMLElement {
       this.setFrameIndex(nextFrame);
     }
 
-    this.autoRotateRafId = requestAnimationFrame(this.autoRotateTick.bind(this));
+    this.autoRotateRafId = requestAnimationFrame(this._autoRotateTick);
   }
 }
 
