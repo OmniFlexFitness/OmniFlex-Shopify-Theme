@@ -1,6 +1,681 @@
+{% doc %}
+  @prompt
+    Generate a new section block that is the same layout as the featured product section, but allows for adding a 3D rotating product display in place of the product image. This 3D rotating product display should rotate when the user scrolls down, though there should be a toggle for whether the product rotates by scrolling, or by some type of mouse movement. Make sure to allow the standard 3D web asset upload for the product file that rotates
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-3d-product-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-3d-product-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .ai-3d-product-media-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: {{ block.settings.viewer_background }};
+    border-radius: {{ block.settings.viewer_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-3d-product-viewer-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-3d-product-viewer-{{ ai_gen_id }} model-viewer {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-3d-product-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    position: relative;
+  }
+
+  .ai-3d-product-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-3d-product-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-3d-product-controls-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-3d-product-control-btn-{{ ai_gen_id }} {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #121212;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .ai-3d-product-control-btn-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-3d-product-control-btn-{{ ai_gen_id }}.active {
+    opacity: 1;
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-3d-product-info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ai-3d-product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    margin: 0;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-3d-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-3d-product-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-3d-product-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: fit-content;
+  }
+
+  .ai-3d-product-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+  }
+
+  .ai-3d-product-rotation-indicator-{{ ai_gen_id }} {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: none;
+  }
+
+  .ai-3d-product-rotation-indicator-{{ ai_gen_id }}.active {
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-3d-product-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .ai-3d-product-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.8);
+    }
+
+    .ai-3d-product-price-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.price_size }}px * 0.9);
+    }
+
+    .ai-3d-product-description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<product-3d-viewer-{{ ai_gen_id }}
+  class="ai-3d-product-{{ ai_gen_id }}"
+  data-rotation-mode="{{ block.settings.rotation_mode }}"
+  data-rotation-speed="{{ block.settings.rotation_speed }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-3d-product-container-{{ ai_gen_id }}">
+    <div class="ai-3d-product-media-{{ ai_gen_id }}">
+      {% if block.settings.product != blank and block.settings.product.media.size > 0 %}
+        {% assign model_found = false %}
+        {% for media in block.settings.product.media %}
+          {% if media.media_type == 'model' and model_found == false %}
+            {% assign model_found = true %}
+            <div class="ai-3d-product-viewer-{{ ai_gen_id }}">
+              <model-viewer
+                src="{{ media.sources[1].url }}"
+                alt="{{ media.alt | escape }}"
+                camera-controls
+                auto-rotate
+                auto-rotate-delay="0"
+                rotation-per-second="{{ block.settings.rotation_speed }}deg"
+                {% if block.settings.enable_ar %}ar{% endif %}
+                {% if block.settings.enable_ar %}ar-modes="webxr scene-viewer quick-look"{% endif %}
+                shadow-intensity="1"
+                camera-orbit="0deg 75deg 105%"
+                min-camera-orbit="auto auto auto"
+                max-camera-orbit="auto auto auto"
+                style="width: 100%; height: 100%;"
+              ></model-viewer>
+            </div>
+
+            <div class="ai-3d-product-rotation-indicator-{{ ai_gen_id }}">
+              <span class="ai-3d-product-rotation-text-{{ ai_gen_id }}">Scroll to rotate</span>
+            </div>
+
+            {% if block.settings.show_controls %}
+              <div class="ai-3d-product-controls-{{ ai_gen_id }}">
+                <button
+                  class="ai-3d-product-control-btn-{{ ai_gen_id }} ai-3d-product-scroll-btn-{{ ai_gen_id }} {% if block.settings.rotation_mode == 'scroll' %}active{% endif %}"
+                  aria-label="Scroll rotation mode"
+                  data-mode="scroll"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M12 2l-4 4M12 2l4 4"></path>
+                  </svg>
+                </button>
+                <button
+                  class="ai-3d-product-control-btn-{{ ai_gen_id }} ai-3d-product-mouse-btn-{{ ai_gen_id }} {% if block.settings.rotation_mode == 'mouse' %}active{% endif %}"
+                  aria-label="Mouse rotation mode"
+                  data-mode="mouse"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a7 7 0 0 0-7 7v6a7 7 0 0 0 14 0V9a7 7 0 0 0-7-7z"></path>
+                    <path d="M12 6v4"></path>
+                  </svg>
+                </button>
+                <button
+                  class="ai-3d-product-control-btn-{{ ai_gen_id }} ai-3d-product-auto-btn-{{ ai_gen_id }} {% if block.settings.rotation_mode == 'auto' %}active{% endif %}"
+                  aria-label="Auto rotation mode"
+                  data-mode="auto"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+                  </svg>
+                </button>
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% if model_found == false %}
+          <div class="ai-3d-product-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+            <div class="ai-3d-product-empty-state-{{ ai_gen_id }}">
+              Selected product has no 3D model
+            </div>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="ai-3d-product-placeholder-{{ ai_gen_id }}">
+          {{ 'product-1' | placeholder_svg_tag }}
+          <div class="ai-3d-product-empty-state-{{ ai_gen_id }}">
+            Next, select a product with a 3D model
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-3d-product-info-{{ ai_gen_id }}">
+      {% if block.settings.product != blank %}
+        <h2 class="ai-3d-product-title-{{ ai_gen_id }}">{{ block.settings.product.title }}</h2>
+        <div class="ai-3d-product-price-{{ ai_gen_id }}">{{ block.settings.product.price | money }}</div>
+        {% if block.settings.product.description != blank %}
+          <div class="ai-3d-product-description-{{ ai_gen_id }}">{{ block.settings.product.description | strip_html | truncate: 200 }}</div>
+        {% endif %}
+        <a href="{{ block.settings.product.url }}" class="ai-3d-product-button-{{ ai_gen_id }}">
+          {{ block.settings.button_text }}
+        </a>
+      {% else %}
+        <h2 class="ai-3d-product-title-{{ ai_gen_id }}">{{ block.settings.custom_title }}</h2>
+        {% if block.settings.custom_price != blank %}
+          <div class="ai-3d-product-price-{{ ai_gen_id }}">{{ block.settings.custom_price }}</div>
+        {% endif %}
+        {% if block.settings.custom_description != blank %}
+          <div class="ai-3d-product-description-{{ ai_gen_id }}">{{ block.settings.custom_description }}</div>
+        {% endif %}
+        {% if block.settings.button_link != blank %}
+          <a href="{{ block.settings.button_link }}" class="ai-3d-product-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</product-3d-viewer-{{ ai_gen_id }}>
+
+<script type="module">
+  (function() {
+    class Product3DViewer{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.modelViewer = null;
+        this.rotationMode = this.dataset.rotationMode || 'scroll';
+        this.rotationSpeed = parseFloat(this.dataset.rotationSpeed) || 30;
+        this.scrollPosition = 0;
+        this.isScrolling = false;
+        this.scrollTimeout = null;
+      }
+
+      connectedCallback() {
+        this.modelViewer = this.querySelector('model-viewer');
+        if (!this.modelViewer) return;
+
+        this.indicator = this.querySelector('.ai-3d-product-rotation-indicator-{{ ai_gen_id }}');
+        this.indicatorText = this.querySelector('.ai-3d-product-rotation-text-{{ ai_gen_id }}');
+        this.controls = this.querySelectorAll('.ai-3d-product-control-btn-{{ ai_gen_id }}');
+
+        this.setupControls();
+        this.setRotationMode(this.rotationMode);
+
+        this.modelViewer.addEventListener('load', () => {
+          this.modelViewer.cameraOrbit = '0deg 75deg 105%';
+        });
+      }
+
+      setupControls() {
+        this.controls.forEach(button => {
+          button.addEventListener('click', () => {
+            const mode = button.dataset.mode;
+            this.setRotationMode(mode);
+            this.updateActiveButton(button);
+          });
+        });
+      }
+
+      updateActiveButton(activeButton) {
+        this.controls.forEach(btn => btn.classList.remove('active'));
+        activeButton.classList.add('active');
+      }
+
+      setRotationMode(mode) {
+        this.rotationMode = mode;
+        this.removeAllListeners();
+
+        if (mode === 'scroll') {
+          this.enableScrollRotation();
+        } else if (mode === 'mouse') {
+          this.enableMouseRotation();
+        } else if (mode === 'auto') {
+          this.enableAutoRotation();
+        }
+      }
+
+      enableScrollRotation() {
+        if (!this.modelViewer) return;
+
+        this.modelViewer.setAttribute('auto-rotate', '');
+        this.modelViewer.setAttribute('rotation-per-second', '0deg');
+        this.modelViewer.removeAttribute('camera-controls');
+
+        if (this.indicator) {
+          this.indicator.classList.add('active');
+          if (this.indicatorText) {
+            this.indicatorText.textContent = 'Scroll to rotate';
+          }
+        }
+
+        this.scrollHandler = this.handleScroll.bind(this);
+        window.addEventListener('scroll', this.scrollHandler, { passive: true });
+
+        setTimeout(() => {
+          if (this.indicator) {
+            this.indicator.classList.remove('active');
+          }
+        }, 3000);
+      }
+
+      enableMouseRotation() {
+        if (!this.modelViewer) return;
+
+        this.modelViewer.removeAttribute('auto-rotate');
+        this.modelViewer.setAttribute('camera-controls', '');
+
+        if (this.indicator) {
+          this.indicator.classList.add('active');
+          if (this.indicatorText) {
+            this.indicatorText.textContent = 'Drag to rotate';
+          }
+        }
+
+        setTimeout(() => {
+          if (this.indicator) {
+            this.indicator.classList.remove('active');
+          }
+        }, 3000);
+      }
+
+      enableAutoRotation() {
+        if (!this.modelViewer) return;
+
+        this.modelViewer.setAttribute('auto-rotate', '');
+        this.modelViewer.setAttribute('rotation-per-second', `${this.rotationSpeed}deg`);
+        this.modelViewer.setAttribute('camera-controls', '');
+
+        if (this.indicator) {
+          this.indicator.classList.add('active');
+          if (this.indicatorText) {
+            this.indicatorText.textContent = 'Auto rotating';
+          }
+        }
+
+        setTimeout(() => {
+          if (this.indicator) {
+            this.indicator.classList.remove('active');
+          }
+        }, 3000);
+      }
+
+      handleScroll() {
+        if (!this.modelViewer) return;
+
+        const currentScroll = window.pageYOffset;
+        const scrollDelta = currentScroll - this.scrollPosition;
+        this.scrollPosition = currentScroll;
+
+        const currentOrbit = this.modelViewer.getCameraOrbit();
+        const rotationAmount = scrollDelta * 0.5;
+        const newTheta = currentOrbit.theta + rotationAmount;
+
+        this.modelViewer.cameraOrbit = `${newTheta}deg ${currentOrbit.phi}rad ${currentOrbit.radius}m`;
+
+        if (!this.isScrolling && this.indicator) {
+          this.indicator.classList.add('active');
+          this.isScrolling = true;
+        }
+
+        clearTimeout(this.scrollTimeout);
+        this.scrollTimeout = setTimeout(() => {
+          this.isScrolling = false;
+          if (this.indicator) {
+            this.indicator.classList.remove('active');
+          }
+        }, 1000);
+      }
+
+      removeAllListeners() {
+        if (this.scrollHandler) {
+          window.removeEventListener('scroll', this.scrollHandler);
+        }
+      }
+
+      disconnectedCallback() {
+        this.removeAllListeners();
+        clearTimeout(this.scrollTimeout);
+      }
+    }
+
+    customElements.define('product-3d-viewer-{{ ai_gen_id }}', Product3DViewer{{ ai_gen_id }});
+  })();
+</script>
+
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "3D product display",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product with 3D model"
+    },
+    {
+      "type": "header",
+      "content": "Custom content"
+    },
+    {
+      "type": "paragraph",
+      "content": "Use these settings if no product is selected"
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Title",
+      "default": "3D Product Display"
+    },
+    {
+      "type": "text",
+      "id": "custom_price",
+      "label": "Price",
+      "default": "$99.00"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_description",
+      "label": "Description",
+      "default": "Experience our product in stunning 3D. Rotate and explore every detail."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "3D viewer settings"
+    },
+    {
+      "type": "select",
+      "id": "rotation_mode",
+      "label": "Rotation mode",
+      "options": [
+        {
+          "value": "scroll",
+          "label": "Scroll"
+        },
+        {
+          "value": "mouse",
+          "label": "Mouse drag"
+        },
+        {
+          "value": "auto",
+          "label": "Auto rotate"
+        }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "range",
+      "id": "rotation_speed",
+      "label": "Auto rotation speed",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "unit": "°/s",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show rotation controls",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_ar",
+      "label": "Enable AR viewing",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "View product"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "viewer_background",
+      "label": "Viewer background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "range",
+      "id": "viewer_border_radius",
+      "label": "Viewer border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#334fb4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover background",
+      "default": "#334fb4"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D product display"
+    }
+  ]
+}
 {% endschema %}
