@@ -29,13 +29,33 @@
         "heading_wGqfTK": {
           "type": "heading",
           "settings": {
-            "heading": "Shop Activewear",
+            "heading": "<strong>Shop Activewear</strong>",
             "heading_size": "h1"
+          }
+        },
+        "text_Um6xiM": {
+          "type": "text",
+          "settings": {
+            "text": "Browse our latest products",
+            "text_style": "subtitle"
+          }
+        },
+        "buttons_pF9bnG": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop",
+            "button_link_1": "shopify://collections/womens-collection",
+            "button_style_secondary_1": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
-        "heading_wGqfTK"
+        "heading_wGqfTK",
+        "text_Um6xiM",
+        "buttons_pF9bnG"
       ],
       "disabled": true,
       "custom_css": [
@@ -47,12 +67,12 @@
         "video_url": "",
         "enable_video_looping": true,
         "image_overlay_opacity": 40,
-        "video_height": "medium",
+        "video_height": "large",
         "show_play_pause": false,
         "pause_offscreen": false,
         "desktop_content_position": "middle-center",
         "desktop_content_alignment": "center",
-        "show_text_box": true,
+        "show_text_box": false,
         "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
         "mobile_content_alignment": "center",
         "show_text_below": false,

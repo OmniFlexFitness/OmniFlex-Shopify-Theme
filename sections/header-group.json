@@ -20,15 +20,15 @@
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
         "menu": "main-menu",
-        "menu_type_desktop": "mega",
-        "sticky_header_type": "none",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,
         "color_scheme": "inverse",
         "menu_color_scheme": "inverse",
         "enable_country_selector": true,
         "enable_language_selector": true,
         "enable_customer_avatar": true,
-        "margin_bottom": 8,
+        "margin_bottom": 4,
         "padding_top": 0,
         "padding_bottom": 0
       }
