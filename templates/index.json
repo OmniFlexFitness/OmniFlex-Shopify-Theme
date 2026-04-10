@@ -424,6 +424,43 @@
         "use_image": true,
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
+    },
+    "177578933196c77b2a": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_0bd9121_9Mkgpd": {
+          "type": "ai_gen_block_0bd9121",
+          "settings": {
+            "product": "",
+            "custom_title": "3D Product Display",
+            "custom_price": "$99.00",
+            "custom_description": "Experience our product in stunning 3D. Rotate and explore every detail.",
+            "button_link": "",
+            "rotation_mode": "scroll",
+            "rotation_speed": 30,
+            "show_controls": true,
+            "enable_ar": true,
+            "button_text": "View product",
+            "desktop_width_percent": 100,
+            "viewer_background": "#000000",
+            "viewer_border_radius": 8,
+            "text_color": "#ffffff",
+            "accent_color": "#334fb4",
+            "title_size": 32,
+            "price_size": 24,
+            "description_size": 16,
+            "button_color": "#121212",
+            "button_text_color": "#ffffff",
+            "button_hover_color": "#334fb4",
+            "button_border_radius": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_0bd9121_9Mkgpd"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -436,6 +473,7 @@
     "featured_product_BdLKAM",
     "animated_divider_HCAgLg",
     "collection_list_FrVcEa",
-    "animated_divider_g4gLgF"
+    "animated_divider_g4gLgF",
+    "177578933196c77b2a"
   ]
 }
