@@ -101,19 +101,20 @@
 
   {%- if section.settings.enable_transparent_header -%}
     .section-header {
-      position: absolute;
+      position: absolute !important;
       left: 0;
       right: 0;
-      z-index: 10;
+      z-index: 1001;
+      margin-bottom: 0 !important;
     }
 
     .section-header.shopify-section-header-sticky {
-      position: sticky;
+      position: sticky !important;
     }
 
     .header-wrapper {
-      background-color: transparent;
-      background-image: none;
+      background-color: transparent !important;
+      background-image: none !important;
       transition: background-color 0.15s ease-out, background-image 0.15s ease-out, border-bottom-color 0.15s ease-out;
     }
 
@@ -122,8 +123,8 @@
     }
 
     .scrolled-past-header .header-wrapper {
-      background-color: rgb(var(--color-background));
-      background-image: var(--gradient-background);
+      background-color: rgb(var(--color-background)) !important;
+      background-image: var(--gradient-background) !important;
     }
 
     .scrolled-past-header .header-wrapper--border-bottom {
