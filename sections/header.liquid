@@ -101,33 +101,31 @@
 
   {%- if section.settings.enable_transparent_header -%}
     .section-header {
-      position: absolute !important;
+      position: absolute;
       left: 0;
       right: 0;
       z-index: 1001;
-      margin-bottom: 0 !important;
+      margin-bottom: 0;
     }
 
     .section-header.shopify-section-header-sticky {
-      position: sticky !important;
+      position: sticky;
     }
 
-    .header-wrapper {
-      background-color: transparent !important;
-      background-image: none !important;
-      transition: background-color 0.15s ease-out, background-image 0.15s ease-out, border-bottom-color 0.15s ease-out;
+    .header-wrapper--transparent {
+      background-color: transparent;
+      transition: background-color 0.15s ease-out, border-bottom-color 0.15s ease-out;
     }
 
-    .header-wrapper--border-bottom {
+    .header-wrapper--transparent.header-wrapper--border-bottom {
       border-bottom-color: transparent;
     }
 
-    .scrolled-past-header .header-wrapper {
-      background-color: rgb(var(--color-background)) !important;
-      background-image: var(--gradient-background) !important;
+    .scrolled-past-header .header-wrapper--transparent {
+      background-color: rgb(var(--color-background));
     }
 
-    .scrolled-past-header .header-wrapper--border-bottom {
+    .scrolled-past-header .header-wrapper--transparent.header-wrapper--border-bottom {
       border-bottom-color: rgba(var(--color-foreground), 0.08);
     }
   {%- endif -%}
@@ -160,7 +158,7 @@
   {% if header_tag == 'sticky-header' %}
     data-sticky-type="{{ effective_sticky_type }}"
   {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
+  class="header-wrapper color-{{ section.settings.color_scheme }}{% unless section.settings.enable_transparent_header %} gradient{% endunless %}{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}{% if section.settings.enable_transparent_header %} header-wrapper--transparent{% endif %}"
 >
   {%- liquid
     assign social_links = false
