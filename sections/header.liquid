@@ -98,6 +98,69 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- if section.settings.enable_transparent_header -%}
+    .section-header {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      margin-bottom: 0;
+    }
+
+    .section-header.shopify-section-header-sticky {
+      position: sticky;
+    }
+
+    .header-wrapper.header-wrapper--transparent {
+      background-color: transparent;
+      background-image: none;
+      transition: background-color 0.3s ease, background-image 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    .header-wrapper.header-wrapper--transparent .header__heading-link,
+    .header-wrapper.header-wrapper--transparent .header__menu-item,
+    .header-wrapper.header-wrapper--transparent .list-menu__item,
+    .header-wrapper.header-wrapper--transparent .header__icon,
+    .header-wrapper.header-wrapper--transparent .header__icon::before,
+    .header-wrapper.header-wrapper--transparent .localization-form__select,
+    .header-wrapper.header-wrapper--transparent summary {
+      color: {{ section.settings.transparent_text_color }};
+    }
+
+    .header-wrapper.header-wrapper--transparent .header__icon svg path,
+    .header-wrapper.header-wrapper--transparent summary svg path {
+      fill: {{ section.settings.transparent_text_color }};
+      stroke: {{ section.settings.transparent_text_color }};
+    }
+
+    .header-wrapper.header-wrapper--transparent.header-wrapper--border-bottom {
+      border-bottom-color: transparent;
+    }
+
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent {
+      background-color: rgb(var(--color-background));
+    }
+
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__heading-link,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__menu-item,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .list-menu__item,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__icon,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .localization-form__select,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent summary {
+      color: rgba(var(--color-foreground), 0.75);
+    }
+
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__icon svg path,
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent summary svg path {
+      fill: rgb(var(--color-foreground));
+      stroke: rgb(var(--color-foreground));
+    }
+
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent.header-wrapper--border-bottom {
+      border-bottom-color: rgba(var(--color-foreground), 0.08);
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
@@ -112,17 +175,22 @@
 
 {% liquid
   assign header_tag = 'div'
+  assign effective_sticky_type = section.settings.sticky_header_type
 
-  if section.settings.sticky_header_type != 'none'
+  if section.settings.enable_transparent_header and effective_sticky_type == 'none'
+    assign effective_sticky_type = 'on-scroll-up'
+  endif
+
+  if effective_sticky_type != 'none'
     assign header_tag = 'sticky-header'
   endif
 %}
 
 <{{ header_tag }}
   {% if header_tag == 'sticky-header' %}
-    data-sticky-type="{{ section.settings.sticky_header_type }}"
+    data-sticky-type="{{ effective_sticky_type }}"
   {% endif %}
-  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
+  class="header-wrapper color-{{ section.settings.color_scheme }}{% unless section.settings.enable_transparent_header %} gradient{% endunless %}{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}{% if section.settings.enable_transparent_header %} header-wrapper--transparent{% endif %}"
 >
   {%- liquid
     assign social_links = false
@@ -568,6 +636,20 @@
       "id": "show_line_separator",
       "default": true,
       "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header",
+      "default": false,
+      "label": "t:sections.header.settings.enable_transparent_header.label",
+      "info": "t:sections.header.settings.enable_transparent_header.info"
+    },
+    {
+      "type": "color",
+      "id": "transparent_text_color",
+      "default": "#ffffff",
+      "label": "t:sections.header.settings.transparent_text_color.label",
+      "info": "t:sections.header.settings.transparent_text_color.info"
     },
     {
       "type": "header",

@@ -1110,6 +1110,14 @@
         "show_line_separator": {
           "label": "Separator line"
         },
+        "enable_transparent_header": {
+          "label": "Transparent header",
+          "info": "Header background becomes transparent, overlaying the content below. Works best with a sticky header enabled."
+        },
+        "transparent_text_color": {
+          "label": "Transparent header text color",
+          "info": "Color of menu items and icons when the header is transparent. Use white for dark backgrounds."
+        },
         "header__1": {
           "content": "Color"
         },
