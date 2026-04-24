@@ -1451,5 +1451,65 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Background",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global site background"
+      },
+      {
+        "type": "image_picker",
+        "id": "global_background_image",
+        "label": "Site background image",
+        "info": "Recommended size: 2560x1440px. Leave blank to use background color."
+      },
+      {
+        "type": "select",
+        "id": "global_background_size",
+        "label": "Background size",
+        "options": [
+          { "value": "cover", "label": "Cover (fill screen)" },
+          { "value": "contain", "label": "Contain (fit inside)" },
+          { "value": "auto", "label": "Original size" }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "select",
+        "id": "global_background_attachment",
+        "label": "Background scroll behavior",
+        "options": [
+          { "value": "scroll", "label": "Scroll with page" },
+          { "value": "fixed", "label": "Fixed (parallax feel)" }
+        ],
+        "default": "fixed"
+      },
+      {
+        "type": "select",
+        "id": "global_background_position",
+        "label": "Background position",
+        "options": [
+          { "value": "center center", "label": "Center" },
+          { "value": "top center", "label": "Top" },
+          { "value": "bottom center", "label": "Bottom" },
+          { "value": "center left", "label": "Left" },
+          { "value": "center right", "label": "Right" }
+        ],
+        "default": "center center"
+      },
+      {
+        "type": "range",
+        "id": "global_background_opacity",
+        "label": "Background overlay opacity",
+        "info": "Adjusts a white overlay on top of the background for readability. 0% = image fully visible, 100% = image hidden.",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "default": 0,
+        "unit": "%"
+      }
+    ]
   }
 ]

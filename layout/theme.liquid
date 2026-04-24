@@ -299,6 +299,36 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+
+    {%- comment -%}
+      OmniFlex: Global background image controlled via Theme Settings → Background.
+      Added by Claude Code.
+    {%- endcomment -%}
+    {%- if settings.global_background_image != blank -%}
+      <style>
+        body {
+          background-image: url({{ settings.global_background_image | image_url: width: 2560 }});
+          background-size: {{ settings.global_background_size }};
+          background-attachment: {{ settings.global_background_attachment }};
+          background-position: {{ settings.global_background_position }};
+          background-repeat: no-repeat;
+        }
+
+        {%- if settings.global_background_opacity > 0 -%}
+          body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, {{ settings.global_background_opacity | divided_by: 100.0 }});
+            z-index: -1;
+            pointer-events: none;
+          }
+        {%- endif -%}
+      </style>
+    {%- endif -%}
   </head>
 
   <body class="gradient template-{{ request.page_type | handle }}{% if request.page_type == 'page' %}-{{ page.handle }}{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
