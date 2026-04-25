@@ -1,0 +1,106 @@
+{{ 'section-gradient-marquee.css' | asset_url | stylesheet_tag }}
+
+<gradient-marquee
+  class="gradient-marquee"
+  data-base-speed="{{ section.settings.base_speed }}"
+  data-scroll-factor="{{ section.settings.scroll_factor }}"
+>
+  <div class="gradient-marquee__halo gradient-marquee__halo--top" aria-hidden="true"></div>
+  <div class="gradient-marquee__halo gradient-marquee__halo--bottom" aria-hidden="true"></div>
+
+  <div class="gradient-marquee__rows">
+    {%- for block in section.blocks -%}
+      {%- assign style = block.settings.style -%}
+      {%- assign reverse = block.settings.reverse -%}
+      <div
+        class="gradient-marquee__row {% if reverse %}gradient-marquee__row--reverse{% endif %}"
+        {{ block.shopify_attributes }}
+      >
+        <span class="gradient-marquee__item gradient-marquee__item--{{ style }}">
+          {{ block.settings.text | escape }}
+          <span class="gradient-marquee__dot" aria-hidden="true"></span>
+        </span>
+      </div>
+    {%- else -%}
+      <div class="gradient-marquee__row">
+        <span class="gradient-marquee__item gradient-marquee__item--gradient">
+          OmniFlex <span class="gradient-marquee__dot" aria-hidden="true"></span>
+        </span>
+      </div>
+    {%- endfor -%}
+  </div>
+</gradient-marquee>
+
+<script src="{{ 'gradient-marquee.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Gradient marquee",
+  "tag": "section",
+  "class": "section section--gradient-marquee",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "base_speed",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "label": "Base speed",
+      "default": 0.4
+    },
+    {
+      "type": "range",
+      "id": "scroll_factor",
+      "min": 0,
+      "max": 12,
+      "step": 0.5,
+      "label": "Scroll velocity factor",
+      "default": 6
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Marquee row",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Defy Limits"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            { "value": "gradient", "label": "Gradient fill" },
+            { "value": "outline", "label": "Outline" }
+          ],
+          "default": "gradient"
+        },
+        {
+          "type": "checkbox",
+          "id": "reverse",
+          "label": "Scroll right-to-left",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gradient marquee",
+      "blocks": [
+        { "type": "row", "settings": { "text": "Defy Limits", "style": "gradient", "reverse": false } },
+        { "type": "row", "settings": { "text": "Build Strength", "style": "outline", "reverse": true } },
+        { "type": "row", "settings": { "text": "Own Your Story", "style": "gradient", "reverse": false } }
+      ]
+    }
+  ]
+}
+{% endschema %}

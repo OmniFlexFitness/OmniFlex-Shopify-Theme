@@ -1,0 +1,162 @@
+{{ 'section-scroll-3d-showcase.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign chapters = section.blocks | where: 'type', 'chapter'
+  assign chapter_count = chapters.size
+  if chapter_count < 1
+    assign chapter_count = 1
+  endif
+  assign track_height = chapter_count | times: 110
+-%}
+
+{%- style -%}
+  .scroll3d--{{ section.id }} .scroll3d__track {
+    height: {{ track_height }}vh;
+  }
+{%- endstyle -%}
+
+<scroll-3d-showcase class="scroll3d scroll3d--{{ section.id }}">
+  <div class="scroll3d__track">
+    <div class="scroll3d__sticky">
+      <canvas class="scroll3d__canvas" aria-hidden="true"></canvas>
+
+      <div class="scroll3d__overlay">
+        {%- if chapters.size > 0 -%}
+          {%- for block in chapters -%}
+            <article
+              class="scroll3d__chapter scroll3d__chapter--{{ block.settings.alignment }}"
+              data-active="{% if forloop.first %}true{% else %}false{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="scroll3d__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }} / {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+              <h2 class="scroll3d__title">{{ block.settings.title }}</h2>
+              {%- if block.settings.body != blank -%}
+                <p class="scroll3d__body">{{ block.settings.body }}</p>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="scroll3d__chapter scroll3d__chapter--center" data-active="true">
+            <span class="scroll3d__index">01 / 01</span>
+            <h2 class="scroll3d__title">Built to <em>flex</em></h2>
+            <p class="scroll3d__body">Add chapter blocks to script the scroll story.</p>
+          </article>
+        {%- endif -%}
+      </div>
+
+      <div class="scroll3d__progress" aria-hidden="true">
+        {%- for block in chapters -%}
+          <span
+            class="scroll3d__progress-dot"
+            data-active="{% if forloop.first %}true{% else %}false{% endif %}"
+          ></span>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" class="scroll3d__data">
+    {
+      "shape": {{ section.settings.shape | json }},
+      "wireframe": {{ section.settings.wireframe | json }},
+      "colorA": {{ section.settings.color_a | json }},
+      "colorB": {{ section.settings.color_b | json }}
+    }
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="{{ 'scroll-3d-showcase.js' | asset_url }}"></script>
+</scroll-3d-showcase>
+
+{% schema %}
+{
+  "name": "3D scroll showcase",
+  "tag": "section",
+  "class": "section section--scroll3d",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "shape",
+      "label": "3D shape",
+      "options": [
+        { "value": "knot", "label": "Torus knot" },
+        { "value": "torus", "label": "Torus" },
+        { "value": "icosa", "label": "Icosahedron" },
+        { "value": "octa", "label": "Octahedron" },
+        { "value": "sphere", "label": "Sphere" }
+      ],
+      "default": "knot"
+    },
+    {
+      "type": "checkbox",
+      "id": "wireframe",
+      "label": "Wireframe style",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "color_a",
+      "label": "Light color (key)",
+      "default": "#0aeaed"
+    },
+    {
+      "type": "color",
+      "id": "color_b",
+      "label": "Light color (rim)",
+      "default": "#fa0dfd"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chapter",
+      "name": "Chapter",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Built to flex"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body",
+          "default": "<p>Compression-first fabric, sweat-resistant grip, and a silhouette engineered for mobility.</p>"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D scroll showcase",
+      "blocks": [
+        { "type": "chapter", "settings": { "title": "Built to <em>flex</em>", "alignment": "left" } },
+        { "type": "chapter", "settings": { "title": "Engineered to <em>endure</em>", "alignment": "right" } },
+        { "type": "chapter", "settings": { "title": "Designed to <em>defy</em>", "alignment": "center" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

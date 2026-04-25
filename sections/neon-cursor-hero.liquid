@@ -1,0 +1,199 @@
+{{ 'section-neon-cursor-hero.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} { margin: 0; padding: 0; }
+  .neon-hero--{{ section.id }} {
+    min-height: {{ section.settings.section_height }}svh;
+  }
+{%- endstyle -%}
+
+<neon-cursor-hero class="neon-hero neon-hero--{{ section.id }}">
+  <canvas class="neon-hero__canvas" aria-hidden="true"></canvas>
+  <div class="neon-hero__grid" aria-hidden="true"></div>
+
+  <div class="neon-hero__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="neon-hero__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h1 class="neon-hero__headline">
+        {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
+        {%- for line in lines -%}
+          {%- assign trimmed = line | strip -%}
+          {%- if trimmed != blank -%}
+            {%- if forloop.index == 2 -%}
+              <span class="neon-hero__headline-line neon-hero__headline-line--outline">{{ trimmed }}</span>
+            {%- else -%}
+              <span class="neon-hero__headline-line">{{ trimmed }}</span>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </h1>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="neon-hero__subheading">{{ section.settings.subheading | escape }}</p>
+    {%- endif -%}
+
+    <div class="neon-hero__cta-row">
+      {%- if section.settings.primary_label != blank -%}
+        <a class="neon-hero__cta" href="{{ section.settings.primary_link | default: '#' }}">
+          {{ section.settings.primary_label | escape }}
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.secondary_label != blank -%}
+        <a class="neon-hero__cta neon-hero__cta--ghost" href="{{ section.settings.secondary_link | default: '#' }}">
+          {{ section.settings.secondary_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.scroll_hint != blank -%}
+    <div class="neon-hero__hint">{{ section.settings.scroll_hint | escape }} &darr;</div>
+  {%- endif -%}
+
+  <script type="application/json" class="neon-hero__data">
+    {
+      "colorA": {{ section.settings.color_a | json }},
+      "colorB": {{ section.settings.color_b | json }},
+      "bloomStrength": {{ section.settings.bloom_strength }},
+      "tubeCount": {{ section.settings.tube_count }},
+      "trailLength": {{ section.settings.trail_length }}
+    }
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="{{ 'neon-cursor-hero.js' | asset_url }}"></script>
+</neon-cursor-hero>
+
+{% schema %}
+{
+  "name": "Neon cursor hero",
+  "tag": "section",
+  "class": "section section--neon-hero",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "OmniFlex // 2026"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Headline",
+      "info": "Each new line becomes its own row. The 2nd line renders as an outline.",
+      "default": "Defy\nLimits"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Activewear and training tools engineered for the women who build their own ceiling."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Shop the drop"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Watch the film"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint",
+      "label": "Scroll hint",
+      "default": "Scroll"
+    },
+    {
+      "type": "header",
+      "content": "Visuals"
+    },
+    {
+      "type": "color",
+      "id": "color_a",
+      "label": "Trail color (start)",
+      "default": "#0aeaed"
+    },
+    {
+      "type": "color",
+      "id": "color_b",
+      "label": "Trail color (end)",
+      "default": "#fa0dfd"
+    },
+    {
+      "type": "range",
+      "id": "tube_count",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "label": "Number of trails",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "trail_length",
+      "min": 30,
+      "max": 160,
+      "step": 5,
+      "label": "Trail length",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "bloom_strength",
+      "min": 0,
+      "max": 3,
+      "step": 0.1,
+      "label": "Bloom strength",
+      "default": 1.4
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 60,
+      "max": 120,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Neon cursor hero"
+    }
+  ]
+}
+{% endschema %}

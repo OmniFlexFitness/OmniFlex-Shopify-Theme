@@ -1,0 +1,110 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "neon_hero": {
+      "type": "neon-cursor-hero",
+      "settings": {
+        "eyebrow": "OmniFlex // 2026",
+        "heading": "Defy\nLimits",
+        "subheading": "Activewear and training systems engineered for the women who build their own ceiling. Move with the system, not against it.",
+        "primary_label": "Shop the drop",
+        "primary_link": "shopify://collections/all",
+        "secondary_label": "Watch the film",
+        "secondary_link": "",
+        "scroll_hint": "Scroll",
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd",
+        "tube_count": 5,
+        "trail_length": 80,
+        "bloom_strength": 1.4,
+        "section_height": 100
+      }
+    },
+    "scroll_3d": {
+      "type": "scroll-3d-showcase",
+      "blocks": {
+        "chapter_one": {
+          "type": "chapter",
+          "settings": {
+            "title": "Built to <em>flex</em>",
+            "body": "<p>Compression-first fabric, sweat-resistant grip, and a silhouette engineered for full-range mobility.</p>",
+            "alignment": "left"
+          }
+        },
+        "chapter_two": {
+          "type": "chapter",
+          "settings": {
+            "title": "Engineered to <em>endure</em>",
+            "body": "<p>Lab-tested supplements that pair with the work you put in, calibrated to support recovery and performance.</p>",
+            "alignment": "right"
+          }
+        },
+        "chapter_three": {
+          "type": "chapter",
+          "settings": {
+            "title": "Designed to <em>defy</em>",
+            "body": "<p>One system, one ecosystem. Wear it, fuel it, train it. Then take what's yours.</p>",
+            "alignment": "center"
+          }
+        }
+      },
+      "block_order": ["chapter_one", "chapter_two", "chapter_three"],
+      "settings": {
+        "shape": "knot",
+        "wireframe": false,
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd"
+      }
+    },
+    "marquee": {
+      "type": "gradient-marquee",
+      "blocks": {
+        "row_one": {
+          "type": "row",
+          "settings": { "text": "Defy Limits", "style": "gradient", "reverse": false }
+        },
+        "row_two": {
+          "type": "row",
+          "settings": { "text": "Build Strength", "style": "outline", "reverse": true }
+        },
+        "row_three": {
+          "type": "row",
+          "settings": { "text": "Own Your Story", "style": "gradient", "reverse": false }
+        }
+      },
+      "block_order": ["row_one", "row_two", "row_three"],
+      "settings": {
+        "base_speed": 0.4,
+        "scroll_factor": 6
+      }
+    },
+    "floating_cta": {
+      "type": "floating-3d",
+      "settings": {
+        "pretitle": "Built without limits",
+        "title": "Train heavier. Recover smarter. <em>Own the rep.</em>",
+        "body": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear. Move with the system, not against it.</p>",
+        "cta_label": "Explore the system",
+        "cta_link": "shopify://collections/all",
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd",
+        "shape_count": 14,
+        "parallax_strength": 1.5
+      }
+    }
+  },
+  "order": [
+    "main",
+    "neon_hero",
+    "scroll_3d",
+    "marquee",
+    "floating_cta"
+  ]
+}

@@ -1,0 +1,128 @@
+{{ 'section-floating-3d.css' | asset_url | stylesheet_tag }}
+
+<floating-3d class="floating3d">
+  <canvas class="floating3d__canvas" aria-hidden="true"></canvas>
+  <div class="floating3d__noise" aria-hidden="true"></div>
+
+  <div class="floating3d__content">
+    {%- if section.settings.pretitle != blank -%}
+      <p class="floating3d__pretitle">{{ section.settings.pretitle | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="floating3d__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <div class="floating3d__body">{{ section.settings.body }}</div>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <a class="floating3d__cta" href="{{ section.settings.cta_link | default: '#' }}">
+        {{ section.settings.cta_label | escape }}
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </div>
+
+  <script type="application/json" class="floating3d__data">
+    {
+      "colorA": {{ section.settings.color_a | json }},
+      "colorB": {{ section.settings.color_b | json }},
+      "shapeCount": {{ section.settings.shape_count }},
+      "parallaxStrength": {{ section.settings.parallax_strength }}
+    }
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="{{ 'floating-3d.js' | asset_url }}"></script>
+</floating-3d>
+
+{% schema %}
+{
+  "name": "Floating 3D objects",
+  "tag": "section",
+  "class": "section section--floating3d",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "pretitle",
+      "label": "Pretitle",
+      "default": "Built without limits"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Train heavier. Recover smarter. <em>Own the rep.</em>"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear. Move with the system, not against it.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Explore the system"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Visuals"
+    },
+    {
+      "type": "color",
+      "id": "color_a",
+      "label": "Lighting (start)",
+      "default": "#0aeaed"
+    },
+    {
+      "type": "color",
+      "id": "color_b",
+      "label": "Lighting (end)",
+      "default": "#fa0dfd"
+    },
+    {
+      "type": "range",
+      "id": "shape_count",
+      "min": 4,
+      "max": 30,
+      "step": 1,
+      "label": "Number of objects",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "parallax_strength",
+      "min": 0,
+      "max": 4,
+      "step": 0.1,
+      "label": "Parallax strength",
+      "default": 1.5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Floating 3D objects"
+    }
+  ]
+}
+{% endschema %}
