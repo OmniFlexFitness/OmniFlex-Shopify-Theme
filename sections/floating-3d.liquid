@@ -4,9 +4,15 @@
   <canvas class="floating3d__canvas" aria-hidden="true"></canvas>
   <div class="floating3d__noise" aria-hidden="true"></div>
 
-  <div class="floating3d__content">
+  {%- if section.settings.hud_label != blank -%}
+    <div class="floating3d__hud-tag" aria-hidden="true">
+      <span>{{ section.settings.hud_label | escape }}</span>
+    </div>
+  {%- endif -%}
+
+  <div class="floating3d__inner">
     {%- if section.settings.pretitle != blank -%}
-      <p class="floating3d__pretitle">{{ section.settings.pretitle | escape }}</p>
+      <span class="floating3d__pretitle">{{ section.settings.pretitle | escape }}</span>
     {%- endif -%}
     {%- if section.settings.title != blank -%}
       <h2 class="floating3d__title">{{ section.settings.title }}</h2>
@@ -19,6 +25,72 @@
         {{ section.settings.cta_label | escape }}
         <span aria-hidden="true">&rarr;</span>
       </a>
+    {%- endif -%}
+
+    {%- assign pillars = section.blocks | where: 'type', 'pillar' -%}
+    {%- if pillars.size > 0 -%}
+      <div class="floating3d__pillars">
+        {%- for block in pillars -%}
+          <a class="floating3d__pillar" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+            <span class="floating3d__pillar-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }} / {{ pillars.size | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="floating3d__pillar-icon" aria-hidden="true">
+              {%- case block.settings.icon -%}
+              {%- when 'wear' -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 7l7 2 5-4 5 4 7-2v10l-7 2-5 3-5-3-7-2z"/><path d="M15 17v15M25 17v15"/></svg>
+              {%- when 'fuel' -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="12" y="5" width="16" height="6" rx="1"/><path d="M14 11h12l-1 22a3 3 0 01-3 3h-4a3 3 0 01-3-3z"/><path d="M15 20h10M15 26h10"/></svg>
+              {%- when 'train' -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 20h3l5-12 7 24 5-15 3 7h7"/></svg>
+              {%- when 'lab' -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 5v10L7 32a3 3 0 003 4h20a3 3 0 003-4l-8-17V5"/><path d="M13 5h14M14 22h12"/></svg>
+              {%- when 'recovery' -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="20" cy="20" r="14"/><path d="M20 12v8l5 5"/></svg>
+              {%- else -%}
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 4l15 8v16l-15 8-15-8V12z"/></svg>
+              {%- endcase -%}
+            </span>
+            <h3 class="floating3d__pillar-label">{{ block.settings.label | escape }}</h3>
+            <p class="floating3d__pillar-desc">{{ block.settings.description | escape }}</p>
+            <span class="floating3d__pillar-link">
+              {{ block.settings.cta_label | default: 'Explore' | escape }} <span aria-hidden="true">&rarr;</span>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_stats -%}
+        <div class="floating3d__stats">
+          <div class="floating3d__stat">
+            <span class="floating3d__stat-value">{{ section.settings.stat_1_value | escape }}</span>
+            <span class="floating3d__stat-label">{{ section.settings.stat_1_label | escape }}</span>
+          </div>
+          <div class="floating3d__stat">
+            <span class="floating3d__stat-value">{{ section.settings.stat_2_value | escape }}</span>
+            <span class="floating3d__stat-label">{{ section.settings.stat_2_label | escape }}</span>
+          </div>
+          <div class="floating3d__stat">
+            <span class="floating3d__stat-value">{{ section.settings.stat_3_value | escape }}</span>
+            <span class="floating3d__stat-label">{{ section.settings.stat_3_label | escape }}</span>
+          </div>
+          <div class="floating3d__stat">
+            <span class="floating3d__stat-value">{{ section.settings.stat_4_value | escape }}</span>
+            <span class="floating3d__stat-label">{{ section.settings.stat_4_label | escape }}</span>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if section.settings.show_press -%}
+      <div class="floating3d__press">
+        <span class="floating3d__press-label">{{ section.settings.press_label | default: 'As featured in' | escape }}</span>
+        <div class="floating3d__press-row">
+          {%- if section.settings.press_1 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_1 | escape }}</span>{%- endif -%}
+          {%- if section.settings.press_2 != blank -%}<span class="floating3d__press-item floating3d__press-item--bold">{{ section.settings.press_2 | escape }}</span>{%- endif -%}
+          {%- if section.settings.press_3 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_3 | escape }}</span>{%- endif -%}
+          {%- if section.settings.press_4 != blank -%}<span class="floating3d__press-item floating3d__press-item--bold">{{ section.settings.press_4 | escape }}</span>{%- endif -%}
+          {%- if section.settings.press_5 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_5 | escape }}</span>{%- endif -%}
+        </div>
+      </div>
     {%- endif -%}
   </div>
 
@@ -53,7 +125,13 @@
   "settings": [
     {
       "type": "header",
-      "content": "Content"
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "hud_label",
+      "label": "HUD label",
+      "default": "SECTION 03 // OmniFlex System"
     },
     {
       "type": "text",
@@ -71,19 +149,53 @@
       "type": "richtext",
       "id": "body",
       "label": "Body",
-      "default": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear. Move with the system, not against it.</p>"
+      "default": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear and on-demand training. Move with the system, not against it.</p>"
     },
     {
       "type": "text",
       "id": "cta_label",
       "label": "CTA label",
-      "default": "Explore the system"
+      "default": "Enter the system"
     },
     {
       "type": "url",
       "id": "cta_link",
       "label": "CTA link"
     },
+    {
+      "type": "header",
+      "content": "Stats row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show stats row",
+      "default": true
+    },
+    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "12K+" },
+    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Athletes onboarded" },
+    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "47" },
+    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Tested ingredients" },
+    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "96%" },
+    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Recovery rate" },
+    { "type": "text", "id": "stat_4_value", "label": "Stat 4 value", "default": "2024" },
+    { "type": "text", "id": "stat_4_label", "label": "Stat 4 label", "default": "Founded" },
+    {
+      "type": "header",
+      "content": "Press strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_press",
+      "label": "Show press strip",
+      "default": true
+    },
+    { "type": "text", "id": "press_label", "label": "Strip label", "default": "As featured in" },
+    { "type": "text", "id": "press_1", "label": "Press 1", "default": "Vogue" },
+    { "type": "text", "id": "press_2", "label": "Press 2 (bold)", "default": "WOMEN'S HEALTH" },
+    { "type": "text", "id": "press_3", "label": "Press 3", "default": "Forbes" },
+    { "type": "text", "id": "press_4", "label": "Press 4 (bold)", "default": "POPSUGAR" },
+    { "type": "text", "id": "press_5", "label": "Press 5", "default": "Hypebeast" },
     {
       "type": "header",
       "content": "Visuals"
@@ -119,9 +231,40 @@
       "default": 1.5
     }
   ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "wear", "label": "Wear" },
+            { "value": "fuel", "label": "Fuel" },
+            { "value": "train", "label": "Train" },
+            { "value": "lab", "label": "Lab" },
+            { "value": "recovery", "label": "Recovery" }
+          ],
+          "default": "wear"
+        },
+        { "type": "text", "id": "label", "label": "Label", "default": "Wear" },
+        { "type": "text", "id": "description", "label": "Description", "default": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in." },
+        { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop apparel" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "Floating 3D objects"
+      "name": "Floating 3D objects",
+      "blocks": [
+        { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "description": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in.", "cta_label": "Shop apparel" } },
+        { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "description": "Lab-tested supplements calibrated for women in training: clean macros, transparent dosing, third-party verified.", "cta_label": "Shop fuel" } },
+        { "type": "pillar", "settings": { "icon": "train", "label": "Train", "description": "Biomechanically-coded programs and education, written by coaches who actually train women, not interns.", "cta_label": "Start training" } }
+      ]
     }
   ]
 }

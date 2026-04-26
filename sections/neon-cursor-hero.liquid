@@ -1,5 +1,10 @@
 {{ 'section-neon-cursor-hero.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign now_year = 'now' | date: '%Y'
+  assign drop_id = section.settings.drop_id | default: 'DROP-003'
+-%}
+
 {%- style -%}
   #shopify-section-{{ section.id }} { margin: 0; padding: 0; }
   .neon-hero--{{ section.id }} {
@@ -10,6 +15,38 @@
 <neon-cursor-hero class="neon-hero neon-hero--{{ section.id }}">
   <canvas class="neon-hero__canvas" aria-hidden="true"></canvas>
   <div class="neon-hero__grid" aria-hidden="true"></div>
+  <div class="neon-hero__scanline" aria-hidden="true"></div>
+
+  <div class="neon-hero__frame" aria-hidden="true">
+    <span></span><span></span>
+  </div>
+
+  <div class="neon-hero__monogram" aria-label="OmniFlex">
+    <svg class="neon-hero__mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="ofx-mark-{{ section.id }}" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#0aeaed"/>
+          <stop offset="1" stop-color="#fa0dfd"/>
+        </linearGradient>
+      </defs>
+      <path d="M4 16 L16 4 L28 16 L16 28 Z" stroke="url(#ofx-mark-{{ section.id }})" stroke-width="2" fill="none"/>
+      <path d="M10 16 L16 10 L22 16 L16 22 Z" fill="url(#ofx-mark-{{ section.id }})"/>
+    </svg>
+    <span>OmniFlex</span>
+  </div>
+
+  <div class="neon-hero__readout" aria-hidden="true">
+    <span>SYS</span><span>OMNIFLEX_<em>OS</em></span>
+    <span>SEQ</span><span>{{ drop_id }}</span>
+    <span>YR</span><span>{{ now_year }}</span>
+    <span>STATE</span><span><em>LIVE</em></span>
+  </div>
+
+  <div class="neon-hero__rail" aria-hidden="true">
+    <span>{{ section.settings.rail_text | default: 'Defy Limits / Build Strength / Own Your Story' | escape }}</span>
+    <span class="neon-hero__rail-dot"></span>
+    <span>{{ section.settings.rail_text_2 | default: 'Wear · Fuel · Train' | escape }}</span>
+  </div>
 
   <div class="neon-hero__content">
     {%- if section.settings.eyebrow != blank -%}
@@ -49,7 +86,71 @@
         </a>
       {%- endif -%}
     </div>
+
+    {%- if section.settings.show_pillars -%}
+      <div class="neon-hero__pillars">
+        <div class="neon-hero__pillar">
+          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M5 4l4 1 3-2 3 2 4-1v6l-4 1-3 2-3-2-4-1z"/>
+            <path d="M9 11v9M15 11v9"/>
+          </svg>
+          <span class="neon-hero__pillar-label">Wear</span>
+          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_wear | default: 'Activewear' | escape }}</span>
+        </div>
+        <div class="neon-hero__pillar">
+          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="7" y="3" width="10" height="4" rx="1"/>
+            <path d="M8 7h8l-1 13a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            <path d="M9 12h6"/>
+          </svg>
+          <span class="neon-hero__pillar-label">Fuel</span>
+          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_fuel | default: 'Supplements' | escape }}</span>
+        </div>
+        <div class="neon-hero__pillar">
+          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M3 12h2l3-7 4 14 3-9 2 4h4"/>
+          </svg>
+          <span class="neon-hero__pillar-label">Train</span>
+          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_train | default: 'Education' | escape }}</span>
+        </div>
+      </div>
+    {%- endif -%}
   </div>
+
+  {%- if section.settings.show_drop_card -%}
+    <a class="neon-hero__drop-card" href="{{ section.settings.drop_link | default: '#' }}">
+      <span class="neon-hero__drop-tag">
+        <span style="display:inline-block;width:6px;height:6px;background:#07041f;border-radius:50%;"></span>
+        {{ section.settings.drop_tag | default: 'New drop' | escape }}
+      </span>
+      <h3 class="neon-hero__drop-title">{{ section.settings.drop_title | default: 'Zenith Compression Set' | escape }}</h3>
+      <div class="neon-hero__drop-meta">
+        <span>{{ section.settings.drop_meta | default: '4-way stretch · 240gsm' | escape }}</span>
+      </div>
+      <span class="neon-hero__drop-cta">
+        {{ section.settings.drop_cta | default: 'View drop' | escape }} <span aria-hidden="true">&rarr;</span>
+      </span>
+    </a>
+  {%- endif -%}
+
+  {%- if section.settings.show_stats -%}
+    <div class="neon-hero__stats" aria-label="Brand metrics">
+      <div class="neon-hero__stat">
+        <strong>{{ section.settings.stat_1_value | default: '12K+' | escape }}</strong>
+        {{ section.settings.stat_1_label | default: 'Athletes' | escape }}
+      </div>
+      <div class="neon-hero__stat-divider" aria-hidden="true"></div>
+      <div class="neon-hero__stat">
+        <strong>{{ section.settings.stat_2_value | default: '47' | escape }}</strong>
+        {{ section.settings.stat_2_label | default: 'Tested ingredients' | escape }}
+      </div>
+      <div class="neon-hero__stat-divider" aria-hidden="true"></div>
+      <div class="neon-hero__stat">
+        <strong>{{ section.settings.stat_3_value | default: '100%' | escape }}</strong>
+        {{ section.settings.stat_3_label | default: 'Lab verified' | escape }}
+      </div>
+    </div>
+  {%- endif -%}
 
   {%- if section.settings.scroll_hint != blank -%}
     <div class="neon-hero__hint">{{ section.settings.scroll_hint | escape }} &darr;</div>
@@ -87,13 +188,13 @@
   "settings": [
     {
       "type": "header",
-      "content": "Content"
+      "content": "Headline content"
     },
     {
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "OmniFlex // 2026"
+      "default": "OmniFlex // 2026 // System Live"
     },
     {
       "type": "textarea",
@@ -106,7 +207,7 @@
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Activewear and training tools engineered for the women who build their own ceiling."
+      "default": "Activewear, supplements, and training engineered for the women who build their own ceiling. Move with the system, not against it."
     },
     {
       "type": "text",
@@ -134,11 +235,116 @@
       "type": "text",
       "id": "scroll_hint",
       "label": "Scroll hint",
-      "default": "Scroll"
+      "default": "Scroll to explore"
     },
     {
       "type": "header",
-      "content": "Visuals"
+      "content": "HUD readouts"
+    },
+    {
+      "type": "text",
+      "id": "drop_id",
+      "label": "Sequence/drop ID",
+      "default": "DROP-003"
+    },
+    {
+      "type": "text",
+      "id": "rail_text",
+      "label": "Vertical rail text",
+      "default": "Defy Limits / Build Strength / Own Your Story"
+    },
+    {
+      "type": "text",
+      "id": "rail_text_2",
+      "label": "Vertical rail text 2",
+      "default": "Wear · Fuel · Train"
+    },
+    {
+      "type": "header",
+      "content": "Brand pillars"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pillars",
+      "label": "Show pillars row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pillar_wear",
+      "label": "Wear sublabel",
+      "default": "Activewear"
+    },
+    {
+      "type": "text",
+      "id": "pillar_fuel",
+      "label": "Fuel sublabel",
+      "default": "Supplements"
+    },
+    {
+      "type": "text",
+      "id": "pillar_train",
+      "label": "Train sublabel",
+      "default": "Education"
+    },
+    {
+      "type": "header",
+      "content": "Featured drop card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_drop_card",
+      "label": "Show featured drop card",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "drop_tag",
+      "label": "Drop badge",
+      "default": "New drop"
+    },
+    {
+      "type": "text",
+      "id": "drop_title",
+      "label": "Drop title",
+      "default": "Zenith Compression Set"
+    },
+    {
+      "type": "text",
+      "id": "drop_meta",
+      "label": "Drop meta",
+      "default": "4-way stretch · 240gsm"
+    },
+    {
+      "type": "text",
+      "id": "drop_cta",
+      "label": "Drop CTA",
+      "default": "View drop"
+    },
+    {
+      "type": "url",
+      "id": "drop_link",
+      "label": "Drop link"
+    },
+    {
+      "type": "header",
+      "content": "Stats"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show stat row",
+      "default": true
+    },
+    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "12K+" },
+    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Athletes" },
+    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "47" },
+    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Tested ingredients" },
+    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "100%" },
+    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Lab verified" },
+    {
+      "type": "header",
+      "content": "WebGL visuals"
     },
     {
       "type": "color",

@@ -8,19 +8,41 @@
   <div class="gradient-marquee__halo gradient-marquee__halo--top" aria-hidden="true"></div>
   <div class="gradient-marquee__halo gradient-marquee__halo--bottom" aria-hidden="true"></div>
 
+  {%- if section.settings.show_hud -%}
+    <div class="gradient-marquee__hud" aria-hidden="true">
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <span>{{ section.settings.hud_left | default: 'Section 04 / Manifesto' | escape }}</span>
+        <span class="gradient-marquee__hud-divider"></span>
+        <strong>{{ section.settings.hud_left_strong | default: 'Live' | escape }}</strong>
+      </div>
+      <div>{{ section.settings.hud_right | default: 'OmniFlex // Defy Limits' | escape }}</div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.manifesto_text != blank -%}
+    <div class="gradient-marquee__manifesto">
+      {%- if section.settings.manifesto_eyebrow != blank -%}
+        <span class="gradient-marquee__manifesto-eyebrow">{{ section.settings.manifesto_eyebrow | escape }}</span>
+      {%- endif -%}
+      <p class="gradient-marquee__manifesto-text">{{ section.settings.manifesto_text }}</p>
+    </div>
+  {%- endif -%}
+
   <div class="gradient-marquee__rows">
     {%- for block in section.blocks -%}
-      {%- assign style = block.settings.style -%}
-      {%- assign reverse = block.settings.reverse -%}
-      <div
-        class="gradient-marquee__row {% if reverse %}gradient-marquee__row--reverse{% endif %}"
-        {{ block.shopify_attributes }}
-      >
-        <span class="gradient-marquee__item gradient-marquee__item--{{ style }}">
-          {{ block.settings.text | escape }}
-          <span class="gradient-marquee__dot" aria-hidden="true"></span>
-        </span>
-      </div>
+      {%- if block.type == 'row' -%}
+        {%- assign style = block.settings.style -%}
+        {%- assign reverse = block.settings.reverse -%}
+        <div
+          class="gradient-marquee__row {% if reverse %}gradient-marquee__row--reverse{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <span class="gradient-marquee__item gradient-marquee__item--{{ style }}">
+            {{ block.settings.text | escape }}
+            <span class="gradient-marquee__dot" aria-hidden="true"></span>
+          </span>
+        </div>
+      {%- endif -%}
     {%- else -%}
       <div class="gradient-marquee__row">
         <span class="gradient-marquee__item gradient-marquee__item--gradient">
@@ -29,6 +51,64 @@
       </div>
     {%- endfor -%}
   </div>
+
+  {%- if section.settings.quote_text != blank -%}
+    <figure class="gradient-marquee__quote">
+      <span class="gradient-marquee__quote-mark" aria-hidden="true">&ldquo;</span>
+      <blockquote class="gradient-marquee__quote-text">{{ section.settings.quote_text }}</blockquote>
+      <figcaption class="gradient-marquee__quote-attr">
+        <strong>{{ section.settings.quote_attr_name | default: 'Bertin Kenol' | escape }}</strong>
+        <span class="gradient-marquee__quote-attr-sep" aria-hidden="true"></span>
+        <span>{{ section.settings.quote_attr_role | default: 'Founder · OmniFlex' | escape }}</span>
+      </figcaption>
+    </figure>
+  {%- endif -%}
+
+  {%- if section.settings.show_signup -%}
+    <div class="gradient-marquee__signup">
+      <span class="gradient-marquee__signup-eyebrow">{{ section.settings.signup_eyebrow | default: 'OmniFlex Comms' | escape }}</span>
+      <h3 class="gradient-marquee__signup-title">{{ section.settings.signup_title | default: 'Get drops, training, and lab notes' | escape }}</h3>
+      <p class="gradient-marquee__signup-sub">{{ section.settings.signup_sub | default: 'Early access to drops, evidence-based training breakdowns, and zero filler. Unsubscribe whenever.' | escape }}</p>
+      {% form 'customer' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="gradient-marquee__form">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.signup_placeholder | default: 'enter your email' | escape }}"
+            required
+            aria-label="Email"
+          >
+          <button type="submit">{{ section.settings.signup_button | default: 'Subscribe' | escape }}</button>
+        </div>
+      {% endform %}
+      <div class="gradient-marquee__signup-tags">
+        <span>{{ section.settings.signup_tag_1 | default: 'Drops first' | escape }}</span>
+        <span>{{ section.settings.signup_tag_2 | default: 'No spam' | escape }}</span>
+        <span>{{ section.settings.signup_tag_3 | default: 'Lab notes weekly' | escape }}</span>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_lockup -%}
+    <div class="gradient-marquee__lockup" aria-hidden="true">
+      <div class="gradient-marquee__lockup-mark">
+        <svg viewBox="0 0 32 32" fill="none">
+          <defs>
+            <linearGradient id="ofx-lockup-{{ section.id }}" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#0aeaed"/>
+              <stop offset="1" stop-color="#fa0dfd"/>
+            </linearGradient>
+          </defs>
+          <path d="M4 16 L16 4 L28 16 L16 28 Z" stroke="url(#ofx-lockup-{{ section.id }})" stroke-width="2" fill="none"/>
+          <path d="M10 16 L16 10 L22 16 L16 22 Z" fill="url(#ofx-lockup-{{ section.id }})"/>
+        </svg>
+        <span>OmniFlex</span>
+      </div>
+      <span>{{ section.settings.lockup_tagline | default: 'Defy Limits · Build Strength · Own Your Story' | escape }}</span>
+      <span>{{ 'now' | date: '%Y' }} OmniFlex Fitness</span>
+    </div>
+  {%- endif -%}
 </gradient-marquee>
 
 <script src="{{ 'gradient-marquee.js' | asset_url }}" defer></script>
@@ -42,6 +122,34 @@
     "groups": ["header", "footer"]
   },
   "settings": [
+    {
+      "type": "header",
+      "content": "HUD bar"
+    },
+    { "type": "checkbox", "id": "show_hud", "label": "Show HUD bar", "default": true },
+    { "type": "text", "id": "hud_left", "label": "HUD left", "default": "Section 04 / Manifesto" },
+    { "type": "text", "id": "hud_left_strong", "label": "HUD left accent", "default": "Live" },
+    { "type": "text", "id": "hud_right", "label": "HUD right", "default": "OmniFlex // Defy Limits" },
+    {
+      "type": "header",
+      "content": "Manifesto"
+    },
+    {
+      "type": "text",
+      "id": "manifesto_eyebrow",
+      "label": "Manifesto eyebrow",
+      "default": "Manifesto · v1.0"
+    },
+    {
+      "type": "richtext",
+      "id": "manifesto_text",
+      "label": "Manifesto",
+      "default": "<p>OmniFlex bridges <em>science and strength</em> — tools, activewear, and education that empower the modern woman to train with confidence.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Marquee"
+    },
     {
       "type": "range",
       "id": "base_speed",
@@ -59,7 +167,38 @@
       "step": 0.5,
       "label": "Scroll velocity factor",
       "default": 6
-    }
+    },
+    {
+      "type": "header",
+      "content": "Founder pull-quote"
+    },
+    {
+      "type": "richtext",
+      "id": "quote_text",
+      "label": "Quote",
+      "default": "<p>I built OmniFlex because the gym is one of the few places where the rules are honest. Show up, do the work, take what's yours. The system should respect that.</p>"
+    },
+    { "type": "text", "id": "quote_attr_name", "label": "Attribution name", "default": "Bertin Kenol" },
+    { "type": "text", "id": "quote_attr_role", "label": "Attribution role", "default": "Founder · OmniFlex" },
+    {
+      "type": "header",
+      "content": "Newsletter signup"
+    },
+    { "type": "checkbox", "id": "show_signup", "label": "Show signup", "default": true },
+    { "type": "text", "id": "signup_eyebrow", "label": "Eyebrow", "default": "OmniFlex Comms" },
+    { "type": "text", "id": "signup_title", "label": "Title", "default": "Get drops, training, and lab notes" },
+    { "type": "text", "id": "signup_sub", "label": "Subtitle", "default": "Early access to drops, evidence-based training breakdowns, and zero filler. Unsubscribe whenever." },
+    { "type": "text", "id": "signup_placeholder", "label": "Email placeholder", "default": "enter your email" },
+    { "type": "text", "id": "signup_button", "label": "Button label", "default": "Subscribe" },
+    { "type": "text", "id": "signup_tag_1", "label": "Tag 1", "default": "Drops first" },
+    { "type": "text", "id": "signup_tag_2", "label": "Tag 2", "default": "No spam" },
+    { "type": "text", "id": "signup_tag_3", "label": "Tag 3", "default": "Lab notes weekly" },
+    {
+      "type": "header",
+      "content": "Lockup footer"
+    },
+    { "type": "checkbox", "id": "show_lockup", "label": "Show lockup", "default": true },
+    { "type": "text", "id": "lockup_tagline", "label": "Tagline", "default": "Defy Limits · Build Strength · Own Your Story" }
   ],
   "blocks": [
     {

@@ -18,6 +18,10 @@ class Scroll3dShowcase extends HTMLElement {
 
     this.chapters = Array.from(this.querySelectorAll('.scroll3d__chapter'));
     this.dots = Array.from(this.querySelectorAll('.scroll3d__progress-dot'));
+    this.tcEl = this.querySelector('.scroll3d__tc');
+    this.tcBar = this.querySelector('.scroll3d__timecode-bar');
+    this.pctEl = this.querySelector('.scroll3d__progress-pct');
+    this.activeChapterEl = this.querySelector('.scroll3d__active-chapter');
     this.progress = 0;
     this.targetProgress = 0;
 
@@ -166,6 +170,22 @@ class Scroll3dShowcase extends HTMLElement {
     const idx = Math.min(segments - 1, Math.floor(this.progress * segments));
     this.chapters.forEach((ch, i) => ch.dataset.active = String(i === idx));
     this.dots.forEach((d, i) => d.dataset.active = String(i === idx));
+
+    const pct = Math.round(this.progress * 100);
+    if (this.pctEl) this.pctEl.textContent = pct + '%';
+    if (this.activeChapterEl) {
+      this.activeChapterEl.textContent = String(idx + 1).padStart(2, '0');
+    }
+    if (this.tcBar) this.tcBar.style.setProperty('--scroll3d-progress', pct + '%');
+    if (this.tcEl) {
+      const total = 90;
+      const seconds = Math.floor(this.progress * total);
+      const frames = Math.floor(((this.progress * total) % 1) * 24);
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      const f = String(frames).padStart(2, '0');
+      this.tcEl.textContent = `${m}:${s}:${f}`;
+    }
   }
 
   animate() {

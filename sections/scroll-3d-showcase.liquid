@@ -20,6 +20,19 @@
     <div class="scroll3d__sticky">
       <canvas class="scroll3d__canvas" aria-hidden="true"></canvas>
 
+      <div class="scroll3d__hudbar" aria-hidden="true">
+        <div class="scroll3d__hudbar-left">
+          <span>SECTION <strong>02</strong></span>
+          <span class="scroll3d__hudbar-divider"></span>
+          <span>{{ section.settings.hud_label | default: 'OmniFlex System Tour' | escape }}</span>
+        </div>
+        <div class="scroll3d__hudbar-right">
+          <span>RENDER <strong class="scroll3d__active-chapter">01</strong> / {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+          <span class="scroll3d__hudbar-divider"></span>
+          <span><strong class="scroll3d__progress-pct">0%</strong></span>
+        </div>
+      </div>
+
       <div class="scroll3d__overlay">
         {%- if chapters.size > 0 -%}
           {%- for block in chapters -%}
@@ -28,20 +41,92 @@
               data-active="{% if forloop.first %}true{% else %}false{% endif %}"
               {{ block.shopify_attributes }}
             >
-              <span class="scroll3d__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }} / {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+              <div class="scroll3d__chapter-head">
+                <span class="scroll3d__chapter-icon" aria-hidden="true">
+                  {%- case block.settings.icon -%}
+                  {%- when 'wear' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4l4 1 3-2 3 2 4-1v6l-4 1-3 2-3-2-4-1z"/><path d="M9 11v9M15 11v9"/></svg>
+                  {%- when 'fuel' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="4" rx="1"/><path d="M8 7h8l-1 13a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/><path d="M9 12h6"/></svg>
+                  {%- when 'train' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h2l3-7 4 14 3-9 2 4h4"/></svg>
+                  {%- when 'lab' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-10V3"/><path d="M8 3h8"/></svg>
+                  {%- when 'recovery' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
+                  {%- endcase -%}
+                </span>
+                <span class="scroll3d__index">
+                  {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                  <span>/ {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+                </span>
+              </div>
+
               <h2 class="scroll3d__title">{{ block.settings.title }}</h2>
+
+              {%- if block.settings.tag_1 != blank or block.settings.tag_2 != blank or block.settings.tag_3 != blank -%}
+                <div class="scroll3d__tags">
+                  {%- if block.settings.tag_1 != blank -%}
+                    <span class="scroll3d__tag scroll3d__tag--accent">{{ block.settings.tag_1 | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.tag_2 != blank -%}
+                    <span class="scroll3d__tag">{{ block.settings.tag_2 | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.tag_3 != blank -%}
+                    <span class="scroll3d__tag">{{ block.settings.tag_3 | escape }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
               {%- if block.settings.body != blank -%}
-                <p class="scroll3d__body">{{ block.settings.body }}</p>
+                <div class="scroll3d__body">{{ block.settings.body }}</div>
+              {%- endif -%}
+
+              {%- if block.settings.spec_1_value != blank or block.settings.spec_2_value != blank or block.settings.spec_3_value != blank -%}
+                <div class="scroll3d__specs">
+                  {%- if block.settings.spec_1_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_1_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_1_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.spec_2_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_2_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_2_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.spec_3_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_3_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_3_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.cta_label != blank -%}
+                <a class="scroll3d__chapter-cta" href="{{ block.settings.cta_link | default: '#' }}">
+                  {{ block.settings.cta_label | escape }}
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
               {%- endif -%}
             </article>
           {%- endfor -%}
         {%- else -%}
           <article class="scroll3d__chapter scroll3d__chapter--center" data-active="true">
-            <span class="scroll3d__index">01 / 01</span>
+            <span class="scroll3d__index">01 <span>/ 01</span></span>
             <h2 class="scroll3d__title">Built to <em>flex</em></h2>
             <p class="scroll3d__body">Add chapter blocks to script the scroll story.</p>
           </article>
         {%- endif -%}
+      </div>
+
+      <div class="scroll3d__timecode" aria-hidden="true">
+        <span>TC <em class="scroll3d__tc">00:00:00</em></span>
+        <span class="scroll3d__timecode-bar"></span>
       </div>
 
       <div class="scroll3d__progress" aria-hidden="true">
@@ -85,6 +170,20 @@
   },
   "settings": [
     {
+      "type": "header",
+      "content": "HUD"
+    },
+    {
+      "type": "text",
+      "id": "hud_label",
+      "label": "HUD title",
+      "default": "OmniFlex System Tour"
+    },
+    {
+      "type": "header",
+      "content": "3D shape"
+    },
+    {
       "type": "select",
       "id": "shape",
       "label": "3D shape",
@@ -123,6 +222,20 @@
       "limit": 6,
       "settings": [
         {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "wear", "label": "Wear" },
+            { "value": "fuel", "label": "Fuel" },
+            { "value": "train", "label": "Train" },
+            { "value": "lab", "label": "Lab" },
+            { "value": "recovery", "label": "Recovery" },
+            { "value": "default", "label": "Default" }
+          ],
+          "default": "default"
+        },
+        {
           "type": "text",
           "id": "title",
           "label": "Title",
@@ -133,6 +246,71 @@
           "id": "body",
           "label": "Body",
           "default": "<p>Compression-first fabric, sweat-resistant grip, and a silhouette engineered for mobility.</p>"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1 (accent)",
+          "default": "Apparel"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "Compression"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "Tag 3",
+          "default": "Lab tested"
+        },
+        {
+          "type": "text",
+          "id": "spec_1_value",
+          "label": "Spec 1 value",
+          "default": "240gsm"
+        },
+        {
+          "type": "text",
+          "id": "spec_1_label",
+          "label": "Spec 1 label",
+          "default": "Fabric weight"
+        },
+        {
+          "type": "text",
+          "id": "spec_2_value",
+          "label": "Spec 2 value",
+          "default": "4-way"
+        },
+        {
+          "type": "text",
+          "id": "spec_2_label",
+          "label": "Spec 2 label",
+          "default": "Stretch"
+        },
+        {
+          "type": "text",
+          "id": "spec_3_value",
+          "label": "Spec 3 value",
+          "default": "96%"
+        },
+        {
+          "type": "text",
+          "id": "spec_3_label",
+          "label": "Spec 3 label",
+          "default": "Recovery"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "CTA label",
+          "default": "Shop apparel"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA link"
         },
         {
           "type": "select",
@@ -152,9 +330,9 @@
     {
       "name": "3D scroll showcase",
       "blocks": [
-        { "type": "chapter", "settings": { "title": "Built to <em>flex</em>", "alignment": "left" } },
-        { "type": "chapter", "settings": { "title": "Engineered to <em>endure</em>", "alignment": "right" } },
-        { "type": "chapter", "settings": { "title": "Designed to <em>defy</em>", "alignment": "center" } }
+        { "type": "chapter", "settings": { "icon": "wear", "title": "Built to <em>flex</em>", "alignment": "left" } },
+        { "type": "chapter", "settings": { "icon": "fuel", "title": "Engineered to <em>endure</em>", "alignment": "right" } },
+        { "type": "chapter", "settings": { "icon": "train", "title": "Designed to <em>defy</em>", "alignment": "center" } }
       ]
     }
   ]
