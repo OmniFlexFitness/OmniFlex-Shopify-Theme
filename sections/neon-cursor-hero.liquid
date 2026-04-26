@@ -3,46 +3,46 @@
 {%- liquid
   assign now_year = 'now' | date: '%Y'
   assign drop_id = section.settings.drop_id | default: 'DROP-003'
-
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
-  assign accent_font = section.settings.accent_font
-  assign stat_font = section.settings.stat_value_font
+
+  assign pillars = section.blocks | where: 'type', 'pillar'
+  assign stats = section.blocks | where: 'type', 'stat'
+  assign drop_blocks = section.blocks | where: 'type', 'drop_card'
+  assign drop_card = drop_blocks | first
 -%}
 
 {%- style -%}
   {{ heading_font | font_face: font_display: 'swap' }}
   {{ body_font | font_face: font_display: 'swap' }}
-  {{ accent_font | font_face: font_display: 'swap' }}
-  {{ stat_font | font_face: font_display: 'swap' }}
 
   #shopify-section-{{ section.id }} { margin: 0; padding: 0; }
   .neon-hero--{{ section.id }} {
     min-height: {{ section.settings.section_height }}svh;
     --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --heading-color: {{ section.settings.heading_color }};
-    --heading-stroke: {{ section.settings.heading_outline_thickness }}px;
+    --heading-stroke: 1.5px;
     --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
     --body-color: {{ section.settings.body_color }};
-    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
-    --accent-color: {{ section.settings.accent_color }};
-    --stat-value-font: {{ stat_font.family }}, {{ stat_font.fallback_families }};
-    --stat-value-color: {{ section.settings.stat_value_color }};
-    --pillar-label-color: {{ section.settings.pillar_label_color }};
+    --accent-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --accent-color: {{ section.settings.body_color }};
+    --stat-value-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --stat-value-color: {{ section.settings.heading_color }};
+    --pillar-label-color: {{ section.settings.heading_color }};
   }
 {%- endstyle -%}
 
 <neon-cursor-hero
   class="neon-hero neon-hero--{{ section.id }}"
   data-headline-style="{{ section.settings.heading_style }}"
-  data-stat-style="{{ section.settings.stat_value_style }}"
-  data-hide-native-cursor="{{ section.settings.enable_dom_cursor }}"
+  data-stat-style="{{ section.settings.heading_style }}"
+  data-hide-native-cursor="{{ section.settings.enable_cursor_light }}"
 >
   <canvas class="neon-hero__canvas" aria-hidden="true"></canvas>
   <div class="neon-hero__grid" aria-hidden="true"></div>
   <div class="neon-hero__scanline" aria-hidden="true"></div>
 
-  {%- if section.settings.enable_dom_cursor -%}
+  {%- if section.settings.enable_cursor_light -%}
     <div class="neon-hero__cursor" data-active="false" aria-hidden="true">
       <span class="neon-hero__cursor-ring"></span>
       <span class="neon-hero__cursor-corner neon-hero__cursor-corner--tl"></span>
@@ -67,7 +67,7 @@
       <path d="M4 16 L16 4 L28 16 L16 28 Z" stroke="url(#ofx-mark-{{ section.id }})" stroke-width="2" fill="none"/>
       <path d="M10 16 L16 10 L22 16 L16 22 Z" fill="url(#ofx-mark-{{ section.id }})"/>
     </svg>
-    <span>{{ section.settings.monogram_text | default: 'OmniFlex' | escape }}</span>
+    <span>OmniFlex</span>
   </div>
 
   <div class="neon-hero__readout" aria-hidden="true">
@@ -77,11 +77,13 @@
     <span>STATE</span><span><em>LIVE</em></span>
   </div>
 
-  <div class="neon-hero__rail" aria-hidden="true">
-    <span>{{ section.settings.rail_text | default: 'Defy Limits / Build Strength / Own Your Story' | escape }}</span>
-    <span class="neon-hero__rail-dot"></span>
-    <span>{{ section.settings.rail_text_2 | default: 'Wear · Fuel · Train' | escape }}</span>
-  </div>
+  {%- if section.settings.rail_text != blank -%}
+    <div class="neon-hero__rail" aria-hidden="true">
+      <span>{{ section.settings.rail_text | escape }}</span>
+      <span class="neon-hero__rail-dot"></span>
+      <span>Wear · Fuel · Train</span>
+    </div>
+  {%- endif -%}
 
   <div class="neon-hero__content">
     {%- if section.settings.eyebrow != blank -%}
@@ -118,68 +120,57 @@
       {%- endif -%}
     </div>
 
-    {%- if section.settings.show_pillars -%}
+    {%- if pillars.size > 0 -%}
       <div class="neon-hero__pillars">
-        <div class="neon-hero__pillar">
-          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M5 4l4 1 3-2 3 2 4-1v6l-4 1-3 2-3-2-4-1z"/>
-            <path d="M9 11v9M15 11v9"/>
-          </svg>
-          <span class="neon-hero__pillar-label">{{ section.settings.pillar_wear_label | default: 'Wear' | escape }}</span>
-          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_wear | default: 'Activewear' | escape }}</span>
-        </div>
-        <div class="neon-hero__pillar">
-          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <rect x="7" y="3" width="10" height="4" rx="1"/>
-            <path d="M8 7h8l-1 13a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            <path d="M9 12h6"/>
-          </svg>
-          <span class="neon-hero__pillar-label">{{ section.settings.pillar_fuel_label | default: 'Fuel' | escape }}</span>
-          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_fuel | default: 'Supplements' | escape }}</span>
-        </div>
-        <div class="neon-hero__pillar">
-          <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M3 12h2l3-7 4 14 3-9 2 4h4"/>
-          </svg>
-          <span class="neon-hero__pillar-label">{{ section.settings.pillar_train_label | default: 'Train' | escape }}</span>
-          <span class="neon-hero__pillar-sub">{{ section.settings.pillar_train | default: 'Education' | escape }}</span>
-        </div>
+        {%- for block in pillars -%}
+          <div class="neon-hero__pillar" {{ block.shopify_attributes }}>
+            {%- case block.settings.icon -%}
+            {%- when 'wear' -%}
+              <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4l4 1 3-2 3 2 4-1v6l-4 1-3 2-3-2-4-1z"/><path d="M9 11v9M15 11v9"/></svg>
+            {%- when 'fuel' -%}
+              <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="3" width="10" height="4" rx="1"/><path d="M8 7h8l-1 13a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/><path d="M9 12h6"/></svg>
+            {%- when 'train' -%}
+              <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 12h2l3-7 4 14 3-9 2 4h4"/></svg>
+            {%- else -%}
+              <svg class="neon-hero__pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
+            {%- endcase -%}
+            <span class="neon-hero__pillar-label">{{ block.settings.label | escape }}</span>
+            {%- if block.settings.sublabel != blank -%}
+              <span class="neon-hero__pillar-sub">{{ block.settings.sublabel | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
       </div>
     {%- endif -%}
   </div>
 
-  {%- if section.settings.show_drop_card -%}
-    <a class="neon-hero__drop-card" href="{{ section.settings.drop_link | default: '#' }}">
+  {%- if drop_card -%}
+    <a class="neon-hero__drop-card" href="{{ drop_card.settings.link | default: '#' }}" {{ drop_card.shopify_attributes }}>
       <span class="neon-hero__drop-tag">
         <span style="display:inline-block;width:6px;height:6px;background:#07041f;border-radius:50%;"></span>
-        {{ section.settings.drop_tag | default: 'New drop' | escape }}
+        {{ drop_card.settings.tag | escape }}
       </span>
-      <h3 class="neon-hero__drop-title">{{ section.settings.drop_title | default: 'Zenith Compression Set' | escape }}</h3>
+      <h3 class="neon-hero__drop-title">{{ drop_card.settings.title | escape }}</h3>
       <div class="neon-hero__drop-meta">
-        <span>{{ section.settings.drop_meta | default: '4-way stretch · 240gsm' | escape }}</span>
+        <span>{{ drop_card.settings.meta | escape }}</span>
       </div>
       <span class="neon-hero__drop-cta">
-        {{ section.settings.drop_cta | default: 'View drop' | escape }} <span aria-hidden="true">&rarr;</span>
+        {{ drop_card.settings.cta_label | default: 'View drop' | escape }} <span aria-hidden="true">&rarr;</span>
       </span>
     </a>
   {%- endif -%}
 
-  {%- if section.settings.show_stats -%}
+  {%- if stats.size > 0 -%}
     <div class="neon-hero__stats" aria-label="Brand metrics">
-      <div class="neon-hero__stat">
-        <strong>{{ section.settings.stat_1_value | default: '12K+' | escape }}</strong>
-        {{ section.settings.stat_1_label | default: 'Athletes' | escape }}
-      </div>
-      <div class="neon-hero__stat-divider" aria-hidden="true"></div>
-      <div class="neon-hero__stat">
-        <strong>{{ section.settings.stat_2_value | default: '47' | escape }}</strong>
-        {{ section.settings.stat_2_label | default: 'Tested ingredients' | escape }}
-      </div>
-      <div class="neon-hero__stat-divider" aria-hidden="true"></div>
-      <div class="neon-hero__stat">
-        <strong>{{ section.settings.stat_3_value | default: '100%' | escape }}</strong>
-        {{ section.settings.stat_3_label | default: 'Lab verified' | escape }}
-      </div>
+      {%- for block in stats -%}
+        <div class="neon-hero__stat" {{ block.shopify_attributes }}>
+          <strong>{{ block.settings.value | escape }}</strong>
+          {{ block.settings.label | escape }}
+        </div>
+        {%- unless forloop.last -%}
+          <div class="neon-hero__stat-divider" aria-hidden="true"></div>
+        {%- endunless -%}
+      {%- endfor -%}
     </div>
   {%- endif -%}
 
@@ -191,19 +182,19 @@
     {
       "colorA": {{ section.settings.color_a | json }},
       "colorB": {{ section.settings.color_b | json }},
-      "bloomStrength": {{ section.settings.bloom_strength }},
+      "bloomStrength": 1.4,
       "tubeCount": {{ section.settings.tube_count }},
-      "trailLength": {{ section.settings.trail_length }},
+      "trailLength": 80,
       "starCount": {{ section.settings.star_count }},
-      "showGrid": {{ section.settings.show_grid_floor | json }},
+      "showGrid": true,
       "cursorLight": {
         "enabled": {{ section.settings.enable_cursor_light | json }},
         "outerColor": {{ section.settings.cursor_light_outer_color | json }},
         "innerColor": {{ section.settings.cursor_light_inner_color | json }},
         "radius": {{ section.settings.cursor_light_radius }},
         "intensity": {{ section.settings.cursor_light_intensity }},
-        "pulseSpeed": {{ section.settings.cursor_light_pulse_speed }},
-        "ringWidth": {{ section.settings.cursor_light_ring_width }}
+        "pulseSpeed": 4,
+        "ringWidth": 0.07
       }
     }
   </script>
@@ -230,7 +221,7 @@
   "settings": [
     {
       "type": "header",
-      "content": "Headline content"
+      "content": "Content"
     },
     {
       "type": "text",
@@ -249,12 +240,12 @@
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Activewear, supplements, and training engineered for the women who build their own ceiling. Move with the system, not against it."
+      "default": "Activewear, supplements, and training engineered for the women who build their own ceiling."
     },
     {
       "type": "text",
       "id": "primary_label",
-      "label": "Primary button label",
+      "label": "Primary button",
       "default": "Shop the drop"
     },
     {
@@ -265,7 +256,7 @@
     {
       "type": "text",
       "id": "secondary_label",
-      "label": "Secondary button label",
+      "label": "Secondary button",
       "default": "Watch the film"
     },
     {
@@ -278,6 +269,18 @@
       "id": "scroll_hint",
       "label": "Scroll hint",
       "default": "Scroll to explore"
+    },
+    {
+      "type": "text",
+      "id": "drop_id",
+      "label": "Sequence / drop ID (HUD)",
+      "default": "DROP-003"
+    },
+    {
+      "type": "text",
+      "id": "rail_text",
+      "label": "Vertical rail text",
+      "default": "Defy Limits / Build Strength / Own Your Story"
     },
     {
       "type": "header",
@@ -298,23 +301,13 @@
     {
       "type": "select",
       "id": "heading_style",
-      "label": "Heading display style",
+      "label": "Heading style",
       "options": [
         { "value": "filled", "label": "Filled" },
         { "value": "outline", "label": "Outline" },
         { "value": "split", "label": "Split (1st filled, 2nd outline)" }
       ],
       "default": "filled"
-    },
-    {
-      "type": "range",
-      "id": "heading_outline_thickness",
-      "label": "Outline thickness",
-      "min": 1,
-      "max": 4,
-      "step": 0.5,
-      "unit": "px",
-      "default": 1.5
     },
     {
       "type": "font_picker",
@@ -329,62 +322,13 @@
       "default": "#cdd2da"
     },
     {
-      "type": "font_picker",
-      "id": "accent_font",
-      "label": "Accent / HUD font",
-      "info": "Used for eyebrow, rail, readout, monogram, buttons, hint, pillar sublabels.",
-      "default": "assistant_n7"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent / HUD color",
-      "default": "#9aa3b2"
-    },
-    {
-      "type": "color",
-      "id": "pillar_label_color",
-      "label": "Pillar label color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "font_picker",
-      "id": "stat_value_font",
-      "label": "Stat value font",
-      "default": "assistant_n7"
-    },
-    {
-      "type": "color",
-      "id": "stat_value_color",
-      "label": "Stat value color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "select",
-      "id": "stat_value_style",
-      "label": "Stat value display style",
-      "options": [
-        { "value": "filled", "label": "Filled" },
-        { "value": "outline", "label": "Outline" }
-      ],
-      "default": "filled"
-    },
-    {
       "type": "header",
       "content": "Cursor light"
     },
     {
       "type": "checkbox",
       "id": "enable_cursor_light",
-      "label": "Enable 3D cursor light",
-      "info": "The glowing rings that follow the cursor inside the canvas.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_dom_cursor",
-      "label": "Enable Tron crosshair cursor",
-      "info": "Replaces the system cursor with a Tron-style crosshair while hovering this section.",
+      "label": "Enable cursor light + Tron crosshair",
       "default": true
     },
     {
@@ -405,7 +349,7 @@
       "min": 0.4,
       "max": 3,
       "step": 0.1,
-      "label": "Cursor light radius",
+      "label": "Radius",
       "default": 1.0
     },
     {
@@ -414,124 +358,24 @@
       "min": 0,
       "max": 2,
       "step": 0.05,
-      "label": "Cursor light intensity",
+      "label": "Intensity",
       "default": 1.0
     },
     {
-      "type": "range",
-      "id": "cursor_light_pulse_speed",
-      "min": 0,
-      "max": 8,
-      "step": 0.25,
-      "label": "Cursor light pulse speed",
-      "info": "0 disables the pulse.",
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "cursor_light_ring_width",
-      "min": 0.02,
-      "max": 0.4,
-      "step": 0.01,
-      "label": "Ring thickness",
-      "default": 0.07
-    },
-    {
       "type": "header",
-      "content": "HUD readouts"
-    },
-    {
-      "type": "text",
-      "id": "monogram_text",
-      "label": "Monogram label",
-      "default": "OmniFlex"
-    },
-    {
-      "type": "text",
-      "id": "drop_id",
-      "label": "Sequence/drop ID",
-      "default": "DROP-003"
-    },
-    {
-      "type": "text",
-      "id": "rail_text",
-      "label": "Vertical rail text",
-      "default": "Defy Limits / Build Strength / Own Your Story"
-    },
-    {
-      "type": "text",
-      "id": "rail_text_2",
-      "label": "Vertical rail text 2",
-      "default": "Wear · Fuel · Train"
-    },
-    {
-      "type": "header",
-      "content": "Brand pillars"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_pillars",
-      "label": "Show pillars row",
-      "default": true
-    },
-    { "type": "text", "id": "pillar_wear_label", "label": "Pillar 1 label", "default": "Wear" },
-    { "type": "text", "id": "pillar_wear", "label": "Pillar 1 sublabel", "default": "Activewear" },
-    { "type": "text", "id": "pillar_fuel_label", "label": "Pillar 2 label", "default": "Fuel" },
-    { "type": "text", "id": "pillar_fuel", "label": "Pillar 2 sublabel", "default": "Supplements" },
-    { "type": "text", "id": "pillar_train_label", "label": "Pillar 3 label", "default": "Train" },
-    { "type": "text", "id": "pillar_train", "label": "Pillar 3 sublabel", "default": "Education" },
-    {
-      "type": "header",
-      "content": "Featured drop card"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_drop_card",
-      "label": "Show featured drop card",
-      "default": true
-    },
-    { "type": "text", "id": "drop_tag", "label": "Drop badge", "default": "New drop" },
-    { "type": "text", "id": "drop_title", "label": "Drop title", "default": "Zenith Compression Set" },
-    { "type": "text", "id": "drop_meta", "label": "Drop meta", "default": "4-way stretch · 240gsm" },
-    { "type": "text", "id": "drop_cta", "label": "Drop CTA", "default": "View drop" },
-    { "type": "url", "id": "drop_link", "label": "Drop link" },
-    {
-      "type": "header",
-      "content": "Stats"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_stats",
-      "label": "Show stat row",
-      "default": true
-    },
-    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "12K+" },
-    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Athletes" },
-    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "47" },
-    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Tested ingredients" },
-    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "100%" },
-    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Lab verified" },
-    {
-      "type": "header",
-      "content": "WebGL visuals"
+      "content": "Background WebGL"
     },
     {
       "type": "color",
       "id": "color_a",
-      "label": "Trail / starfield color (start)",
+      "label": "Trail / starfield (start)",
       "default": "#0aeaed"
     },
     {
       "type": "color",
       "id": "color_b",
-      "label": "Trail / starfield color (end)",
+      "label": "Trail / starfield (end)",
       "default": "#fa0dfd"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_grid_floor",
-      "label": "Show 3D grid floor",
-      "default": true
     },
     {
       "type": "range",
@@ -539,18 +383,8 @@
       "min": 0,
       "max": 8,
       "step": 1,
-      "label": "Number of trails",
-      "info": "0 disables the trail tubes.",
+      "label": "Trail tubes",
       "default": 5
-    },
-    {
-      "type": "range",
-      "id": "trail_length",
-      "min": 30,
-      "max": 160,
-      "step": 5,
-      "label": "Trail length",
-      "default": 80
     },
     {
       "type": "range",
@@ -559,17 +393,7 @@
       "max": 3000,
       "step": 100,
       "label": "Starfield count",
-      "info": "0 disables the starfield.",
       "default": 1500
-    },
-    {
-      "type": "range",
-      "id": "bloom_strength",
-      "min": 0,
-      "max": 3,
-      "step": 0.1,
-      "label": "Bloom strength",
-      "default": 1.4
     },
     {
       "type": "range",
@@ -582,9 +406,63 @@
       "default": 100
     }
   ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "wear", "label": "Wear (shirt)" },
+            { "value": "fuel", "label": "Fuel (bottle)" },
+            { "value": "train", "label": "Train (pulse)" },
+            { "value": "default", "label": "Default" }
+          ],
+          "default": "wear"
+        },
+        { "type": "text", "id": "label", "label": "Label", "default": "Wear" },
+        { "type": "text", "id": "sublabel", "label": "Sublabel", "default": "Activewear" }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 5,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "12K+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Athletes" }
+      ]
+    },
+    {
+      "type": "drop_card",
+      "name": "Drop card",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag", "default": "New drop" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Zenith Compression Set" },
+        { "type": "text", "id": "meta", "label": "Meta", "default": "4-way stretch · 240gsm" },
+        { "type": "text", "id": "cta_label", "label": "CTA label", "default": "View drop" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "OmniFlex 3D — Neon Cursor Hero"
+      "name": "OmniFlex 3D — Neon Cursor Hero",
+      "category": "OmniFlex 3D",
+      "blocks": [
+        { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "sublabel": "Activewear" } },
+        { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "sublabel": "Supplements" } },
+        { "type": "pillar", "settings": { "icon": "train", "label": "Train", "sublabel": "Education" } },
+        { "type": "stat", "settings": { "value": "12K+", "label": "Athletes" } },
+        { "type": "stat", "settings": { "value": "47", "label": "Tested ingredients" } },
+        { "type": "stat", "settings": { "value": "100%", "label": "Lab verified" } },
+        { "type": "drop_card", "settings": { "tag": "Drop 003", "title": "Zenith Compression Set", "meta": "4-way stretch · 240gsm", "cta_label": "View drop" } }
+      ]
     }
   ]
 }

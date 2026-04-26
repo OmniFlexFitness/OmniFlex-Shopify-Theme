@@ -3,15 +3,14 @@
 {%- liquid
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
-  assign accent_font = section.settings.accent_font
-  assign stat_font = section.settings.stat_value_font
+  assign pillars = section.blocks | where: 'type', 'pillar'
+  assign stats = section.blocks | where: 'type', 'stat'
+  assign press_items = section.blocks | where: 'type', 'press'
 -%}
 
 {%- style -%}
   {{ heading_font | font_face: font_display: 'swap' }}
   {{ body_font | font_face: font_display: 'swap' }}
-  {{ accent_font | font_face: font_display: 'swap' }}
-  {{ stat_font | font_face: font_display: 'swap' }}
 
   .floating3d--{{ section.id }} {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -28,21 +27,21 @@
   #shopify-section-{{ section.id }} .floating3d {
     --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --heading-color: {{ section.settings.heading_color }};
-    --heading-stroke: {{ section.settings.heading_outline_thickness }}px;
+    --heading-stroke: 1.5px;
     --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
     --body-color: {{ section.settings.body_color }};
-    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
-    --accent-color: {{ section.settings.accent_color }};
-    --pillar-label-color: {{ section.settings.pillar_label_color }};
-    --stat-value-font: {{ stat_font.family }}, {{ stat_font.fallback_families }};
-    --stat-value-color: {{ section.settings.stat_value_color }};
+    --accent-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --accent-color: {{ section.settings.body_color }};
+    --pillar-label-color: {{ section.settings.heading_color }};
+    --stat-value-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --stat-value-color: {{ section.settings.heading_color }};
   }
 {%- endstyle -%}
 
 <floating-3d
   class="floating3d floating3d--{{ section.id }}"
   data-heading-style="{{ section.settings.heading_style }}"
-  data-stat-style="{{ section.settings.stat_value_style }}"
+  data-stat-style="{{ section.settings.heading_style }}"
 >
   <canvas class="floating3d__canvas" aria-hidden="true"></canvas>
   <div class="floating3d__noise" aria-hidden="true"></div>
@@ -70,7 +69,6 @@
       </a>
     {%- endif -%}
 
-    {%- assign pillars = section.blocks | where: 'type', 'pillar' -%}
     {%- if pillars.size > 0 -%}
       <div class="floating3d__pillars">
         {%- for block in pillars -%}
@@ -100,38 +98,28 @@
           </a>
         {%- endfor -%}
       </div>
-
-      {%- if section.settings.show_stats -%}
-        <div class="floating3d__stats">
-          <div class="floating3d__stat">
-            <span class="floating3d__stat-value">{{ section.settings.stat_1_value | escape }}</span>
-            <span class="floating3d__stat-label">{{ section.settings.stat_1_label | escape }}</span>
-          </div>
-          <div class="floating3d__stat">
-            <span class="floating3d__stat-value">{{ section.settings.stat_2_value | escape }}</span>
-            <span class="floating3d__stat-label">{{ section.settings.stat_2_label | escape }}</span>
-          </div>
-          <div class="floating3d__stat">
-            <span class="floating3d__stat-value">{{ section.settings.stat_3_value | escape }}</span>
-            <span class="floating3d__stat-label">{{ section.settings.stat_3_label | escape }}</span>
-          </div>
-          <div class="floating3d__stat">
-            <span class="floating3d__stat-value">{{ section.settings.stat_4_value | escape }}</span>
-            <span class="floating3d__stat-label">{{ section.settings.stat_4_label | escape }}</span>
-          </div>
-        </div>
-      {%- endif -%}
     {%- endif -%}
 
-    {%- if section.settings.show_press -%}
+    {%- if stats.size > 0 -%}
+      <div class="floating3d__stats">
+        {%- for block in stats -%}
+          <div class="floating3d__stat" {{ block.shopify_attributes }}>
+            <span class="floating3d__stat-value">{{ block.settings.value | escape }}</span>
+            <span class="floating3d__stat-label">{{ block.settings.label | escape }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if press_items.size > 0 -%}
       <div class="floating3d__press">
-        <span class="floating3d__press-label">{{ section.settings.press_label | default: 'As featured in' | escape }}</span>
+        {%- if section.settings.press_label != blank -%}
+          <span class="floating3d__press-label">{{ section.settings.press_label | escape }}</span>
+        {%- endif -%}
         <div class="floating3d__press-row">
-          {%- if section.settings.press_1 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_1 | escape }}</span>{%- endif -%}
-          {%- if section.settings.press_2 != blank -%}<span class="floating3d__press-item floating3d__press-item--bold">{{ section.settings.press_2 | escape }}</span>{%- endif -%}
-          {%- if section.settings.press_3 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_3 | escape }}</span>{%- endif -%}
-          {%- if section.settings.press_4 != blank -%}<span class="floating3d__press-item floating3d__press-item--bold">{{ section.settings.press_4 | escape }}</span>{%- endif -%}
-          {%- if section.settings.press_5 != blank -%}<span class="floating3d__press-item">{{ section.settings.press_5 | escape }}</span>{%- endif -%}
+          {%- for block in press_items -%}
+            <span class="floating3d__press-item {% if block.settings.bold %}floating3d__press-item--bold{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+          {%- endfor -%}
         </div>
       </div>
     {%- endif -%}
@@ -192,7 +180,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Body",
-      "default": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear and on-demand training. Move with the system, not against it.</p>"
+      "default": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear and on-demand training.</p>"
     },
     {
       "type": "text",
@@ -206,40 +194,36 @@
       "label": "CTA link"
     },
     {
+      "type": "text",
+      "id": "press_label",
+      "label": "Press strip label",
+      "default": "As featured in"
+    },
+    {
       "type": "header",
       "content": "Typography"
     },
     {
       "type": "font_picker",
       "id": "heading_font",
-      "label": "Title / pillar font",
+      "label": "Heading font",
       "default": "assistant_n7"
     },
     {
       "type": "color",
       "id": "heading_color",
-      "label": "Title color",
+      "label": "Heading color",
       "default": "#ffffff"
     },
     {
       "type": "select",
       "id": "heading_style",
-      "label": "Title display style",
+      "label": "Heading style",
       "options": [
         { "value": "filled", "label": "Filled" },
         { "value": "outline", "label": "Outline" }
       ],
       "default": "filled"
-    },
-    {
-      "type": "range",
-      "id": "heading_outline_thickness",
-      "label": "Outline thickness",
-      "min": 1,
-      "max": 4,
-      "step": 0.5,
-      "unit": "px",
-      "default": 1.5
     },
     {
       "type": "font_picker",
@@ -254,82 +238,8 @@
       "default": "#cdd2da"
     },
     {
-      "type": "color",
-      "id": "pillar_label_color",
-      "label": "Pillar label color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "font_picker",
-      "id": "accent_font",
-      "label": "Accent / HUD font",
-      "default": "assistant_n7"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Accent / HUD color",
-      "default": "#9aa3b2"
-    },
-    {
-      "type": "font_picker",
-      "id": "stat_value_font",
-      "label": "Stat value font",
-      "default": "assistant_n7"
-    },
-    {
-      "type": "color",
-      "id": "stat_value_color",
-      "label": "Stat value color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "select",
-      "id": "stat_value_style",
-      "label": "Stat value display style",
-      "options": [
-        { "value": "filled", "label": "Filled" },
-        { "value": "outline", "label": "Outline" }
-      ],
-      "default": "filled"
-    },
-    {
       "type": "header",
-      "content": "Stats row"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_stats",
-      "label": "Show stats row",
-      "default": true
-    },
-    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "12K+" },
-    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "Athletes onboarded" },
-    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "47" },
-    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Tested ingredients" },
-    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "96%" },
-    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Recovery rate" },
-    { "type": "text", "id": "stat_4_value", "label": "Stat 4 value", "default": "2024" },
-    { "type": "text", "id": "stat_4_label", "label": "Stat 4 label", "default": "Founded" },
-    {
-      "type": "header",
-      "content": "Press strip"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_press",
-      "label": "Show press strip",
-      "default": true
-    },
-    { "type": "text", "id": "press_label", "label": "Strip label", "default": "As featured in" },
-    { "type": "text", "id": "press_1", "label": "Press 1", "default": "Vogue" },
-    { "type": "text", "id": "press_2", "label": "Press 2 (bold)", "default": "WOMEN'S HEALTH" },
-    { "type": "text", "id": "press_3", "label": "Press 3", "default": "Forbes" },
-    { "type": "text", "id": "press_4", "label": "Press 4 (bold)", "default": "POPSUGAR" },
-    { "type": "text", "id": "press_5", "label": "Press 5", "default": "Hypebeast" },
-    {
-      "type": "header",
-      "content": "Visuals"
+      "content": "Background WebGL"
     },
     {
       "type": "color",
@@ -349,7 +259,7 @@
       "min": 4,
       "max": 30,
       "step": 1,
-      "label": "Number of objects",
+      "label": "Floating shape count",
       "default": 14
     },
     {
@@ -363,7 +273,7 @@
     },
     {
       "type": "header",
-      "content": "Section padding"
+      "content": "Section sizing"
     },
     {
       "type": "range",
@@ -372,7 +282,7 @@
       "max": 120,
       "step": 5,
       "unit": "vh",
-      "label": "Minimum section height",
+      "label": "Minimum height",
       "default": 70
     },
     {
@@ -416,19 +326,47 @@
           "default": "wear"
         },
         { "type": "text", "id": "label", "label": "Label", "default": "Wear" },
-        { "type": "text", "id": "description", "label": "Description", "default": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in." },
+        { "type": "text", "id": "description", "label": "Description", "default": "Compression apparel engineered for full-range mobility." },
         { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop apparel" },
         { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "12K+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Athletes" }
+      ]
+    },
+    {
+      "type": "press",
+      "name": "Press logo",
+      "limit": 8,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Logo text", "default": "Vogue" },
+        { "type": "checkbox", "id": "bold", "label": "Bold sans-serif (vs italic serif)", "default": false }
       ]
     }
   ],
   "presets": [
     {
       "name": "OmniFlex 3D — Floating Objects",
+      "category": "OmniFlex 3D",
       "blocks": [
         { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "description": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in.", "cta_label": "Shop apparel" } },
         { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "description": "Lab-tested supplements calibrated for women in training: clean macros, transparent dosing, third-party verified.", "cta_label": "Shop fuel" } },
-        { "type": "pillar", "settings": { "icon": "train", "label": "Train", "description": "Biomechanically-coded programs and education, written by coaches who actually train women, not interns.", "cta_label": "Start training" } }
+        { "type": "pillar", "settings": { "icon": "train", "label": "Train", "description": "Biomechanically-coded programs and education, written by coaches who actually train women, not interns.", "cta_label": "Start training" } },
+        { "type": "stat", "settings": { "value": "12K+", "label": "Athletes onboarded" } },
+        { "type": "stat", "settings": { "value": "47", "label": "Tested ingredients" } },
+        { "type": "stat", "settings": { "value": "96%", "label": "Recovery rate" } },
+        { "type": "stat", "settings": { "value": "2024", "label": "Founded" } },
+        { "type": "press", "settings": { "text": "Vogue", "bold": false } },
+        { "type": "press", "settings": { "text": "WOMEN'S HEALTH", "bold": true } },
+        { "type": "press", "settings": { "text": "Forbes", "bold": false } },
+        { "type": "press", "settings": { "text": "POPSUGAR", "bold": true } },
+        { "type": "press", "settings": { "text": "Hypebeast", "bold": false } }
       ]
     }
   ]
