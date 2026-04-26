@@ -29,6 +29,8 @@ class Scroll3dShowcase extends HTMLElement {
     this.targetPointer = new THREE.Vector2(0, 0);
 
     this.initScene();
+    this.initFloor();
+    this.initParticles();
     this.initMesh();
     this.bindEvents();
     this.onScroll();
@@ -47,6 +49,14 @@ class Scroll3dShowcase extends HTMLElement {
     if (this.mesh) {
       this.mesh.geometry.dispose();
       this.mesh.material.dispose();
+    }
+    if (this.floor) {
+      this.floor.geometry.dispose();
+      this.floor.material.dispose();
+    }
+    if (this.particles) {
+      this.particles.geometry.dispose();
+      this.particles.material.dispose();
     }
   }
 
@@ -84,6 +94,63 @@ class Scroll3dShowcase extends HTMLElement {
     this.pointLight = new THREE.PointLight(0xffffff, 0.8, 30);
     this.pointLight.position.set(0, 0, 6);
     this.scene.add(this.pointLight);
+
+    this.cursorLight = new THREE.PointLight(this.colorA, 2.4, 12);
+    this.cursorLight.position.set(0, 0, 4);
+    this.scene.add(this.cursorLight);
+  }
+
+  initFloor() {
+    const grid = new THREE.GridHelper(60, 30, this.colorA, 0x331144);
+    grid.position.y = -3.5;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.4;
+    grid.material.toneMapped = false;
+    grid.material.depthWrite = false;
+    this.floor = grid;
+    this.scene.add(grid);
+
+    const ringGeo = new THREE.RingGeometry(8, 8.05, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: this.colorB,
+      transparent: true,
+      opacity: 0.5,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+    });
+    this.floorRing = new THREE.Mesh(ringGeo, ringMat);
+    this.floorRing.rotation.x = -Math.PI / 2;
+    this.floorRing.position.y = -3.49;
+    this.scene.add(this.floorRing);
+  }
+
+  initParticles() {
+    const count = 600;
+    const positions = new Float32Array(count * 3);
+    const seeds = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 30;
+      positions[i * 3 + 1] = -3 + Math.random() * 12;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 18 - 4;
+      seeds[i] = Math.random();
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.userData.seeds = seeds;
+
+    const mat = new THREE.PointsMaterial({
+      size: 0.05,
+      color: this.colorA,
+      transparent: true,
+      opacity: 0.7,
+      sizeAttenuation: true,
+      toneMapped: false,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    this.particles = new THREE.Points(geo, mat);
+    this.scene.add(this.particles);
   }
 
   buildGeometry() {
@@ -190,9 +257,11 @@ class Scroll3dShowcase extends HTMLElement {
 
   animate() {
     let last = performance.now();
+    let time = 0;
     const loop = (t) => {
       const dt = Math.min(0.05, (t - last) / 1000);
       last = t;
+      time += dt;
       this.progress += (this.targetProgress - this.progress) * 0.08;
       this.pointer.lerp(this.targetPointer, 0.06);
 
@@ -208,6 +277,39 @@ class Scroll3dShowcase extends HTMLElement {
         this.pointLight.position.x = this.pointer.x * 4;
         this.pointLight.position.y = this.pointer.y * 4;
       }
+
+      if (this.cursorLight) {
+        this.cursorLight.position.x = this.pointer.x * 7;
+        this.cursorLight.position.y = this.pointer.y * 5;
+        this.cursorLight.intensity = 2 + Math.sin(time * 4) * 0.4;
+      }
+
+      if (this.floor) {
+        this.floor.position.z = ((this.floor.position.z + dt * 2.5) % 4) - 2;
+        this.floor.material.opacity = 0.3 + Math.sin(time * 1.6) * 0.08;
+      }
+
+      if (this.floorRing) {
+        this.floorRing.rotation.z += dt * 0.4;
+        this.floorRing.scale.setScalar(0.9 + Math.sin(time * 2) * 0.08);
+      }
+
+      if (this.particles) {
+        const pos = this.particles.geometry.attributes.position;
+        const seeds = this.particles.geometry.userData.seeds;
+        const arr = pos.array;
+        for (let i = 0; i < arr.length; i += 3) {
+          arr[i + 1] += (0.4 + seeds[i / 3] * 0.6) * dt;
+          arr[i] += Math.sin(time * 0.6 + seeds[i / 3] * 6) * 0.002;
+          if (arr[i + 1] > 8) arr[i + 1] = -3;
+        }
+        pos.needsUpdate = true;
+        this.particles.rotation.y = this.pointer.x * 0.05;
+      }
+
+      this.camera.position.x += (this.pointer.x * 0.7 - this.camera.position.x) * 0.05;
+      this.camera.position.y += (this.pointer.y * 0.4 - this.camera.position.y) * 0.05;
+      this.camera.lookAt(0, 0, -this.progress * 2);
 
       this.updateChapters();
       this.renderer.render(this.scene, this.camera);

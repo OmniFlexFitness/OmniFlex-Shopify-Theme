@@ -30,6 +30,8 @@ class Floating3d extends HTMLElement {
 
     this.initScene();
     this.spawnObjects();
+    this.initConstellation();
+    this.initBackdrop();
     this.bindEvents();
     this.animate();
   }
@@ -48,6 +50,18 @@ class Floating3d extends HTMLElement {
       if (Array.isArray(s.mesh.material)) s.mesh.material.forEach(m => m.dispose());
       else s.mesh.material.dispose();
     });
+    if (this.constellation) {
+      this.constellation.geometry.dispose();
+      this.constellation.material.dispose();
+    }
+    if (this.backdrop) {
+      this.backdrop.geometry.dispose();
+      this.backdrop.material.dispose();
+    }
+    if (this.backdropGrid) {
+      this.backdropGrid.geometry.dispose();
+      this.backdropGrid.material.dispose();
+    }
   }
 
   initScene() {
@@ -80,6 +94,63 @@ class Floating3d extends HTMLElement {
     const rim = new THREE.DirectionalLight(this.colorB, 1.1);
     rim.position.set(5, -3, -3);
     this.scene.add(rim);
+
+    this.cursorLight = new THREE.PointLight(this.colorA, 3.0, 14);
+    this.cursorLight.position.set(0, 0, 5);
+    this.scene.add(this.cursorLight);
+  }
+
+  initConstellation() {
+    const positions = new Float32Array(this.shapeCount * this.shapeCount * 6);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setDrawRange(0, 0);
+
+    const mat = new THREE.LineBasicMaterial({
+      color: this.colorA,
+      transparent: true,
+      opacity: 0.35,
+      toneMapped: false,
+      blending: THREE.AdditiveBlending,
+    });
+    this.constellation = new THREE.LineSegments(geo, mat);
+    this.scene.add(this.constellation);
+  }
+
+  initBackdrop() {
+    const count = 800;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = 12 + Math.random() * 18;
+      const a = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
+      positions[i * 3] = Math.cos(a) * Math.cos(phi) * r;
+      positions[i * 3 + 1] = Math.sin(phi) * r * 0.5;
+      positions[i * 3 + 2] = Math.sin(a) * Math.cos(phi) * r - 4;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const mat = new THREE.PointsMaterial({
+      size: 0.05,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.5,
+      sizeAttenuation: true,
+      toneMapped: false,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    this.backdrop = new THREE.Points(geo, mat);
+    this.scene.add(this.backdrop);
+
+    const grid = new THREE.GridHelper(50, 25, this.colorA, 0x331144);
+    grid.position.y = -6;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.25;
+    grid.material.toneMapped = false;
+    grid.material.depthWrite = false;
+    this.backdropGrid = grid;
+    this.scene.add(grid);
   }
 
   spawnObjects() {
@@ -185,6 +256,48 @@ class Floating3d extends HTMLElement {
         m.position.x = s.baseX + this.pointer.x * s.depth * 0.6;
         m.position.z = s.baseZ + this.pointer.y * s.depth * 0.4;
       });
+
+      if (this.cursorLight) {
+        this.cursorLight.position.x = this.pointer.x * 6;
+        this.cursorLight.position.y = this.pointer.y * 5;
+        this.cursorLight.intensity = 2.6 + Math.sin(now * 4) * 0.5;
+      }
+
+      if (this.backdropGrid) {
+        this.backdropGrid.position.z = ((this.backdropGrid.position.z + dt * 1.5) % 4) - 2;
+      }
+
+      if (this.backdrop) {
+        this.backdrop.rotation.y += dt * 0.04;
+        this.backdrop.rotation.x = -this.pointer.y * 0.05;
+      }
+
+      if (this.constellation) {
+        const positions = this.constellation.geometry.attributes.position.array;
+        const max = 6.5;
+        let writeIdx = 0;
+        for (let i = 0; i < this.shapes.length; i++) {
+          for (let j = i + 1; j < this.shapes.length; j++) {
+            const a = this.shapes[i].mesh.position;
+            const b = this.shapes[j].mesh.position;
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const dz = a.z - b.z;
+            const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (d < max) {
+              positions[writeIdx++] = a.x;
+              positions[writeIdx++] = a.y;
+              positions[writeIdx++] = a.z;
+              positions[writeIdx++] = b.x;
+              positions[writeIdx++] = b.y;
+              positions[writeIdx++] = b.z;
+            }
+          }
+        }
+        this.constellation.geometry.attributes.position.needsUpdate = true;
+        this.constellation.geometry.setDrawRange(0, writeIdx / 3);
+        this.constellation.material.opacity = 0.25 + Math.sin(now * 1.2) * 0.1;
+      }
 
       this.renderer.render(this.scene, this.camera);
       this._raf = requestAnimationFrame(loop);

@@ -11,6 +11,7 @@ class NeonCursorHero extends HTMLElement {
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.canvas = this.querySelector('.neon-hero__canvas');
+    this.cursorEl = this.querySelector('.neon-hero__cursor');
     if (!this.canvas) return;
 
     const data = this.querySelector('.neon-hero__data');
@@ -21,12 +22,19 @@ class NeonCursorHero extends HTMLElement {
     this.bloomStrength = this.opts.bloomStrength ?? 1.4;
     this.tubeCount = this.opts.tubeCount ?? 5;
     this.trailLength = this.opts.trailLength ?? 80;
+    this.starCount = this.opts.starCount ?? 1500;
 
     this.pointer = new THREE.Vector2(0, 0);
     this.targetPointer = new THREE.Vector2(0, 0);
+    this.cursorScreen = { x: 0, y: 0 };
+    this.cursorScreenT = { x: 0, y: 0 };
+    this.cursorActive = false;
     this.time = 0;
 
     this.initScene();
+    this.initStarfield();
+    this.initGrid();
+    this.initRing();
     this.initTubes();
     this.bindEvents();
 
@@ -41,6 +49,8 @@ class NeonCursorHero extends HTMLElement {
     if (this._raf) cancelAnimationFrame(this._raf);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('pointermove', this._onPointerMove);
+    this.removeEventListener('pointerenter', this._onEnter);
+    this.removeEventListener('pointerleave', this._onLeave);
     if (this.composer) this.composer.dispose?.();
     if (this.renderer) {
       this.renderer.dispose();
@@ -50,6 +60,18 @@ class NeonCursorHero extends HTMLElement {
       t.mesh.geometry.dispose();
       t.mesh.material.dispose();
     });
+    if (this.starfield) {
+      this.starfield.geometry.dispose();
+      this.starfield.material.dispose();
+    }
+    if (this.grid) {
+      this.grid.geometry.dispose();
+      this.grid.material.dispose();
+    }
+    if (this.ring) {
+      this.ring.geometry.dispose();
+      this.ring.material.dispose();
+    }
   }
 
   initScene() {
@@ -57,10 +79,11 @@ class NeonCursorHero extends HTMLElement {
     const h = this.clientHeight || window.innerHeight;
 
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x07041f, 0.045);
+    this.scene.fog = new THREE.FogExp2(0x07041f, 0.04);
 
-    this.camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
-    this.camera.position.set(0, 0, 8);
+    this.camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 200);
+    this.camera.position.set(0, 0.5, 8);
+    this.camera.lookAt(0, 0, 0);
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -77,6 +100,90 @@ class NeonCursorHero extends HTMLElement {
     this.bloomPass = new UnrealBloomPass(new THREE.Vector2(w, h), this.bloomStrength, 0.85, 0.1);
     this.composer.addPass(this.bloomPass);
     this.composer.addPass(new OutputPass());
+  }
+
+  initStarfield() {
+    const count = this.starCount;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const home = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const r = 8 + Math.pow(Math.random(), 0.6) * 30;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI * 0.9;
+      const x = Math.cos(theta) * Math.cos(phi) * r;
+      const y = Math.sin(phi) * r * 0.6;
+      const z = Math.sin(theta) * Math.cos(phi) * r - 4;
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+      home[i * 3] = x;
+      home[i * 3 + 1] = y;
+      home[i * 3 + 2] = z;
+
+      const t = Math.random();
+      const c = new THREE.Color().lerpColors(this.colorA, this.colorB, t);
+      const dim = 0.5 + Math.random() * 0.5;
+      colors[i * 3] = c.r * dim;
+      colors[i * 3 + 1] = c.g * dim;
+      colors[i * 3 + 2] = c.b * dim;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.userData.home = home;
+
+    const mat = new THREE.PointsMaterial({
+      size: 0.07,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      sizeAttenuation: true,
+      toneMapped: false,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    this.starfield = new THREE.Points(geo, mat);
+    this.scene.add(this.starfield);
+  }
+
+  initGrid() {
+    const grid = new THREE.GridHelper(80, 40, this.colorA, 0x331144);
+    grid.position.y = -3.2;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.35;
+    grid.material.toneMapped = false;
+    grid.material.depthWrite = false;
+    this.grid = grid;
+    this.scene.add(grid);
+  }
+
+  initRing() {
+    const geo = new THREE.RingGeometry(0.55, 0.62, 64);
+    const mat = new THREE.MeshBasicMaterial({
+      color: this.colorA,
+      transparent: true,
+      opacity: 0.9,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+    });
+    this.ring = new THREE.Mesh(geo, mat);
+    this.scene.add(this.ring);
+
+    const innerGeo = new THREE.RingGeometry(0.18, 0.22, 32);
+    const innerMat = new THREE.MeshBasicMaterial({
+      color: this.colorB,
+      transparent: true,
+      opacity: 0.9,
+      toneMapped: false,
+      side: THREE.DoubleSide,
+    });
+    this.ringInner = new THREE.Mesh(innerGeo, innerMat);
+    this.scene.add(this.ringInner);
   }
 
   initTubes() {
@@ -112,8 +219,12 @@ class NeonCursorHero extends HTMLElement {
   bindEvents() {
     this._onResize = this.onResize.bind(this);
     this._onPointerMove = this.onPointerMove.bind(this);
+    this._onEnter = () => { this.cursorActive = true; if (this.cursorEl) this.cursorEl.dataset.active = 'true'; };
+    this._onLeave = () => { this.cursorActive = false; if (this.cursorEl) this.cursorEl.dataset.active = 'false'; };
     window.addEventListener('resize', this._onResize, { passive: true });
     window.addEventListener('pointermove', this._onPointerMove, { passive: true });
+    this.addEventListener('pointerenter', this._onEnter);
+    this.addEventListener('pointerleave', this._onLeave);
   }
 
   onResize() {
@@ -130,6 +241,15 @@ class NeonCursorHero extends HTMLElement {
     const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
     this.targetPointer.set(x, y);
+    this.cursorScreenT = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+    const inside =
+      e.clientX >= rect.left && e.clientX <= rect.right &&
+      e.clientY >= rect.top && e.clientY <= rect.bottom;
+    if (inside !== this.cursorActive) {
+      this.cursorActive = inside;
+      if (this.cursorEl) this.cursorEl.dataset.active = String(inside);
+    }
   }
 
   worldFromPointer(p) {
@@ -137,6 +257,68 @@ class NeonCursorHero extends HTMLElement {
     const dir = vec.sub(this.camera.position).normalize();
     const dist = -this.camera.position.z / dir.z;
     return this.camera.position.clone().add(dir.multiplyScalar(dist));
+  }
+
+  updateStarfield(dt, targetWorld) {
+    if (!this.starfield) return;
+    const pos = this.starfield.geometry.attributes.position;
+    const home = this.starfield.geometry.userData.home;
+    const arr = pos.array;
+    const px = targetWorld.x;
+    const py = targetWorld.y;
+    const repulse = 1.4;
+    const radius2 = 9;
+
+    for (let i = 0; i < arr.length; i += 3) {
+      const hx = home[i];
+      const hy = home[i + 1];
+      const hz = home[i + 2];
+      const dx = hx - px;
+      const dy = hy - py;
+      const d2 = dx * dx + dy * dy;
+      let push = 0;
+      if (d2 < radius2) {
+        const d = Math.sqrt(d2) || 1;
+        push = (1 - d2 / radius2) * repulse;
+        arr[i] = hx + (dx / d) * push;
+        arr[i + 1] = hy + (dy / d) * push;
+      } else {
+        arr[i] += (hx - arr[i]) * 0.06;
+        arr[i + 1] += (hy - arr[i + 1]) * 0.06;
+      }
+      arr[i + 2] = hz + Math.sin(this.time * 0.8 + i * 0.001) * 0.15;
+    }
+    pos.needsUpdate = true;
+
+    this.starfield.rotation.y = this.pointer.x * 0.12;
+    this.starfield.rotation.x = -this.pointer.y * 0.06;
+  }
+
+  updateGrid(dt) {
+    if (!this.grid) return;
+    this.grid.position.z = ((this.grid.position.z + dt * 2.5) % 4) - 2;
+    this.grid.material.opacity = 0.25 + (this.cursorActive ? 0.2 : 0) * (0.5 + 0.5 * Math.sin(this.time * 3));
+  }
+
+  updateRing(targetWorld) {
+    if (!this.ring) return;
+    this.ring.position.copy(targetWorld);
+    this.ring.position.z = 0.05;
+    this.ring.rotation.z = this.time * 1.2;
+    this.ring.scale.setScalar(0.9 + Math.sin(this.time * 4) * 0.1);
+    this.ring.material.opacity = this.cursorActive ? 0.85 : 0.3;
+
+    this.ringInner.position.copy(this.ring.position);
+    this.ringInner.rotation.z = -this.time * 1.6;
+    this.ringInner.material.opacity = this.cursorActive ? 0.9 : 0.4;
+  }
+
+  updateCursorEl() {
+    if (!this.cursorEl) return;
+    const k = 0.22;
+    this.cursorScreen.x += (this.cursorScreenT.x - this.cursorScreen.x) * k;
+    this.cursorScreen.y += (this.cursorScreenT.y - this.cursorScreen.y) * k;
+    this.cursorEl.style.transform = `translate3d(${this.cursorScreen.x}px, ${this.cursorScreen.y}px, 0) translate(-50%, -50%)`;
   }
 
   step(dt) {
@@ -161,6 +343,11 @@ class NeonCursorHero extends HTMLElement {
       tube.mesh.geometry.dispose();
       tube.mesh.geometry = newGeo;
     });
+
+    this.updateStarfield(dt, targetWorld);
+    this.updateGrid(dt);
+    this.updateRing(targetWorld);
+    this.updateCursorEl();
   }
 
   animate() {

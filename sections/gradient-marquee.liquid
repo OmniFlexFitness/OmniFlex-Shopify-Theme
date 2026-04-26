@@ -8,12 +8,37 @@
   <div class="gradient-marquee__halo gradient-marquee__halo--top" aria-hidden="true"></div>
   <div class="gradient-marquee__halo gradient-marquee__halo--bottom" aria-hidden="true"></div>
 
+  <canvas class="gradient-marquee__particles" aria-hidden="true"></canvas>
+
+  <div class="gradient-marquee__circuit" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="circuit-grad-{{ section.id }}" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#0aeaed" stop-opacity="0.6"/>
+          <stop offset="1" stop-color="#fa0dfd" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+      <path d="M0 100 H 200 L 240 60 H 380 L 420 100 H 600 L 640 60 H 800 L 840 100 H 1000 L 1040 60 H 1200" stroke="url(#circuit-grad-{{ section.id }})" stroke-width="1" fill="none" />
+      <path d="M0 480 H 160 L 200 520 H 340 L 380 480 H 540 L 580 520 H 720 L 760 480 H 920 L 960 520 H 1200" stroke="url(#circuit-grad-{{ section.id }})" stroke-width="1" fill="none" />
+      <circle cx="240" cy="60" r="3" fill="#0aeaed"/>
+      <circle cx="640" cy="60" r="3" fill="#fa0dfd"/>
+      <circle cx="380" cy="480" r="3" fill="#0aeaed"/>
+      <circle cx="760" cy="480" r="3" fill="#fa0dfd"/>
+    </svg>
+  </div>
+
+  <div class="gradient-marquee__corners" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
   {%- if section.settings.show_hud -%}
     <div class="gradient-marquee__hud" aria-hidden="true">
-      <div style="display:flex;gap:1rem;align-items:center;">
+      <div class="gradient-marquee__hud-left">
         <span>{{ section.settings.hud_left | default: 'Section 04 / Manifesto' | escape }}</span>
         <span class="gradient-marquee__hud-divider"></span>
-        <strong>{{ section.settings.hud_left_strong | default: 'Live' | escape }}</strong>
+        <strong class="gradient-marquee__pulse">{{ section.settings.hud_left_strong | default: 'Live' | escape }}</strong>
+        <span class="gradient-marquee__hud-divider"></span>
+        <span>SIG <strong class="gradient-marquee__ticker-value">000000</strong></span>
       </div>
       <div>{{ section.settings.hud_right | default: 'OmniFlex // Defy Limits' | escape }}</div>
     </div>
@@ -29,8 +54,9 @@
   {%- endif -%}
 
   <div class="gradient-marquee__rows">
-    {%- for block in section.blocks -%}
-      {%- if block.type == 'row' -%}
+    {%- assign row_blocks = section.blocks | where: 'type', 'row' -%}
+    {%- if row_blocks.size > 0 -%}
+      {%- for block in row_blocks -%}
         {%- assign style = block.settings.style -%}
         {%- assign reverse = block.settings.reverse -%}
         <div
@@ -42,14 +68,32 @@
             <span class="gradient-marquee__dot" aria-hidden="true"></span>
           </span>
         </div>
-      {%- endif -%}
+
+        {%- unless forloop.last -%}
+          <div class="gradient-marquee__divider" aria-hidden="true">
+            <span class="gradient-marquee__divider-line"></span>
+            <span class="gradient-marquee__divider-tag">
+              <span class="gradient-marquee__divider-glyph"></span>
+              {{ forloop.index | prepend: '0' | slice: -2, 2 }} / {{ row_blocks.size | prepend: '0' | slice: -2, 2 }}
+              <span class="gradient-marquee__divider-sep">//</span>
+              {%- case forloop.index -%}
+              {%- when 1 -%}WEAR
+              {%- when 2 -%}FUEL
+              {%- when 3 -%}TRAIN
+              {%- else -%}OMNIFLEX
+              {%- endcase -%}
+            </span>
+            <span class="gradient-marquee__divider-line"></span>
+          </div>
+        {%- endunless -%}
+      {%- endfor -%}
     {%- else -%}
       <div class="gradient-marquee__row">
         <span class="gradient-marquee__item gradient-marquee__item--gradient">
           OmniFlex <span class="gradient-marquee__dot" aria-hidden="true"></span>
         </span>
       </div>
-    {%- endfor -%}
+    {%- endif -%}
   </div>
 
   {%- if section.settings.quote_text != blank -%}
@@ -111,7 +155,7 @@
   {%- endif -%}
 </gradient-marquee>
 
-<script src="{{ 'gradient-marquee.js' | asset_url }}" defer></script>
+<script src="{{ 'gradient-marquee.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {

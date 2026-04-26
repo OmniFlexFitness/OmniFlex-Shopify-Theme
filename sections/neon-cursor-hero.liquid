@@ -17,6 +17,14 @@
   <div class="neon-hero__grid" aria-hidden="true"></div>
   <div class="neon-hero__scanline" aria-hidden="true"></div>
 
+  <div class="neon-hero__cursor" data-active="false" aria-hidden="true">
+    <span class="neon-hero__cursor-ring"></span>
+    <span class="neon-hero__cursor-corner neon-hero__cursor-corner--tl"></span>
+    <span class="neon-hero__cursor-corner neon-hero__cursor-corner--tr"></span>
+    <span class="neon-hero__cursor-corner neon-hero__cursor-corner--bl"></span>
+    <span class="neon-hero__cursor-corner neon-hero__cursor-corner--br"></span>
+  </div>
+
   <div class="neon-hero__frame" aria-hidden="true">
     <span></span><span></span>
   </div>
@@ -162,7 +170,8 @@
       "colorB": {{ section.settings.color_b | json }},
       "bloomStrength": {{ section.settings.bloom_strength }},
       "tubeCount": {{ section.settings.tube_count }},
-      "trailLength": {{ section.settings.trail_length }}
+      "trailLength": {{ section.settings.trail_length }},
+      "starCount": {{ section.settings.star_count }}
     }
   </script>
 
@@ -375,6 +384,15 @@
       "step": 5,
       "label": "Trail length",
       "default": 80
+    },
+    {
+      "type": "range",
+      "id": "star_count",
+      "min": 200,
+      "max": 3000,
+      "step": 100,
+      "label": "Starfield count",
+      "default": 1500
     },
     {
       "type": "range",
