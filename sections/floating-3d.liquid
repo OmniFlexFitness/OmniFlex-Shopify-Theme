@@ -7,12 +7,12 @@
   assign stat_font = section.settings.stat_value_font
 -%}
 
-{{ heading_font | font_face: font_display: 'swap' }}
-{{ body_font | font_face: font_display: 'swap' }}
-{{ accent_font | font_face: font_display: 'swap' }}
-{{ stat_font | font_face: font_display: 'swap' }}
-
 {%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ stat_font | font_face: font_display: 'swap' }}
+
   #shopify-section-{{ section.id }} .floating3d {
     --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
     --heading-color: {{ section.settings.heading_color }};
@@ -147,9 +147,9 @@
 
 {% schema %}
 {
-  "name": "Floating 3D objects",
+  "name": "OmniFlex 3D — Floating Objects",
   "tag": "section",
-  "class": "section section--floating3d",
+  "class": "section section--floating3d section--omniflex-3d",
   "disabled_on": {
     "groups": ["header", "footer"]
   },
@@ -378,7 +378,7 @@
   ],
   "presets": [
     {
-      "name": "Floating 3D objects",
+      "name": "OmniFlex 3D — Floating Objects",
       "blocks": [
         { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "description": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in.", "cta_label": "Shop apparel" } },
         { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "description": "Lab-tested supplements calibrated for women in training: clean macros, transparent dosing, third-party verified.", "cta_label": "Shop fuel" } },

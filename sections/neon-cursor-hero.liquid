@@ -10,12 +10,12 @@
   assign stat_font = section.settings.stat_value_font
 -%}
 
-{{ heading_font | font_face: font_display: 'swap' }}
-{{ body_font | font_face: font_display: 'swap' }}
-{{ accent_font | font_face: font_display: 'swap' }}
-{{ stat_font | font_face: font_display: 'swap' }}
-
 {%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ stat_font | font_face: font_display: 'swap' }}
+
   #shopify-section-{{ section.id }} { margin: 0; padding: 0; }
   .neon-hero--{{ section.id }} {
     min-height: {{ section.settings.section_height }}svh;
@@ -221,9 +221,9 @@
 
 {% schema %}
 {
-  "name": "Neon cursor hero",
+  "name": "OmniFlex 3D — Neon Cursor Hero",
   "tag": "section",
-  "class": "section section--neon-hero",
+  "class": "section section--neon-hero section--omniflex-3d",
   "disabled_on": {
     "groups": ["header", "footer"]
   },
@@ -584,7 +584,7 @@
   ],
   "presets": [
     {
-      "name": "Neon cursor hero"
+      "name": "OmniFlex 3D — Neon Cursor Hero"
     }
   ]
 }

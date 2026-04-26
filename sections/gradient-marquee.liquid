@@ -8,13 +8,13 @@
   assign quote_font = section.settings.quote_font
 -%}
 
-{{ marquee_font | font_face: font_display: 'swap' }}
-{{ heading_font | font_face: font_display: 'swap' }}
-{{ body_font | font_face: font_display: 'swap' }}
-{{ accent_font | font_face: font_display: 'swap' }}
-{{ quote_font | font_face: font_display: 'swap' }}
-
 {%- style -%}
+  {{ marquee_font | font_face: font_display: 'swap' }}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ quote_font | font_face: font_display: 'swap' }}
+
   #shopify-section-{{ section.id }} .gradient-marquee {
     --marquee-font: {{ marquee_font.family }}, {{ marquee_font.fallback_families }};
     --marquee-color: {{ section.settings.marquee_color }};
@@ -192,9 +192,9 @@
 
 {% schema %}
 {
-  "name": "Gradient marquee",
+  "name": "OmniFlex 3D — Gradient Marquee",
   "tag": "section",
-  "class": "section section--gradient-marquee",
+  "class": "section section--gradient-marquee section--omniflex-3d",
   "disabled_on": {
     "groups": ["header", "footer"]
   },
@@ -390,7 +390,7 @@
   ],
   "presets": [
     {
-      "name": "Gradient marquee",
+      "name": "OmniFlex 3D — Gradient Marquee",
       "blocks": [
         { "type": "row", "settings": { "text": "Defy Limits", "style": "filled", "reverse": false } },
         { "type": "row", "settings": { "text": "Build Strength", "style": "outline", "reverse": true } },

@@ -14,12 +14,12 @@
   assign spec_font = section.settings.spec_value_font
 -%}
 
-{{ heading_font | font_face: font_display: 'swap' }}
-{{ body_font | font_face: font_display: 'swap' }}
-{{ accent_font | font_face: font_display: 'swap' }}
-{{ spec_font | font_face: font_display: 'swap' }}
-
 {%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ spec_font | font_face: font_display: 'swap' }}
+
   .scroll3d--{{ section.id }} .scroll3d__track {
     height: {{ track_height }}vh;
   }
@@ -168,7 +168,9 @@
   <script type="application/json" class="scroll3d__data">
     {
       "shape": {{ section.settings.shape | json }},
+      "material": {{ section.settings.material_style | json }},
       "wireframe": {{ section.settings.wireframe | json }},
+      "tintColor": {{ section.settings.tint_color | json }},
       "colorA": {{ section.settings.color_a | json }},
       "colorB": {{ section.settings.color_b | json }}
     }
@@ -187,9 +189,9 @@
 
 {% schema %}
 {
-  "name": "3D scroll showcase",
+  "name": "OmniFlex 3D — Scroll Showcase",
   "tag": "section",
-  "class": "section section--scroll3d",
+  "class": "section section--scroll3d section--omniflex-3d",
   "disabled_on": {
     "groups": ["header", "footer"]
   },
@@ -294,31 +296,62 @@
       "type": "select",
       "id": "shape",
       "label": "3D shape",
+      "info": "Cyberpunk / vaporwave / neon-noir geometry library.",
       "options": [
         { "value": "knot", "label": "Torus knot" },
-        { "value": "torus", "label": "Torus" },
+        { "value": "torus", "label": "Torus ring" },
+        { "value": "tunnel", "label": "Tunnel (thick torus)" },
         { "value": "icosa", "label": "Icosahedron" },
         { "value": "octa", "label": "Octahedron" },
-        { "value": "sphere", "label": "Sphere" }
+        { "value": "dodeca", "label": "Dodecahedron" },
+        { "value": "tetra", "label": "Tetrahedron / Pyramid" },
+        { "value": "pyramid_stack", "label": "Vaporwave pyramid stack" },
+        { "value": "cube", "label": "Cube" },
+        { "value": "sphere", "label": "Sphere" },
+        { "value": "crystal", "label": "Crystal shard" },
+        { "value": "helix", "label": "DNA helix" },
+        { "value": "ribbon", "label": "Twisted ribbon" },
+        { "value": "logo", "label": "OmniFlex 3D logo" }
       ],
       "default": "knot"
     },
     {
+      "type": "select",
+      "id": "material_style",
+      "label": "Material style",
+      "options": [
+        { "value": "chrome", "label": "Chrome iridescent" },
+        { "value": "chrome_black", "label": "Chrome black mirror" },
+        { "value": "holographic", "label": "Holographic glass" },
+        { "value": "matte_neon", "label": "Matte neon (flat color)" },
+        { "value": "neon_outline", "label": "Neon outline (Tron edges)" },
+        { "value": "wireframe", "label": "Wireframe" }
+      ],
+      "default": "chrome"
+    },
+    {
+      "type": "color",
+      "id": "tint_color",
+      "label": "Material tint",
+      "info": "Base color for chrome/holographic/matte materials. Leave white for neutral chrome.",
+      "default": "#ffffff"
+    },
+    {
       "type": "checkbox",
       "id": "wireframe",
-      "label": "Wireframe style",
+      "label": "Force wireframe (overrides material style)",
       "default": false
     },
     {
       "type": "color",
       "id": "color_a",
-      "label": "Light color (key)",
+      "label": "Light color (key) / outline color",
       "default": "#0aeaed"
     },
     {
       "type": "color",
       "id": "color_b",
-      "label": "Light color (rim)",
+      "label": "Light color (rim) / logo inner color",
       "default": "#fa0dfd"
     }
   ],
@@ -435,7 +468,7 @@
   ],
   "presets": [
     {
-      "name": "3D scroll showcase",
+      "name": "OmniFlex 3D — Scroll Showcase",
       "blocks": [
         { "type": "chapter", "settings": { "icon": "wear", "title": "Built to <em>flex</em>", "alignment": "left" } },
         { "type": "chapter", "settings": { "icon": "fuel", "title": "Engineered to <em>endure</em>", "alignment": "right" } },
