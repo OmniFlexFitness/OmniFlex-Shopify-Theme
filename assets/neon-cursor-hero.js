@@ -61,6 +61,7 @@ class NeonCursorHero extends HTMLElement {
     window.removeEventListener('pointermove', this._onPointerMove);
     this.removeEventListener('pointerenter', this._onEnter);
     this.removeEventListener('pointerleave', this._onLeave);
+    this._ro?.disconnect();
     if (this.composer) this.composer.dispose?.();
     if (this.renderer) {
       this.renderer.dispose();
@@ -241,6 +242,11 @@ class NeonCursorHero extends HTMLElement {
     window.addEventListener('pointermove', this._onPointerMove, { passive: true });
     this.addEventListener('pointerenter', this._onEnter);
     this.addEventListener('pointerleave', this._onLeave);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver(() => this.onResize());
+      this._ro.observe(this);
+    }
   }
 
   onResize() {

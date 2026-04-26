@@ -41,6 +41,7 @@ class Floating3d extends HTMLElement {
     window.removeEventListener('pointermove', this._onPointerMove);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('scroll', this._onScroll);
+    this._ro?.disconnect();
     if (this.renderer) {
       this.renderer.dispose();
       this.renderer.forceContextLoss?.();
@@ -210,6 +211,11 @@ class Floating3d extends HTMLElement {
     window.addEventListener('pointermove', this._onPointerMove, { passive: true });
     window.addEventListener('resize', this._onResize, { passive: true });
     window.addEventListener('scroll', this._onScroll, { passive: true });
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver(() => this.onResize());
+      this._ro.observe(this);
+    }
   }
 
   onResize() {

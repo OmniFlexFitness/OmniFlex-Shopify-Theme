@@ -15,6 +15,17 @@
   {{ accent_font | font_face: font_display: 'swap' }}
   {{ quote_font | font_face: font_display: 'swap' }}
 
+  .gradient-marquee--{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px !important;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px !important;
+  }
+  @media screen and (min-width: 750px) {
+    .gradient-marquee--{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom }}px !important;
+    }
+  }
+
   #shopify-section-{{ section.id }} .gradient-marquee {
     --marquee-font: {{ marquee_font.family }}, {{ marquee_font.fallback_families }};
     --marquee-color: {{ section.settings.marquee_color }};
@@ -31,7 +42,7 @@
 {%- endstyle -%}
 
 <gradient-marquee
-  class="gradient-marquee"
+  class="gradient-marquee gradient-marquee--{{ section.id }}"
   data-base-speed="{{ section.settings.base_speed }}"
   data-scroll-factor="{{ section.settings.scroll_factor }}"
 >
@@ -349,7 +360,31 @@
       "content": "Lockup footer"
     },
     { "type": "checkbox", "id": "show_lockup", "label": "Show lockup", "default": true },
-    { "type": "text", "id": "lockup_tagline", "label": "Tagline", "default": "Defy Limits · Build Strength · Own Your Story" }
+    { "type": "text", "id": "lockup_tagline", "label": "Tagline", "default": "Defy Limits · Build Strength · Own Your Story" },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    }
   ],
   "blocks": [
     {

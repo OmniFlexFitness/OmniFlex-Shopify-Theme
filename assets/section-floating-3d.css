@@ -1,7 +1,7 @@
 .floating3d {
   position: relative;
   width: 100%;
-  min-height: 90svh;
+  min-height: 60svh;
   background: #07041f;
   overflow: hidden;
   isolation: isolate;
@@ -51,8 +51,12 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 3rem 2rem 0;
   pointer-events: none;
+}
+
+.floating3d__inner > * {
+  pointer-events: auto;
 }
 
 .floating3d__pretitle {
@@ -149,7 +153,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   width: min(1100px, 95%);
-  margin: 4rem auto 0;
+  margin: 2.5rem auto 0;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -288,8 +292,8 @@
 
 .floating3d__press {
   width: min(1100px, 95%);
-  margin: 4rem auto 0;
-  padding: 1.5rem 0;
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 0;
   border-top: 1px dashed rgba(255, 255, 255, 0.15);
   border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
   display: flex;

@@ -3,7 +3,6 @@
   width: 100%;
   background: #07041f;
   overflow: hidden;
-  padding: 5rem 0 6rem;
   isolation: isolate;
   --neon-cyan: #0aeaed;
   --neon-magenta: #fa0dfd;
@@ -197,7 +196,7 @@
   position: relative;
   z-index: 2;
   width: min(900px, 90%);
-  margin: 0 auto 4rem;
+  margin: 0 auto 2.5rem;
   text-align: center;
 }
 
@@ -246,11 +245,11 @@
   align-items: center;
   white-space: nowrap;
   font-family: var(--marquee-font);
-  font-size: clamp(4rem, 13vw, 13rem);
+  font-size: clamp(2.75rem, 9vw, 8rem);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: -0.05em;
-  line-height: 1;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
   will-change: transform;
   color: var(--marquee-color);
 }
@@ -315,7 +314,7 @@
   position: relative;
   z-index: 2;
   width: min(900px, 90%);
-  margin: 4rem auto 0;
+  margin: 2.5rem auto 0;
   padding: 2rem 2.5rem;
   border-left: 2px solid;
   border-image: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta)) 1;
@@ -366,7 +365,7 @@
   position: relative;
   z-index: 2;
   width: min(900px, 90%);
-  margin: 4rem auto 0;
+  margin: 2.5rem auto 0;
   padding: 2.5rem 2rem;
   background: rgba(7, 4, 31, 0.55);
   backdrop-filter: blur(10px);
@@ -476,7 +475,7 @@
   position: relative;
   z-index: 2;
   width: min(1100px, 95%);
-  margin: 4rem auto 0;
+  margin: 2.5rem auto 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

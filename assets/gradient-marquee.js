@@ -37,6 +37,7 @@ class GradientMarquee extends HTMLElement {
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('pointermove', this._onPointerMove);
+    this._ro?.disconnect();
   }
 
   duplicateContent() {
@@ -53,6 +54,11 @@ class GradientMarquee extends HTMLElement {
     window.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onResize, { passive: true });
     window.addEventListener('pointermove', this._onPointerMove, { passive: true });
+
+    if (typeof ResizeObserver !== 'undefined' && this.canvas) {
+      this._ro = new ResizeObserver(() => this.onResize());
+      this._ro.observe(this);
+    }
   }
 
   onScroll() {
