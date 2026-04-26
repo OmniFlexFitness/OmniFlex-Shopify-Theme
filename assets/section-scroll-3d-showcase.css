@@ -2,11 +2,23 @@
   position: relative;
   width: 100%;
   background: #07041f;
-  color: #fff;
   isolation: isolate;
   --neon-cyan: #0aeaed;
   --neon-magenta: #fa0dfd;
   --neon-mute: rgba(255, 255, 255, 0.6);
+
+  /* Typography vars (overridden inline by section settings) */
+  --heading-font: inherit;
+  --heading-color: #ffffff;
+  --heading-stroke: 1.5px;
+  --body-font: inherit;
+  --body-color: rgba(255, 255, 255, 0.78);
+  --accent-font: inherit;
+  --accent-color: rgba(255, 255, 255, 0.78);
+  --spec-value-font: inherit;
+  --spec-value-color: #ffffff;
+
+  color: var(--body-color);
   font-feature-settings: 'tnum';
 }
 
@@ -43,10 +55,11 @@
   display: flex;
   justify-content: space-between;
   padding: 0 2.5rem;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   pointer-events: none;
   font-variant-numeric: tabular-nums;
 }
@@ -75,16 +88,17 @@
   bottom: 1.75rem;
   left: 2.5rem;
   z-index: 4;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   pointer-events: none;
   font-variant-numeric: tabular-nums;
 }
 
 .scroll3d__timecode em {
-  color: #fff;
+  color: var(--heading-color);
   font-style: normal;
   font-weight: 700;
 }
@@ -174,6 +188,7 @@
 }
 
 .scroll3d__index {
+  font-family: var(--accent-font);
   font-size: 0.78rem;
   letter-spacing: 0.4em;
   color: var(--neon-cyan);
@@ -182,31 +197,39 @@
 }
 
 .scroll3d__index span {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--accent-color);
+  opacity: 0.6;
   font-weight: 400;
 }
 
 .scroll3d__title {
+  font-family: var(--heading-font);
   font-size: clamp(2.25rem, 5vw, 4.5rem);
   line-height: 1;
   letter-spacing: -0.03em;
   margin: 0 0 1.25rem;
   font-weight: 800;
   text-transform: uppercase;
+  color: var(--heading-color);
+}
+
+.scroll3d[data-heading-style='outline'] .scroll3d__title,
+.scroll3d[data-heading-style='outline'] .scroll3d__title em {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--heading-stroke) var(--heading-color);
+  color: transparent;
 }
 
 .scroll3d__title em {
   font-style: normal;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--neon-cyan);
 }
 
 .scroll3d__body {
+  font-family: var(--body-font);
   font-size: 1rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--body-color);
   margin: 0 0 1.5rem;
   max-width: 42ch;
 }
@@ -229,11 +252,12 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.7rem;
+  font-family: var(--accent-font);
   font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--accent-color);
   font-weight: 600;
 }
 
@@ -277,20 +301,25 @@
 
 .scroll3d__spec-value {
   display: block;
+  font-family: var(--spec-value-font);
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.01em;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--spec-value-color);
+}
+
+.scroll3d[data-spec-style='outline'] .scroll3d__spec-value {
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--spec-value-color);
+  color: transparent;
 }
 
 .scroll3d__spec-label {
+  font-family: var(--accent-font);
   font-size: 0.6rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   margin-top: 0.15rem;
 }
 
@@ -299,6 +328,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-family: var(--accent-font);
   font-size: 0.75rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;

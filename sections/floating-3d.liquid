@@ -1,6 +1,37 @@
 {{ 'section-floating-3d.css' | asset_url | stylesheet_tag }}
 
-<floating-3d class="floating3d">
+{%- liquid
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign accent_font = section.settings.accent_font
+  assign stat_font = section.settings.stat_value_font
+-%}
+
+{{ heading_font | font_face: font_display: 'swap' }}
+{{ body_font | font_face: font_display: 'swap' }}
+{{ accent_font | font_face: font_display: 'swap' }}
+{{ stat_font | font_face: font_display: 'swap' }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .floating3d {
+    --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --heading-color: {{ section.settings.heading_color }};
+    --heading-stroke: {{ section.settings.heading_outline_thickness }}px;
+    --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --body-color: {{ section.settings.body_color }};
+    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
+    --accent-color: {{ section.settings.accent_color }};
+    --pillar-label-color: {{ section.settings.pillar_label_color }};
+    --stat-value-font: {{ stat_font.family }}, {{ stat_font.fallback_families }};
+    --stat-value-color: {{ section.settings.stat_value_color }};
+  }
+{%- endstyle -%}
+
+<floating-3d
+  class="floating3d"
+  data-heading-style="{{ section.settings.heading_style }}"
+  data-stat-style="{{ section.settings.stat_value_style }}"
+>
   <canvas class="floating3d__canvas" aria-hidden="true"></canvas>
   <div class="floating3d__noise" aria-hidden="true"></div>
 
@@ -161,6 +192,94 @@
       "type": "url",
       "id": "cta_link",
       "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Title / pillar font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "heading_style",
+      "label": "Title display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "range",
+      "id": "heading_outline_thickness",
+      "label": "Outline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1.5
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#cdd2da"
+    },
+    {
+      "type": "color",
+      "id": "pillar_label_color",
+      "label": "Pillar label color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "font_picker",
+      "id": "accent_font",
+      "label": "Accent / HUD font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / HUD color",
+      "default": "#9aa3b2"
+    },
+    {
+      "type": "font_picker",
+      "id": "stat_value_font",
+      "label": "Stat value font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "stat_value_color",
+      "label": "Stat value color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "stat_value_style",
+      "label": "Stat value display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
     },
     {
       "type": "header",

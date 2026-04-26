@@ -23,6 +23,16 @@ class NeonCursorHero extends HTMLElement {
     this.tubeCount = this.opts.tubeCount ?? 5;
     this.trailLength = this.opts.trailLength ?? 80;
     this.starCount = this.opts.starCount ?? 1500;
+    this.showGrid = this.opts.showGrid !== false;
+    this.cursorLight = Object.assign({
+      enabled: true,
+      outerColor: '#0aeaed',
+      innerColor: '#fa0dfd',
+      radius: 1.0,
+      intensity: 1.0,
+      pulseSpeed: 4,
+      ringWidth: 0.07,
+    }, this.opts.cursorLight || {});
 
     this.pointer = new THREE.Vector2(0, 0);
     this.targetPointer = new THREE.Vector2(0, 0);
@@ -32,10 +42,10 @@ class NeonCursorHero extends HTMLElement {
     this.time = 0;
 
     this.initScene();
-    this.initStarfield();
-    this.initGrid();
-    this.initRing();
-    this.initTubes();
+    if (this.starCount > 0) this.initStarfield();
+    if (this.showGrid) this.initGrid();
+    if (this.cursorLight.enabled) this.initRing();
+    if (this.tubeCount > 0) this.initTubes();
     this.bindEvents();
 
     if (reduced) {
@@ -163,9 +173,13 @@ class NeonCursorHero extends HTMLElement {
   }
 
   initRing() {
-    const geo = new THREE.RingGeometry(0.55, 0.62, 64);
+    const r = this.cursorLight.radius;
+    const w = this.cursorLight.ringWidth;
+    const outerR = 0.55 * r;
+    const outerR2 = outerR + w;
+    const geo = new THREE.RingGeometry(outerR, outerR2, 64);
     const mat = new THREE.MeshBasicMaterial({
-      color: this.colorA,
+      color: new THREE.Color(this.cursorLight.outerColor),
       transparent: true,
       opacity: 0.9,
       toneMapped: false,
@@ -174,9 +188,11 @@ class NeonCursorHero extends HTMLElement {
     this.ring = new THREE.Mesh(geo, mat);
     this.scene.add(this.ring);
 
-    const innerGeo = new THREE.RingGeometry(0.18, 0.22, 32);
+    const innerR = 0.18 * r;
+    const innerR2 = innerR + Math.max(0.02, w * 0.7);
+    const innerGeo = new THREE.RingGeometry(innerR, innerR2, 32);
     const innerMat = new THREE.MeshBasicMaterial({
-      color: this.colorB,
+      color: new THREE.Color(this.cursorLight.innerColor),
       transparent: true,
       opacity: 0.9,
       toneMapped: false,
@@ -302,15 +318,20 @@ class NeonCursorHero extends HTMLElement {
 
   updateRing(targetWorld) {
     if (!this.ring) return;
+    const intensity = this.cursorLight.intensity;
+    const pulse = this.cursorLight.pulseSpeed > 0
+      ? 0.9 + Math.sin(this.time * this.cursorLight.pulseSpeed) * 0.1
+      : 1.0;
+
     this.ring.position.copy(targetWorld);
     this.ring.position.z = 0.05;
     this.ring.rotation.z = this.time * 1.2;
-    this.ring.scale.setScalar(0.9 + Math.sin(this.time * 4) * 0.1);
-    this.ring.material.opacity = this.cursorActive ? 0.85 : 0.3;
+    this.ring.scale.setScalar(pulse);
+    this.ring.material.opacity = (this.cursorActive ? 0.85 : 0.3) * intensity;
 
     this.ringInner.position.copy(this.ring.position);
     this.ringInner.rotation.z = -this.time * 1.6;
-    this.ringInner.material.opacity = this.cursorActive ? 0.9 : 0.4;
+    this.ringInner.material.opacity = (this.cursorActive ? 0.9 : 0.4) * intensity;
   }
 
   updateCursorEl() {
@@ -327,7 +348,7 @@ class NeonCursorHero extends HTMLElement {
 
     const targetWorld = this.worldFromPointer(this.pointer);
 
-    this.tubes.forEach((tube, idx) => {
+    (this.tubes || []).forEach((tube, idx) => {
       const wobble = new THREE.Vector3(
         Math.sin(this.time * 1.4 + tube.offset) * 0.5,
         Math.cos(this.time * 1.7 + tube.offset) * 0.4,

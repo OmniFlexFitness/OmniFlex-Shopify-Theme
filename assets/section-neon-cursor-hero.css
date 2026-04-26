@@ -4,20 +4,41 @@
   min-height: 100svh;
   overflow: hidden;
   background: #07041f;
-  color: #fff;
   isolation: isolate;
   --neon-cyan: #0aeaed;
   --neon-magenta: #fa0dfd;
   --neon-purple: #210f61;
   --neon-ink: #07041f;
   --neon-mute: rgba(255, 255, 255, 0.6);
+
+  /* Typography vars (overridden inline by section settings) */
+  --heading-font: inherit;
+  --heading-color: #ffffff;
+  --heading-stroke: 1.5px;
+  --body-font: inherit;
+  --body-color: rgba(255, 255, 255, 0.78);
+  --accent-font: inherit;
+  --accent-color: rgba(255, 255, 255, 0.78);
+  --stat-value-font: inherit;
+  --stat-value-color: #ffffff;
+  --pillar-label-color: #ffffff;
+
+  color: var(--body-color);
   font-feature-settings: 'tnum';
-  cursor: none;
 }
 
-.neon-hero a,
-.neon-hero button,
-.neon-hero input { cursor: none; }
+.neon-hero[data-hide-native-cursor='true'] { cursor: none; }
+.neon-hero[data-hide-native-cursor='true'] a,
+.neon-hero[data-hide-native-cursor='true'] button,
+.neon-hero[data-hide-native-cursor='true'] input { cursor: none; }
+
+.neon-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
 
 .neon-hero__cursor {
   position: absolute;
@@ -33,9 +54,7 @@
   will-change: transform;
 }
 
-.neon-hero__cursor[data-active='true'] {
-  opacity: 1;
-}
+.neon-hero__cursor[data-active='true'] { opacity: 1; }
 
 .neon-hero__cursor::before,
 .neon-hero__cursor::after {
@@ -86,15 +105,6 @@
   0%   { transform: scale(0.85) rotate(0deg); opacity: 0.4; }
   50%  { transform: scale(1.15) rotate(180deg); opacity: 1; }
   100% { transform: scale(0.85) rotate(360deg); opacity: 0.4; }
-}
-
-.neon-hero__canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  cursor: crosshair;
 }
 
 .neon-hero__grid {
@@ -190,9 +200,10 @@
   transform: translateY(-50%) rotate(180deg);
   writing-mode: vertical-rl;
   z-index: 4;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.4em;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -226,17 +237,18 @@
   grid-template-columns: auto auto;
   column-gap: 1rem;
   row-gap: 0.25rem;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.18em;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   text-transform: uppercase;
   text-align: right;
   pointer-events: none;
   font-variant-numeric: tabular-nums;
 }
 
-.neon-hero__readout span:nth-child(odd) { color: rgba(255, 255, 255, 0.4); }
-.neon-hero__readout span:nth-child(even) { color: #fff; font-weight: 600; }
+.neon-hero__readout span:nth-child(odd) { opacity: 0.55; }
+.neon-hero__readout span:nth-child(even) { font-weight: 600; }
 .neon-hero__readout span:nth-child(even) em { font-style: normal; color: var(--neon-cyan); }
 
 .neon-hero__monogram {
@@ -247,9 +259,10 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  font-family: var(--accent-font);
   font-size: 0.8rem;
   letter-spacing: 0.35em;
-  color: #fff;
+  color: var(--heading-color);
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -277,11 +290,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+  font-family: var(--accent-font);
   letter-spacing: 0.4em;
   font-size: 0.75rem;
   text-transform: uppercase;
   margin: 0 0 1.5rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--accent-color);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.55rem 1.25rem;
   backdrop-filter: blur(6px);
@@ -300,36 +314,32 @@
 }
 
 .neon-hero__headline {
+  font-family: var(--heading-font);
   font-size: clamp(3rem, 9vw, 9rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
   margin: 0;
   font-weight: 800;
   text-transform: uppercase;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 24px rgba(10, 234, 237, 0.35));
+  color: var(--heading-color);
 }
 
-.neon-hero__headline-line {
-  display: block;
-}
+.neon-hero__headline-line { display: block; }
 
-.neon-hero__headline-line--outline {
+.neon-hero[data-headline-style='outline'] .neon-hero__headline-line,
+.neon-hero[data-headline-style='split'] .neon-hero__headline-line:nth-child(2) {
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
-  background: none;
-  filter: none;
+  -webkit-text-stroke: var(--heading-stroke) var(--heading-color);
+  color: transparent;
 }
 
 .neon-hero__subheading {
+  font-family: var(--body-font);
   margin: 1.75rem auto 2.25rem;
   max-width: 620px;
   font-size: clamp(1rem, 1.4vw, 1.15rem);
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--body-color);
 }
 
 .neon-hero__cta-row {
@@ -346,6 +356,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2rem;
+  font-family: var(--accent-font);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -374,7 +385,7 @@
 
 .neon-hero__cta--ghost {
   background: transparent;
-  color: #fff;
+  color: var(--heading-color);
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 .neon-hero__cta--ghost::after { display: none; }
@@ -419,17 +430,20 @@
 .neon-hero__pillar:nth-child(3) .neon-hero__pillar-icon { color: var(--neon-magenta); }
 
 .neon-hero__pillar-label {
+  font-family: var(--accent-font);
   font-size: 0.78rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   font-weight: 700;
+  color: var(--pillar-label-color);
 }
 
 .neon-hero__pillar-sub {
+  font-family: var(--accent-font);
   font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
 }
 
 .neon-hero__stats {
@@ -442,24 +456,28 @@
   gap: 2.25rem;
   align-items: center;
   white-space: nowrap;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   pointer-events: none;
 }
 
 .neon-hero__stat strong {
   display: block;
+  font-family: var(--stat-value-font);
   font-size: 1.55rem;
   letter-spacing: -0.02em;
-  color: #fff;
   font-weight: 800;
   margin-bottom: 0.25rem;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--stat-value-color);
+}
+
+.neon-hero[data-stat-style='outline'] .neon-hero__stat strong {
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--stat-value-color);
+  color: transparent;
 }
 
 .neon-hero__stat-divider {
@@ -473,10 +491,12 @@
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--accent-color);
+  opacity: 0.7;
   z-index: 4;
   pointer-events: none;
   animation: neon-hero-hint 2.4s ease-in-out infinite;
@@ -501,11 +521,12 @@
   border: 1px solid rgba(10, 234, 237, 0.35);
   pointer-events: auto;
   text-decoration: none;
-  color: #fff;
+  color: var(--heading-color);
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
   transition: transform 0.3s ease, border-color 0.3s ease;
+  font-family: var(--body-font);
 }
 
 .neon-hero__drop-card:hover {
@@ -518,6 +539,7 @@
   width: max-content;
   align-items: center;
   gap: 0.4rem;
+  font-family: var(--accent-font);
   font-size: 0.6rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -528,25 +550,29 @@
 }
 
 .neon-hero__drop-title {
+  font-family: var(--heading-font);
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
   margin: 0;
+  color: var(--heading-color);
 }
 
 .neon-hero__drop-meta {
   display: flex;
   justify-content: space-between;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   border-top: 1px dashed rgba(255, 255, 255, 0.15);
   padding-top: 0.6rem;
 }
 
 .neon-hero__drop-cta {
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;

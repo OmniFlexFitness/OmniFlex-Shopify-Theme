@@ -1,5 +1,35 @@
 {{ 'section-gradient-marquee.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign marquee_font = section.settings.marquee_font
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign accent_font = section.settings.accent_font
+  assign quote_font = section.settings.quote_font
+-%}
+
+{{ marquee_font | font_face: font_display: 'swap' }}
+{{ heading_font | font_face: font_display: 'swap' }}
+{{ body_font | font_face: font_display: 'swap' }}
+{{ accent_font | font_face: font_display: 'swap' }}
+{{ quote_font | font_face: font_display: 'swap' }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .gradient-marquee {
+    --marquee-font: {{ marquee_font.family }}, {{ marquee_font.fallback_families }};
+    --marquee-color: {{ section.settings.marquee_color }};
+    --marquee-stroke: {{ section.settings.marquee_outline_thickness }}px;
+    --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --heading-color: {{ section.settings.heading_color }};
+    --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --body-color: {{ section.settings.body_color }};
+    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
+    --accent-color: {{ section.settings.accent_color }};
+    --quote-font: {{ quote_font.family }}, {{ quote_font.fallback_families }};
+    --quote-color: {{ section.settings.quote_color }};
+  }
+{%- endstyle -%}
+
 <gradient-marquee
   class="gradient-marquee"
   data-base-speed="{{ section.settings.base_speed }}"
@@ -58,9 +88,12 @@
     {%- if row_blocks.size > 0 -%}
       {%- for block in row_blocks -%}
         {%- assign style = block.settings.style -%}
+        {%- if style == 'gradient' -%}{%- assign style = 'filled' -%}{%- endif -%}
         {%- assign reverse = block.settings.reverse -%}
+        {%- assign row_color = block.settings.text_color | default: section.settings.marquee_color -%}
         <div
           class="gradient-marquee__row {% if reverse %}gradient-marquee__row--reverse{% endif %}"
+          style="color: {{ row_color }};"
           {{ block.shopify_attributes }}
         >
           <span class="gradient-marquee__item gradient-marquee__item--{{ style }}">
@@ -168,6 +201,80 @@
   "settings": [
     {
       "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "marquee_font",
+      "label": "Marquee font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "marquee_color",
+      "label": "Marquee text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "marquee_outline_thickness",
+      "label": "Outline thickness (when row style is outline)",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1.5
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Manifesto / signup heading font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#cdd2da"
+    },
+    {
+      "type": "font_picker",
+      "id": "accent_font",
+      "label": "Accent / HUD font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / HUD color",
+      "default": "#9aa3b2"
+    },
+    {
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Pull-quote font",
+      "default": "assistant_n6"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Pull-quote color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
       "content": "HUD bar"
     },
     { "type": "checkbox", "id": "show_hud", "label": "Show HUD bar", "default": true },
@@ -259,12 +366,18 @@
         {
           "type": "select",
           "id": "style",
-          "label": "Style",
+          "label": "Display style",
           "options": [
-            { "value": "gradient", "label": "Gradient fill" },
+            { "value": "filled", "label": "Filled" },
             { "value": "outline", "label": "Outline" }
           ],
-          "default": "gradient"
+          "default": "filled"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Row color override",
+          "info": "Leave blank to use the section marquee color."
         },
         {
           "type": "checkbox",
@@ -279,9 +392,9 @@
     {
       "name": "Gradient marquee",
       "blocks": [
-        { "type": "row", "settings": { "text": "Defy Limits", "style": "gradient", "reverse": false } },
+        { "type": "row", "settings": { "text": "Defy Limits", "style": "filled", "reverse": false } },
         { "type": "row", "settings": { "text": "Build Strength", "style": "outline", "reverse": true } },
-        { "type": "row", "settings": { "text": "Own Your Story", "style": "gradient", "reverse": false } }
+        { "type": "row", "settings": { "text": "Own Your Story", "style": "filled", "reverse": false } }
       ]
     }
   ]

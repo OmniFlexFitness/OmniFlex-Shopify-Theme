@@ -3,13 +3,26 @@
   width: 100%;
   min-height: 90svh;
   background: #07041f;
-  color: #fff;
   overflow: hidden;
   isolation: isolate;
   --neon-cyan: #0aeaed;
   --neon-magenta: #fa0dfd;
   --neon-mute: rgba(255, 255, 255, 0.6);
   --neon-ink: #07041f;
+
+  /* Typography vars */
+  --heading-font: inherit;
+  --heading-color: #ffffff;
+  --heading-stroke: 1.5px;
+  --body-font: inherit;
+  --body-color: rgba(255, 255, 255, 0.78);
+  --accent-font: inherit;
+  --accent-color: rgba(255, 255, 255, 0.78);
+  --pillar-label-color: #ffffff;
+  --stat-value-font: inherit;
+  --stat-value-color: #ffffff;
+
+  color: var(--body-color);
 }
 
 .floating3d__canvas {
@@ -46,10 +59,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+  font-family: var(--accent-font);
   font-size: 0.75rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--accent-color);
   margin: 0 0 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 0.55rem 1.25rem;
@@ -68,6 +82,7 @@
 }
 
 .floating3d__title {
+  font-family: var(--heading-font);
   font-size: clamp(2.5rem, 7vw, 6rem);
   font-weight: 800;
   text-transform: uppercase;
@@ -75,21 +90,27 @@
   line-height: 0.95;
   margin: 0 0 1.5rem;
   max-width: 18ch;
+  color: var(--heading-color);
+}
+
+.floating3d[data-heading-style='outline'] .floating3d__title,
+.floating3d[data-heading-style='outline'] .floating3d__title em {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: var(--heading-stroke) var(--heading-color);
+  color: transparent;
 }
 
 .floating3d__title em {
   font-style: normal;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--neon-cyan);
 }
 
 .floating3d__body {
+  font-family: var(--body-font);
   max-width: 56ch;
   font-size: 1.05rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--body-color);
   margin: 0 0 2.5rem;
 }
 
@@ -99,6 +120,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.1rem 2.25rem;
+  font-family: var(--accent-font);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -170,10 +192,11 @@
 .floating3d__pillar:hover::before { transform: scaleX(1); }
 
 .floating3d__pillar-num {
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -188,22 +211,26 @@
 .floating3d__pillar:nth-child(3) .floating3d__pillar-icon { color: var(--neon-magenta); }
 
 .floating3d__pillar-label {
+  font-family: var(--heading-font);
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   margin: 0;
+  color: var(--pillar-label-color);
 }
 
 .floating3d__pillar-desc {
+  font-family: var(--body-font);
   font-size: 0.95rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--body-color);
   margin: 0;
 }
 
 .floating3d__pillar-link {
   margin-top: auto;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -235,21 +262,26 @@
 
 .floating3d__stat-value {
   display: block;
+  font-family: var(--stat-value-font);
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(136deg, var(--neon-cyan) 11%, var(--neon-magenta) 84%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--stat-value-color);
   font-variant-numeric: tabular-nums;
 }
 
+.floating3d[data-stat-style='outline'] .floating3d__stat-value {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--stat-value-color);
+  color: transparent;
+}
+
 .floating3d__stat-label {
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   margin-top: 0.25rem;
   display: block;
 }
@@ -268,10 +300,11 @@
 }
 
 .floating3d__press-label {
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   white-space: nowrap;
 }
 
@@ -304,10 +337,11 @@
   top: 1.75rem;
   left: 2rem;
   z-index: 4;
+  font-family: var(--accent-font);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--neon-mute);
+  color: var(--accent-color);
   display: flex;
   gap: 0.75rem;
   align-items: center;

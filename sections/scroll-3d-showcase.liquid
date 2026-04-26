@@ -7,15 +7,40 @@
     assign chapter_count = 1
   endif
   assign track_height = chapter_count | times: 110
+
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign accent_font = section.settings.accent_font
+  assign spec_font = section.settings.spec_value_font
 -%}
+
+{{ heading_font | font_face: font_display: 'swap' }}
+{{ body_font | font_face: font_display: 'swap' }}
+{{ accent_font | font_face: font_display: 'swap' }}
+{{ spec_font | font_face: font_display: 'swap' }}
 
 {%- style -%}
   .scroll3d--{{ section.id }} .scroll3d__track {
     height: {{ track_height }}vh;
   }
+  .scroll3d--{{ section.id }} {
+    --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --heading-color: {{ section.settings.heading_color }};
+    --heading-stroke: {{ section.settings.heading_outline_thickness }}px;
+    --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --body-color: {{ section.settings.body_color }};
+    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
+    --accent-color: {{ section.settings.accent_color }};
+    --spec-value-font: {{ spec_font.family }}, {{ spec_font.fallback_families }};
+    --spec-value-color: {{ section.settings.spec_value_color }};
+  }
 {%- endstyle -%}
 
-<scroll-3d-showcase class="scroll3d scroll3d--{{ section.id }}">
+<scroll-3d-showcase
+  class="scroll3d scroll3d--{{ section.id }}"
+  data-heading-style="{{ section.settings.heading_style }}"
+  data-spec-style="{{ section.settings.spec_value_style }}"
+>
   <div class="scroll3d__track">
     <div class="scroll3d__sticky">
       <canvas class="scroll3d__canvas" aria-hidden="true"></canvas>
@@ -178,6 +203,88 @@
       "id": "hud_label",
       "label": "HUD title",
       "default": "OmniFlex System Tour"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Chapter title font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Chapter title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "heading_style",
+      "label": "Chapter title display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "range",
+      "id": "heading_outline_thickness",
+      "label": "Outline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1.5
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#cdd2da"
+    },
+    {
+      "type": "font_picker",
+      "id": "accent_font",
+      "label": "Accent / HUD font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / HUD color",
+      "default": "#9aa3b2"
+    },
+    {
+      "type": "font_picker",
+      "id": "spec_value_font",
+      "label": "Spec value font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "spec_value_color",
+      "label": "Spec value color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "spec_value_style",
+      "label": "Spec value display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
     },
     {
       "type": "header",
