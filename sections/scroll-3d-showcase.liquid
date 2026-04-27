@@ -1,0 +1,512 @@
+{{ 'section-scroll-3d-showcase.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign chapters = section.blocks | where: 'type', 'chapter'
+  assign chapter_count = chapters.size
+  if chapter_count < 1
+    assign chapter_count = 1
+  endif
+  assign track_height = chapter_count | times: 110
+
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign accent_font = section.settings.accent_font
+  assign spec_font = section.settings.spec_value_font
+-%}
+
+{%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ spec_font | font_face: font_display: 'swap' }}
+
+  .scroll3d--{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .scroll3d--{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  .scroll3d--{{ section.id }} .scroll3d__track {
+    height: {{ track_height }}vh;
+  }
+  .scroll3d--{{ section.id }} {
+    --heading-font: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --heading-color: {{ section.settings.heading_color }};
+    --heading-stroke: {{ section.settings.heading_outline_thickness }}px;
+    --body-font: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --body-color: {{ section.settings.body_color }};
+    --accent-font: {{ accent_font.family }}, {{ accent_font.fallback_families }};
+    --accent-color: {{ section.settings.accent_color }};
+    --spec-value-font: {{ spec_font.family }}, {{ spec_font.fallback_families }};
+    --spec-value-color: {{ section.settings.spec_value_color }};
+  }
+{%- endstyle -%}
+
+<scroll-3d-showcase
+  class="scroll3d scroll3d--{{ section.id }}"
+  data-heading-style="{{ section.settings.heading_style }}"
+  data-spec-style="{{ section.settings.spec_value_style }}"
+>
+  <div class="scroll3d__track">
+    <div class="scroll3d__sticky">
+      <canvas class="scroll3d__canvas" aria-hidden="true"></canvas>
+
+      <div class="scroll3d__hudbar" aria-hidden="true">
+        <div class="scroll3d__hudbar-left">
+          <span>SECTION <strong>02</strong></span>
+          <span class="scroll3d__hudbar-divider"></span>
+          <span>{{ section.settings.hud_label | default: 'OmniFlex System Tour' | escape }}</span>
+        </div>
+        <div class="scroll3d__hudbar-right">
+          <span>RENDER <strong class="scroll3d__active-chapter">01</strong> / {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+          <span class="scroll3d__hudbar-divider"></span>
+          <span><strong class="scroll3d__progress-pct">0%</strong></span>
+        </div>
+      </div>
+
+      <div class="scroll3d__overlay">
+        {%- if chapters.size > 0 -%}
+          {%- for block in chapters -%}
+            <article
+              class="scroll3d__chapter scroll3d__chapter--{{ block.settings.alignment }}"
+              data-active="{% if forloop.first %}true{% else %}false{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="scroll3d__chapter-head">
+                <span class="scroll3d__chapter-icon" aria-hidden="true">
+                  {%- case block.settings.icon -%}
+                  {%- when 'wear' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4l4 1 3-2 3 2 4-1v6l-4 1-3 2-3-2-4-1z"/><path d="M9 11v9M15 11v9"/></svg>
+                  {%- when 'fuel' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="4" rx="1"/><path d="M8 7h8l-1 13a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/><path d="M9 12h6"/></svg>
+                  {%- when 'train' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h2l3-7 4 14 3-9 2 4h4"/></svg>
+                  {%- when 'lab' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-10V3"/><path d="M8 3h8"/></svg>
+                  {%- when 'recovery' -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg>
+                  {%- endcase -%}
+                </span>
+                <span class="scroll3d__index">
+                  {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                  <span>/ {{ chapters.size | prepend: '0' | slice: -2, 2 }}</span>
+                </span>
+              </div>
+
+              <h2 class="scroll3d__title">{{ block.settings.title }}</h2>
+
+              {%- if block.settings.tag_1 != blank or block.settings.tag_2 != blank or block.settings.tag_3 != blank -%}
+                <div class="scroll3d__tags">
+                  {%- if block.settings.tag_1 != blank -%}
+                    <span class="scroll3d__tag scroll3d__tag--accent">{{ block.settings.tag_1 | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.tag_2 != blank -%}
+                    <span class="scroll3d__tag">{{ block.settings.tag_2 | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.tag_3 != blank -%}
+                    <span class="scroll3d__tag">{{ block.settings.tag_3 | escape }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.body != blank -%}
+                <div class="scroll3d__body">{{ block.settings.body }}</div>
+              {%- endif -%}
+
+              {%- if block.settings.spec_1_value != blank or block.settings.spec_2_value != blank or block.settings.spec_3_value != blank -%}
+                <div class="scroll3d__specs">
+                  {%- if block.settings.spec_1_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_1_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_1_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.spec_2_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_2_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_2_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.spec_3_value != blank -%}
+                    <div class="scroll3d__spec">
+                      <span class="scroll3d__spec-value">{{ block.settings.spec_3_value | escape }}</span>
+                      <span class="scroll3d__spec-label">{{ block.settings.spec_3_label | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.cta_label != blank -%}
+                <a class="scroll3d__chapter-cta" href="{{ block.settings.cta_link | default: '#' }}">
+                  {{ block.settings.cta_label | escape }}
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              {%- endif -%}
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="scroll3d__chapter scroll3d__chapter--center" data-active="true">
+            <span class="scroll3d__index">01 <span>/ 01</span></span>
+            <h2 class="scroll3d__title">Built to <em>flex</em></h2>
+            <p class="scroll3d__body">Add chapter blocks to script the scroll story.</p>
+          </article>
+        {%- endif -%}
+      </div>
+
+      <div class="scroll3d__timecode" aria-hidden="true">
+        <span>TC <em class="scroll3d__tc">00:00:00</em></span>
+        <span class="scroll3d__timecode-bar"></span>
+      </div>
+
+      <div class="scroll3d__progress" aria-hidden="true">
+        {%- for block in chapters -%}
+          <span
+            class="scroll3d__progress-dot"
+            data-active="{% if forloop.first %}true{% else %}false{% endif %}"
+          ></span>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" class="scroll3d__data">
+    {
+      "shape": {{ section.settings.shape | json }},
+      "material": {{ section.settings.material_style | json }},
+      "wireframe": {{ section.settings.wireframe | json }},
+      "tintColor": {{ section.settings.tint_color | json }},
+      "colorA": {{ section.settings.color_a | json }},
+      "colorB": {{ section.settings.color_b | json }}
+    }
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="{{ 'scroll-3d-showcase.js' | asset_url }}"></script>
+</scroll-3d-showcase>
+
+{% schema %}
+{
+  "name": "OmniFlex 3D — Scroll Showcase",
+  "tag": "section",
+  "class": "section section--scroll3d section--omniflex-3d",
+  "settings": [
+    {
+      "type": "header",
+      "content": "HUD"
+    },
+    {
+      "type": "text",
+      "id": "hud_label",
+      "label": "HUD title",
+      "default": "OmniFlex System Tour"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Chapter title font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Chapter title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "heading_style",
+      "label": "Chapter title display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "range",
+      "id": "heading_outline_thickness",
+      "label": "Outline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1.5
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#cdd2da"
+    },
+    {
+      "type": "font_picker",
+      "id": "accent_font",
+      "label": "Accent / HUD font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / HUD color",
+      "default": "#9aa3b2"
+    },
+    {
+      "type": "font_picker",
+      "id": "spec_value_font",
+      "label": "Spec value font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "spec_value_color",
+      "label": "Spec value color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "spec_value_style",
+      "label": "Spec value display style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outline", "label": "Outline" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "header",
+      "content": "3D shape"
+    },
+    {
+      "type": "select",
+      "id": "shape",
+      "label": "3D shape",
+      "info": "Cyberpunk / vaporwave / neon-noir geometry library.",
+      "options": [
+        { "value": "knot", "label": "Torus knot" },
+        { "value": "torus", "label": "Torus ring" },
+        { "value": "tunnel", "label": "Tunnel (thick torus)" },
+        { "value": "icosa", "label": "Icosahedron" },
+        { "value": "octa", "label": "Octahedron" },
+        { "value": "dodeca", "label": "Dodecahedron" },
+        { "value": "tetra", "label": "Tetrahedron / Pyramid" },
+        { "value": "pyramid_stack", "label": "Vaporwave pyramid stack" },
+        { "value": "cube", "label": "Cube" },
+        { "value": "sphere", "label": "Sphere" },
+        { "value": "crystal", "label": "Crystal shard" },
+        { "value": "helix", "label": "DNA helix" },
+        { "value": "ribbon", "label": "Twisted ribbon" },
+        { "value": "logo", "label": "OmniFlex 3D logo" }
+      ],
+      "default": "knot"
+    },
+    {
+      "type": "select",
+      "id": "material_style",
+      "label": "Material style",
+      "options": [
+        { "value": "chrome", "label": "Chrome iridescent" },
+        { "value": "chrome_black", "label": "Chrome black mirror" },
+        { "value": "holographic", "label": "Holographic glass" },
+        { "value": "matte_neon", "label": "Matte neon (flat color)" },
+        { "value": "neon_outline", "label": "Neon outline (Tron edges)" },
+        { "value": "wireframe", "label": "Wireframe" }
+      ],
+      "default": "chrome"
+    },
+    {
+      "type": "color",
+      "id": "tint_color",
+      "label": "Material tint",
+      "info": "Base color for chrome/holographic/matte materials. Leave white for neutral chrome.",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "wireframe",
+      "label": "Force wireframe (overrides material style)",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "color_a",
+      "label": "Light color (key) / outline color",
+      "default": "#0aeaed"
+    },
+    {
+      "type": "color",
+      "id": "color_b",
+      "label": "Light color (rim) / logo inner color",
+      "default": "#fa0dfd"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chapter",
+      "name": "Chapter",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "wear", "label": "Wear" },
+            { "value": "fuel", "label": "Fuel" },
+            { "value": "train", "label": "Train" },
+            { "value": "lab", "label": "Lab" },
+            { "value": "recovery", "label": "Recovery" },
+            { "value": "default", "label": "Default" }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Built to flex"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Body",
+          "default": "<p>Compression-first fabric, sweat-resistant grip, and a silhouette engineered for mobility.</p>"
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1 (accent)",
+          "default": "Apparel"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "Compression"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "Tag 3",
+          "default": "Lab tested"
+        },
+        {
+          "type": "text",
+          "id": "spec_1_value",
+          "label": "Spec 1 value",
+          "default": "240gsm"
+        },
+        {
+          "type": "text",
+          "id": "spec_1_label",
+          "label": "Spec 1 label",
+          "default": "Fabric weight"
+        },
+        {
+          "type": "text",
+          "id": "spec_2_value",
+          "label": "Spec 2 value",
+          "default": "4-way"
+        },
+        {
+          "type": "text",
+          "id": "spec_2_label",
+          "label": "Spec 2 label",
+          "default": "Stretch"
+        },
+        {
+          "type": "text",
+          "id": "spec_3_value",
+          "label": "Spec 3 value",
+          "default": "96%"
+        },
+        {
+          "type": "text",
+          "id": "spec_3_label",
+          "label": "Spec 3 label",
+          "default": "Recovery"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "CTA label",
+          "default": "Shop apparel"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA link"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "OmniFlex 3D — Scroll Showcase",
+      "category": "OmniFlex 3D",
+      "blocks": [
+        { "type": "chapter", "settings": { "icon": "wear", "title": "Built to <em>flex</em>", "alignment": "left" } },
+        { "type": "chapter", "settings": { "icon": "fuel", "title": "Engineered to <em>endure</em>", "alignment": "right" } },
+        { "type": "chapter", "settings": { "icon": "train", "title": "Designed to <em>defy</em>", "alignment": "center" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
