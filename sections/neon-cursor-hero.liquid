@@ -2,7 +2,7 @@
 
 {%- liquid
   assign now_year = 'now' | date: '%Y'
-  assign drop_id = section.settings.drop_id | default: 'DROP-003'
+  assign drop_id = 'DROP-003'
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
 
@@ -77,13 +77,11 @@
     <span>STATE</span><span><em>LIVE</em></span>
   </div>
 
-  {%- if section.settings.rail_text != blank -%}
-    <div class="neon-hero__rail" aria-hidden="true">
-      <span>{{ section.settings.rail_text | escape }}</span>
-      <span class="neon-hero__rail-dot"></span>
-      <span>Wear · Fuel · Train</span>
-    </div>
-  {%- endif -%}
+  <div class="neon-hero__rail" aria-hidden="true">
+    <span>Defy Limits / Build Strength / Own Your Story</span>
+    <span class="neon-hero__rail-dot"></span>
+    <span>Wear · Fuel · Train</span>
+  </div>
 
   <div class="neon-hero__content">
     {%- if section.settings.eyebrow != blank -%}
@@ -174,9 +172,7 @@
     </div>
   {%- endif -%}
 
-  {%- if section.settings.scroll_hint != blank -%}
-    <div class="neon-hero__hint">{{ section.settings.scroll_hint | escape }} &darr;</div>
-  {%- endif -%}
+  <div class="neon-hero__hint">Scroll to explore &darr;</div>
 
   <script type="application/json" class="neon-hero__data">
     {
@@ -215,9 +211,6 @@
   "name": "OmniFlex 3D — Neon Cursor Hero",
   "tag": "section",
   "class": "section section--neon-hero section--omniflex-3d",
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
   "settings": [
     {
       "type": "header",
@@ -263,24 +256,6 @@
       "type": "url",
       "id": "secondary_link",
       "label": "Secondary button link"
-    },
-    {
-      "type": "text",
-      "id": "scroll_hint",
-      "label": "Scroll hint",
-      "default": "Scroll to explore"
-    },
-    {
-      "type": "text",
-      "id": "drop_id",
-      "label": "Sequence / drop ID (HUD)",
-      "default": "DROP-003"
-    },
-    {
-      "type": "text",
-      "id": "rail_text",
-      "label": "Vertical rail text",
-      "default": "Defy Limits / Build Strength / Own Your Story"
     },
     {
       "type": "header",
