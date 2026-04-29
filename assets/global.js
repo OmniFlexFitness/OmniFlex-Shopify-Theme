@@ -1299,7 +1299,7 @@ class CartPerformance {
     const endMarker = performance.mark(`${metricName}:end`);
 
     performance.measure(
-      benchmarkName,
+      metricName,
       `${metricName}:start`,
       `${metricName}:end`
     );
@@ -1310,7 +1310,7 @@ class CartPerformance {
     const endMarker = performance.mark(`${metricName}:end`);
 
     performance.measure(
-      benchmarkName,
+      metricName,
       startMarker.name,
       `${metricName}:end`
     );
@@ -1325,7 +1325,7 @@ class CartPerformance {
     const endMarker = performance.mark(`${metricName}:end`);
 
     performance.measure(
-      benchmarkName,
+      metricName,
       `${metricName}:start`,
       `${metricName}:end`
     );
