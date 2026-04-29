@@ -461,49 +461,9 @@
         "ai_gen_block_0bd9121_9Mkgpd"
       ],
       "settings": {}
-    },
-    "neon_cursor_hero_omniflex": {
-      "type": "neon-cursor-hero",
-      "blocks": {
-        "pillar_wear": { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "sublabel": "Activewear" } },
-        "pillar_fuel": { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "sublabel": "Supplements" } },
-        "pillar_train": { "type": "pillar", "settings": { "icon": "train", "label": "Train", "sublabel": "Education" } },
-        "stat_1": { "type": "stat", "settings": { "value": "12K+", "label": "Athletes" } },
-        "stat_2": { "type": "stat", "settings": { "value": "47", "label": "Tested ingredients" } },
-        "stat_3": { "type": "stat", "settings": { "value": "100%", "label": "Lab verified" } },
-        "drop_card_1": { "type": "drop_card", "settings": { "tag": "Drop 003", "title": "Zenith Compression Set", "meta": "4-way stretch · 240gsm", "cta_label": "View drop", "link": "shopify://collections/all" } }
-      },
-      "block_order": ["pillar_wear", "pillar_fuel", "pillar_train", "stat_1", "stat_2", "stat_3", "drop_card_1"],
-      "settings": {
-        "eyebrow": "OmniFlex // 2026 // System Live",
-        "heading": "Defy\nLimits",
-        "subheading": "Activewear, supplements, and training engineered for the women who build their own ceiling.",
-        "primary_label": "Shop the drop",
-        "primary_link": "shopify://collections/all",
-        "secondary_label": "Watch the film",
-        "scroll_hint": "Scroll to explore",
-        "drop_id": "DROP-003",
-        "rail_text": "Defy Limits / Build Strength / Own Your Story",
-        "heading_font": "assistant_n7",
-        "heading_color": "#ffffff",
-        "heading_style": "filled",
-        "body_font": "assistant_n4",
-        "body_color": "#cdd2da",
-        "enable_cursor_light": true,
-        "cursor_light_outer_color": "#0aeaed",
-        "cursor_light_inner_color": "#fa0dfd",
-        "cursor_light_radius": 1.0,
-        "cursor_light_intensity": 1.0,
-        "color_a": "#0aeaed",
-        "color_b": "#fa0dfd",
-        "tube_count": 5,
-        "star_count": 1500,
-        "section_height": 100
-      }
     }
   },
   "order": [
-    "neon_cursor_hero_omniflex",
     "animated_divider_QJJ4Xf",
     "video_banner_RmbCF8",
     "video_slideshow_GnmiVK",
