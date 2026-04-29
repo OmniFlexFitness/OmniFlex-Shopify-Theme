@@ -1,0 +1,215 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "neon_hero": {
+      "type": "neon-cursor-hero",
+      "blocks": {
+        "pillar_wear": { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "sublabel": "Activewear" } },
+        "pillar_fuel": { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "sublabel": "Supplements" } },
+        "pillar_train": { "type": "pillar", "settings": { "icon": "train", "label": "Train", "sublabel": "Education" } },
+        "stat_1": { "type": "stat", "settings": { "value": "12K+", "label": "Athletes" } },
+        "stat_2": { "type": "stat", "settings": { "value": "47", "label": "Tested ingredients" } },
+        "stat_3": { "type": "stat", "settings": { "value": "100%", "label": "Lab verified" } },
+        "drop_card_1": { "type": "drop_card", "settings": { "tag": "Drop 003", "title": "Zenith Compression Set", "meta": "4-way stretch · 240gsm", "cta_label": "View drop", "link": "shopify://collections/all" } }
+      },
+      "block_order": ["pillar_wear", "pillar_fuel", "pillar_train", "stat_1", "stat_2", "stat_3", "drop_card_1"],
+      "settings": {
+        "eyebrow": "OmniFlex // 2026 // System Live",
+        "heading": "Defy\nLimits",
+        "subheading": "Activewear, supplements, and training engineered for the women who build their own ceiling.",
+        "primary_label": "Shop the drop",
+        "primary_link": "shopify://collections/all",
+        "secondary_label": "Watch the film",
+        "scroll_hint": "Scroll to explore",
+        "drop_id": "DROP-003",
+        "rail_text": "Defy Limits / Build Strength / Own Your Story",
+        "heading_font": "assistant_n7",
+        "heading_color": "#ffffff",
+        "heading_style": "filled",
+        "body_font": "assistant_n4",
+        "body_color": "#cdd2da",
+        "enable_cursor_light": true,
+        "cursor_light_outer_color": "#0aeaed",
+        "cursor_light_inner_color": "#fa0dfd",
+        "cursor_light_radius": 1.0,
+        "cursor_light_intensity": 1.0,
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd",
+        "tube_count": 5,
+        "star_count": 1500,
+        "section_height": 100
+      }
+    },
+    "scroll_3d": {
+      "type": "scroll-3d-showcase",
+      "blocks": {
+        "chapter_wear": {
+          "type": "chapter",
+          "settings": {
+            "icon": "wear",
+            "title": "Built to <em>flex</em>",
+            "body": "<p>Compression-first fabric, sweat-resistant grip, and a silhouette engineered for full-range mobility.</p>",
+            "tag_1": "Apparel",
+            "tag_2": "Compression",
+            "tag_3": "Lab tested",
+            "spec_1_value": "240gsm",
+            "spec_1_label": "Fabric weight",
+            "spec_2_value": "4-way",
+            "spec_2_label": "Stretch",
+            "spec_3_value": "96%",
+            "spec_3_label": "Recovery",
+            "cta_label": "Shop apparel",
+            "cta_link": "shopify://collections/all",
+            "alignment": "left"
+          }
+        },
+        "chapter_fuel": {
+          "type": "chapter",
+          "settings": {
+            "icon": "fuel",
+            "title": "Engineered to <em>endure</em>",
+            "body": "<p>Lab-tested supplements calibrated for women in training. Clean macros, transparent dosing, third-party verified.</p>",
+            "tag_1": "Supplements",
+            "tag_2": "3rd-party tested",
+            "tag_3": "Clean label",
+            "spec_1_value": "47",
+            "spec_1_label": "Ingredients",
+            "spec_2_value": "0g",
+            "spec_2_label": "Filler",
+            "spec_3_value": "30",
+            "spec_3_label": "Day system",
+            "cta_label": "Shop fuel",
+            "cta_link": "shopify://collections/all",
+            "alignment": "right"
+          }
+        },
+        "chapter_train": {
+          "type": "chapter",
+          "settings": {
+            "icon": "train",
+            "title": "Designed to <em>defy</em>",
+            "body": "<p>Programs and education written by coaches who actually train women. One ecosystem: wear it, fuel it, train it.</p>",
+            "tag_1": "Training",
+            "tag_2": "Coach-built",
+            "tag_3": "On-demand",
+            "spec_1_value": "12wk",
+            "spec_1_label": "Programs",
+            "spec_2_value": "120+",
+            "spec_2_label": "Sessions",
+            "spec_3_value": "24/7",
+            "spec_3_label": "Access",
+            "cta_label": "Start training",
+            "cta_link": "shopify://collections/all",
+            "alignment": "center"
+          }
+        }
+      },
+      "block_order": ["chapter_wear", "chapter_fuel", "chapter_train"],
+      "settings": {
+        "hud_label": "OmniFlex System Tour",
+        "heading_font": "assistant_n7",
+        "heading_color": "#ffffff",
+        "heading_style": "filled",
+        "heading_outline_thickness": 1.5,
+        "body_font": "assistant_n4",
+        "body_color": "#cdd2da",
+        "accent_font": "assistant_n7",
+        "accent_color": "#9aa3b2",
+        "spec_value_font": "assistant_n7",
+        "spec_value_color": "#ffffff",
+        "spec_value_style": "filled",
+        "shape": "knot",
+        "material_style": "chrome",
+        "tint_color": "#ffffff",
+        "wireframe": false,
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "floating_cta": {
+      "type": "floating-3d",
+      "blocks": {
+        "pillar_wear": { "type": "pillar", "settings": { "icon": "wear", "label": "Wear", "description": "Compression apparel engineered for full-range mobility, sweat-grip, and a silhouette built to be lived in.", "cta_label": "Shop apparel", "link": "shopify://collections/all" } },
+        "pillar_fuel": { "type": "pillar", "settings": { "icon": "fuel", "label": "Fuel", "description": "Lab-tested supplements calibrated for women in training: clean macros, transparent dosing, third-party verified.", "cta_label": "Shop fuel", "link": "shopify://collections/all" } },
+        "pillar_train": { "type": "pillar", "settings": { "icon": "train", "label": "Train", "description": "Biomechanically-coded programs and education, written by coaches who actually train women, not interns.", "cta_label": "Start training", "link": "shopify://collections/all" } },
+        "stat_1": { "type": "stat", "settings": { "value": "12K+", "label": "Athletes onboarded" } },
+        "stat_2": { "type": "stat", "settings": { "value": "47", "label": "Tested ingredients" } },
+        "stat_3": { "type": "stat", "settings": { "value": "96%", "label": "Recovery rate" } },
+        "stat_4": { "type": "stat", "settings": { "value": "2024", "label": "Founded" } },
+        "press_1": { "type": "press", "settings": { "text": "Vogue", "bold": false } },
+        "press_2": { "type": "press", "settings": { "text": "WOMEN'S HEALTH", "bold": true } },
+        "press_3": { "type": "press", "settings": { "text": "Forbes", "bold": false } },
+        "press_4": { "type": "press", "settings": { "text": "POPSUGAR", "bold": true } },
+        "press_5": { "type": "press", "settings": { "text": "Hypebeast", "bold": false } }
+      },
+      "block_order": ["pillar_wear", "pillar_fuel", "pillar_train", "stat_1", "stat_2", "stat_3", "stat_4", "press_1", "press_2", "press_3", "press_4", "press_5"],
+      "settings": {
+        "hud_label": "SECTION 03 // OmniFlex System",
+        "pretitle": "Built without limits",
+        "title": "Train heavier. Recover smarter. <em>Own the rep.</em>",
+        "body": "<p>The OmniFlex system pairs lab-tested supplements with biomechanically-tuned activewear and on-demand training.</p>",
+        "cta_label": "Enter the system",
+        "cta_link": "shopify://collections/all",
+        "press_label": "As featured in",
+        "heading_font": "assistant_n7",
+        "heading_color": "#ffffff",
+        "heading_style": "filled",
+        "body_font": "assistant_n4",
+        "body_color": "#cdd2da",
+        "color_a": "#0aeaed",
+        "color_b": "#fa0dfd",
+        "shape_count": 14,
+        "parallax_strength": 1.5,
+        "min_section_height": 70,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "marquee": {
+      "type": "gradient-marquee",
+      "blocks": {
+        "row_one": { "type": "row", "settings": { "text": "Defy Limits", "style": "filled", "reverse": false } },
+        "row_two": { "type": "row", "settings": { "text": "Build Strength", "style": "outline", "reverse": true } },
+        "row_three": { "type": "row", "settings": { "text": "Own Your Story", "style": "filled", "reverse": false } },
+        "quote_1": { "type": "quote", "settings": { "text": "<p>I built OmniFlex because the gym is one of the few places where the rules are honest. Show up, do the work, take what's yours.</p>", "attr_name": "Bertin Kenol", "attr_role": "Founder · OmniFlex" } },
+        "signup_1": { "type": "signup", "settings": { "eyebrow": "OmniFlex Comms", "title": "Get drops, training, and lab notes", "subtitle": "Early access to drops, evidence-based training breakdowns, and zero filler. Unsubscribe whenever.", "placeholder": "enter your email", "button": "Subscribe", "tag_1": "Drops first", "tag_2": "No spam", "tag_3": "Lab notes weekly" } },
+        "lockup_1": { "type": "lockup", "settings": { "tagline": "Defy Limits · Build Strength · Own Your Story" } }
+      },
+      "block_order": ["row_one", "row_two", "row_three", "quote_1", "signup_1", "lockup_1"],
+      "settings": {
+        "show_hud": true,
+        "hud_left": "Section 04 / Manifesto",
+        "hud_right": "OmniFlex // Defy Limits",
+        "manifesto_eyebrow": "Manifesto · v1.0",
+        "manifesto_text": "<p>OmniFlex bridges <em>science and strength</em> — tools, activewear, and education that empower the modern woman to train with confidence.</p>",
+        "base_speed": 0.4,
+        "scroll_factor": 6,
+        "marquee_font": "assistant_n7",
+        "marquee_color": "#ffffff",
+        "heading_font": "assistant_n7",
+        "heading_color": "#ffffff",
+        "body_font": "assistant_n4",
+        "body_color": "#cdd2da",
+        "quote_font": "assistant_n6",
+        "padding_top": 60,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "neon_hero",
+    "scroll_3d",
+    "floating_cta",
+    "marquee"
+  ]
+}
