@@ -34,6 +34,14 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+    <script>
+      window.OmniFlexNeonConfig = {
+        glitchSelector: {{ settings.neon_glitch_selector | default: '' | json }},
+        decodeSelector: {{ settings.neon_decode_selector | default: '' | json }},
+        decodeHeadings: {{ settings.neon_decode_headings | default: false | json }},
+        decodeButtons: {{ settings.neon_decode_buttons | default: false | json }}
+      };
+    </script>
     <script src="{{ 'neon-glitch.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.animations_reveal_on_scroll -%}

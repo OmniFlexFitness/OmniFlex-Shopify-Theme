@@ -1554,6 +1554,42 @@
       },
       {
         "type": "header",
+        "content": "Per-element opt-in"
+      },
+      {
+        "type": "paragraph",
+        "content": "Apply effects to specific elements anywhere on the storefront via CSS selectors. JS auto-tags matching elements with the data attributes. Comma-separate multiple selectors."
+      },
+      {
+        "type": "text",
+        "id": "neon_glitch_selector",
+        "label": "Glitch on hover — CSS selectors",
+        "info": "Examples: .shopify-section-template--16-image-banner .button--primary, .product-form__submit, [data-cta='hero']",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "neon_decode_selector",
+        "label": "Decode on first hover — CSS selectors",
+        "info": "Examples: .banner__heading, h1.title, .featured-product__title",
+        "default": ""
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_headings",
+        "label": "Auto-decode H1 / H2 in main content",
+        "info": "Adds the decode/scramble effect to every H1 and H2 inside section blocks (skips header/footer/menus).",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_buttons",
+        "label": "Auto-decode all theme button labels",
+        "info": "Decodes button text on first hover. Skipped automatically when 'Reduce motion' is set in the OS.",
+        "default": false
+      },
+      {
+        "type": "header",
         "content": "Color palette"
       },
       {

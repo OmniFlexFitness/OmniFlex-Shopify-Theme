@@ -195,7 +195,69 @@
     });
   }
 
+  /**
+   * Apply data attributes to elements matching merchant-supplied
+   * selectors (configured in Theme settings → Neon & glitch effects).
+   * Quietly skips invalid selectors so a typo can't kill the runtime
+   * for the rest of the page.
+   */
+  function applySelectorOptIns() {
+    var cfg = window.OmniFlexNeonConfig || {};
+
+    function tagAll(selector, attr) {
+      if (!selector) return;
+      try {
+        var matches = document.querySelectorAll(selector);
+        for (var i = 0; i < matches.length; i++) {
+          if (!matches[i].hasAttribute(attr)) {
+            matches[i].setAttribute(attr, '');
+          }
+        }
+      } catch (err) {
+        if (window.console && console.warn) {
+          console.warn('[OmniFlexNeon] Invalid selector "' + selector + '":', err);
+        }
+      }
+    }
+
+    // Comma-split so a merchant can list several selectors. Each is
+    // tried independently — one bad selector can't disable the rest.
+    var glitchSelectors = (cfg.glitchSelector || '').split(',');
+    for (var g = 0; g < glitchSelectors.length; g++) {
+      tagAll(glitchSelectors[g].trim(), 'data-fx-glitch');
+    }
+    var decodeSelectors = (cfg.decodeSelector || '').split(',');
+    for (var d = 0; d < decodeSelectors.length; d++) {
+      tagAll(decodeSelectors[d].trim(), 'data-scramble');
+    }
+
+    // Heading sweep — restricted to <main> so navigation / footer
+    // headings don't get the effect. Avoid clobbering elements that
+    // already carry an explicit data-scramble in markup.
+    if (cfg.decodeHeadings) {
+      var main = document.getElementById('MainContent') || document.querySelector('main');
+      if (main) {
+        var headings = main.querySelectorAll('h1, h2');
+        for (var h = 0; h < headings.length; h++) {
+          if (!headings[h].hasAttribute('data-scramble')) {
+            headings[h].setAttribute('data-scramble', '');
+          }
+        }
+      }
+    }
+
+    if (cfg.decodeButtons) {
+      var buttons = document.querySelectorAll('.button, .ofx-neon-button, .ofx-neon-button-fill');
+      for (var b = 0; b < buttons.length; b++) {
+        if (!buttons[b].hasAttribute('data-scramble')) {
+          buttons[b].setAttribute('data-scramble', '');
+        }
+      }
+    }
+  }
+
   function scan() {
+    applySelectorOptIns();
     var targets = document.querySelectorAll('[data-scramble]:not([data-scramble-bound])');
     for (var i = 0; i < targets.length; i++) {
       bindScramble(targets[i]);
