@@ -229,13 +229,24 @@
       },
       "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951": {
         "settings": {
-          "background": "#210f61",
+          "background": "#1a1a49",
           "background_gradient": "linear-gradient(136deg, rgba(10, 234, 237, 1) 11%, rgba(250, 13, 253, 1) 84%)",
           "text": "#ffffff",
-          "button": "#210f61",
-          "button_label": "#0073ff",
+          "button": "#ffffff",
+          "button_label": "#7b40d9",
           "secondary_button_label": "#0073ff",
           "shadow": "#121212"
+        }
+      },
+      "scheme-93a27643-ce64-44e8-967c-d5927b623ad0": {
+        "settings": {
+          "background": "#09090b",
+          "background_gradient": "",
+          "text": "#f3f4f6",
+          "button": "#ffffff",
+          "button_label": "#7b40d9",
+          "secondary_button_label": "#ffffff",
+          "shadow": "#000000"
         }
       }
     }
@@ -434,6 +445,10 @@
   },
   "platform_customizations": {
     "custom_css": [
+      "/* GLOBAL: Dynamic Neon Glow for Solid Buttons */.button:not(.button--outline) {border: none !important; box-shadow: 0 0 5px rgb(var(--color-button)), 0 0 15px rgb(var(--color-button)), 0 0 30px rgb(var(--color-button)) !important; transition: all 0.3s ease-in-out !important;}",
+      ".button:not(.button--outline):hover {box-shadow: 0 0 10px rgb(var(--color-button)), 0 0 25px rgb(var(--color-button)), 0 0 50px rgb(var(--color-button)) !important; transform: scale(1.02);}",
+      "/* GLOBAL: Dynamic Neon Glow for Outline Buttons */.button--outline {box-shadow: 0 0 5px rgb(var(--color-base-outline-button-labels)), 0 0 15px rgb(var(--color-base-outline-button-labels)), inset 0 0 5px rgb(var(--color-base-outline-button-labels)), inset 0 0 10px rgb(var(--color-base-outline-button-labels)) !important; text-shadow: 0 0 5px rgb(var(--color-base-outline-button-labels)) !important; transition: all 0.3s ease-in-out !important;}",
+      ".button--outline:hover {background-color: rgb(var(--color-base-outline-button-labels)) !important; color: rgb(var(--color-background)) !important; box-shadow: 0 0 10px rgb(var(--color-base-outline-button-labels)), 0 0 30px rgb(var(--color-base-outline-button-labels)), inset 0 0 10px rgb(var(--color-base-outline-button-labels)) !important; text-shadow: none !important;}",
       "button.timesact-button-cs {background-image: none !important;}",
       "div[id*=\"animated_divider\"] {z-index: 1000 !important;}"
     ]
