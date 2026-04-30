@@ -405,7 +405,7 @@
         "color_scheme": "inverse",
         "show_view_all": false,
         "columns_mobile": "1",
-        "swipe_on_mobile": false,
+        "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -429,6 +429,7 @@
       "blocks": {
         "ai_gen_block_0bd9121_9Mkgpd": {
           "type": "ai_gen_block_0bd9121",
+          "disabled": true,
           "settings": {
             "product": "",
             "custom_title": "3D Product Display",
