@@ -279,7 +279,7 @@
     0 0 5px rgb(var(--ofx-neon-rgb)),
     0 0 10px rgb(var(--ofx-neon-rgb)),
     0 0 20px rgb(var(--ofx-neon-rgb)),
-    0 0 40px var(--ofx-cyan-dark);
+    0 0 40px rgba(var(--ofx-neon-rgb), 0.4);
 }
 
 .text-neon-flicker {
@@ -313,10 +313,6 @@
   position: relative;
 }
 
-[data-scramble].is-scrambling {
-  white-space: nowrap;
-}
-
 [data-scramble].is-scrambling span {
   font-family: inherit;
 }
@@ -330,6 +326,7 @@
   color: inherit;
   letter-spacing: inherit;
   text-shadow: inherit;
+  text-transform: inherit;
   white-space: inherit;
 }
 

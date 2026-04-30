@@ -25,7 +25,14 @@
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
   var GLITCH_CHARS = '▓▒░█▄▀■□◆◇▲▼►◄!@#$%^&*()_+={}[]|\\:;"<>?,./`~';
-  var GLITCH_COLORS = ['#00d9ff', '#ff006e', '#b026ff', '#00fff5'];
+  // Pulls live from the OmniFlex neon palette so merchant overrides in
+  // theme settings flow through to the scramble flicker colors too.
+  var GLITCH_COLORS = [
+    'var(--ofx-cyan)',
+    'var(--ofx-pink)',
+    'var(--ofx-purple)',
+    'var(--ofx-magenta)',
+  ];
 
   function randomChar() {
     return GLITCH_CHARS.charAt(Math.floor(Math.random() * GLITCH_CHARS.length));
@@ -45,7 +52,7 @@
 
   TextScrambler.prototype.setText = function (newText) {
     var self = this;
-    var oldText = this.el.innerText;
+    var oldText = this.el.textContent;
     var length = Math.max(oldText.length, newText.length);
     var promise = new Promise(function (resolve) {
       self.resolve = resolve;
@@ -69,33 +76,41 @@
   };
 
   TextScrambler.prototype.update = function () {
-    var output = '';
     var complete = 0;
     var self = this;
+    // Build the next frame as a DocumentFragment composed of text nodes
+    // (for settled / unstarted glyphs) and color-tinted <span> elements
+    // (for actively scrambling glyphs). createTextNode escapes HTML by
+    // construction, so source characters like `<` or `&` cannot break
+    // out into markup — closes the XSS hole that the previous innerHTML
+    // path opened.
+    var fragment = document.createDocumentFragment();
 
     for (var i = 0, n = this.queue.length; i < n; i++) {
       var entry = this.queue[i];
-      var from = entry.from;
-      var to = entry.to;
-      var start = entry.start;
-      var end = entry.end;
       var ch = entry.char;
 
-      if (this.frame >= end) {
+      if (this.frame >= entry.end) {
         complete++;
-        output += to;
-      } else if (this.frame >= start) {
+        fragment.appendChild(document.createTextNode(entry.to));
+      } else if (this.frame >= entry.start) {
         if (!ch || Math.random() < 0.28) {
           ch = randomChar();
           entry.char = ch;
         }
-        output += '<span style="color:' + randomColor() + '">' + ch + '</span>';
+        var span = document.createElement('span');
+        span.style.color = randomColor();
+        span.appendChild(document.createTextNode(ch));
+        fragment.appendChild(span);
       } else {
-        output += from;
+        fragment.appendChild(document.createTextNode(entry.from));
       }
     }
 
-    this.el.innerHTML = output;
+    // Atomic replace: textContent='' clears children, then attach the
+    // fragment so the browser only paints once per animation frame.
+    this.el.textContent = '';
+    this.el.appendChild(fragment);
 
     if (complete === this.queue.length) {
       if (this.resolve) this.resolve();
