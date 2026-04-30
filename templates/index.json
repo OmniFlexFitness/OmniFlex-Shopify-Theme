@@ -344,7 +344,7 @@
       "custom_css": [],
       "settings": {
         "product": "zenith",
-        "color_scheme": "inverse",
+        "color_scheme": "accent-2",
         "secondary_background": false,
         "media_size": "medium",
         "constrain_to_viewport": true,
