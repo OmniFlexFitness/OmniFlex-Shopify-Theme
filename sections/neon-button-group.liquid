@@ -21,6 +21,10 @@
     align-items: center;
   }
 
+  .neon-button-group__block {
+    display: inline-flex;
+  }
+
   .neon-button-group__heading {
     text-align: {{ section.settings.text_alignment }};
     margin: 0 0 2.4rem;
@@ -43,15 +47,17 @@
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'neon_button' -%}
-            {% render 'neon-button',
-              label: block.settings.button_label,
-              link: block.settings.button_link,
-              color: block.settings.color,
-              style: block.settings.style,
-              base: block.settings.base,
-              glitch: block.settings.glitch,
-              decode: block.settings.decode
-            %}
+            <div class="neon-button-group__block" {{ block.shopify_attributes }}>
+              {% render 'neon-button',
+                label: block.settings.button_label,
+                link: block.settings.button_link,
+                color: block.settings.color,
+                style: block.settings.style,
+                base: block.settings.base,
+                glitch: block.settings.glitch,
+                decode: block.settings.decode
+              %}
+            </div>
         {%- endcase -%}
       {%- endfor -%}
     </div>
