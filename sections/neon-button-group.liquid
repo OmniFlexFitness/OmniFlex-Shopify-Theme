@@ -1,0 +1,286 @@
+{{ 'neon-glitch.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .neon-button-group__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.button_gap }}px;
+    justify-content: {{ section.settings.alignment }};
+    align-items: center;
+  }
+
+  .neon-button-group__heading {
+    text-align: {{ section.settings.text_alignment }};
+    margin: 0 0 2.4rem;
+  }
+{%- endstyle -%}
+
+<div class="neon-button-group color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2
+        class="neon-button-group__heading {{ section.settings.heading_size }}{% if section.settings.heading_neon %} text-neon{% endif %}{% if section.settings.heading_flicker %} text-neon-flicker{% endif %}"
+        {% if section.settings.heading_decode %}data-scramble{% endif %}
+        {% if section.settings.heading_neon_color != blank %}style="--ofx-neon-rgb: var(--ofx-{{ section.settings.heading_neon_color }}-rgb);"{% endif %}
+      >
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    <div class="neon-button-group__inner">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'neon_button' -%}
+            {% render 'neon-button',
+              label: block.settings.button_label,
+              link: block.settings.button_link,
+              color: block.settings.color,
+              style: block.settings.style,
+              base: block.settings.base,
+              glitch: block.settings.glitch,
+              decode: block.settings.decode
+            %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Neon button group",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Power up"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "H2" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h0", "label": "H0" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_neon",
+      "label": "Apply neon glow to heading",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_flicker",
+      "label": "Flicker the neon glow",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_decode",
+      "label": "Decode/scramble heading on first hover",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_neon_color",
+      "label": "Heading neon color",
+      "options": [
+        { "value": "cyan", "label": "Cyan" },
+        { "value": "purple", "label": "Purple" },
+        { "value": "magenta", "label": "Magenta" },
+        { "value": "pink", "label": "Pink" },
+        { "value": "green", "label": "Green" },
+        { "value": "blue", "label": "Blue" }
+      ],
+      "default": "cyan"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Button alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "label": "Gap between buttons",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "neon_button",
+      "name": "Neon button",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "color",
+          "label": "Neon color",
+          "options": [
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": "cyan"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            { "value": "outline", "label": "Outline (transparent fill)" },
+            { "value": "fill", "label": "Filled (solid neon)" }
+          ],
+          "default": "outline"
+        },
+        {
+          "type": "select",
+          "id": "base",
+          "label": "Sizing",
+          "info": "Theme buttons follow Dawn's sizing; standalone matches OmniTask's exact pill.",
+          "options": [
+            { "value": "dawn", "label": "Theme buttons (.button)" },
+            { "value": "standalone", "label": "Standalone (.ofx-neon-button)" }
+          ],
+          "default": "dawn"
+        },
+        {
+          "type": "checkbox",
+          "id": "glitch",
+          "label": "Glitch on hover/click",
+          "info": "Chromatic-aberration animation on hover and an extra burst on click.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "decode",
+          "label": "Decode label on first hover",
+          "info": "Characters scramble through random glyphs before settling on the label.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Neon button group",
+      "blocks": [
+        {
+          "type": "neon_button",
+          "settings": {
+            "button_label": "Shop now",
+            "color": "cyan",
+            "style": "outline",
+            "glitch": true,
+            "decode": true
+          }
+        },
+        {
+          "type": "neon_button",
+          "settings": {
+            "button_label": "Learn more",
+            "color": "purple",
+            "style": "fill",
+            "glitch": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

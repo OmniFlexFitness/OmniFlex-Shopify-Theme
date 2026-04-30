@@ -1511,5 +1511,91 @@
         "unit": "%"
       }
     ]
+  },
+  {
+    "name": "Neon & glitch effects",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global toggles"
+      },
+      {
+        "type": "paragraph",
+        "content": "Brings OmniTask's cyberpunk styling into the storefront. Enable per-effect or apply to every theme button at once."
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_global_buttons",
+        "label": "Apply neon glow to all theme buttons",
+        "info": "Replaces the default fill / outline buttons with the OmniTask neon look (filled for primary, outline for secondary).",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_global_glitch",
+        "label": "Glitch animation on every button hover/click",
+        "info": "Chromatic-aberration flicker on hover, harder burst on click. Skips automatically when the visitor has Reduce Motion on.",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "neon_default_color",
+        "label": "Default neon color",
+        "info": "Sets --ofx-neon-rgb at the document root so any element using neon classes picks up this color by default.",
+        "options": [
+          { "value": "", "label": "Cyan (default)" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": ""
+      },
+      {
+        "type": "header",
+        "content": "Color palette"
+      },
+      {
+        "type": "paragraph",
+        "content": "Override the OmniTask palette to match your brand. Leave blank to keep the defaults."
+      },
+      {
+        "type": "color",
+        "id": "neon_color_cyan",
+        "label": "Cyan",
+        "default": "#00d2ff"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_purple",
+        "label": "Purple",
+        "default": "#e040fb"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_magenta",
+        "label": "Magenta",
+        "default": "#d500f9"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_pink",
+        "label": "Pink",
+        "default": "#ff1493"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_green",
+        "label": "Green",
+        "default": "#8ce696"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_blue",
+        "label": "Blue",
+        "default": "#50beff"
+      }
+    ]
   }
 ]

@@ -1,0 +1,594 @@
+/* =============================================================
+   OmniFlex Neon & Glitch Effects
+   Ported from OmniTask (src/styles.css) for use in the Dawn-based
+   OmniFlex Shopify theme. Provides:
+     - Neon palette CSS variables (--ofx-cyan, --ofx-purple, etc.)
+     - Outline + fill neon button variants (.button--neon-*)
+     - Standalone OmniTask-style neon buttons (.ofx-neon-button*)
+     - Decode/scramble overlay rules ([data-scramble])
+     - Chromatic-aberration glitch animations on hover & active
+       ([data-fx-glitch], [data-fx-glitch-hover], [data-fx-glitch-click],
+        [data-fx-glitch-box])
+     - Pulsing border glow + flickering text utilities
+   All animations bow out under prefers-reduced-motion: reduce.
+   ============================================================= */
+
+:root {
+  --ofx-cyan: #00d2ff;
+  --ofx-cyan-dark: #0073ff;
+  --ofx-purple: #e040fb;
+  --ofx-magenta: #d500f9;
+  --ofx-pink: #ff1493;
+  --ofx-green: #8ce696;
+  --ofx-yellow: #f0d278;
+  --ofx-orange: #ffaa78;
+  --ofx-blue: #50beff;
+  --ofx-red: #ff788c;
+
+  --ofx-cyan-rgb: 0, 210, 255;
+  --ofx-purple-rgb: 224, 64, 251;
+  --ofx-magenta-rgb: 213, 0, 249;
+  --ofx-pink-rgb: 255, 20, 147;
+  --ofx-green-rgb: 140, 230, 150;
+  --ofx-blue-rgb: 80, 190, 255;
+
+  /* Default neon accent — overridable per-button via --ofx-neon-rgb */
+  --ofx-neon-rgb: var(--ofx-cyan-rgb);
+  --ofx-neon: rgb(var(--ofx-neon-rgb));
+}
+
+/* =============================================================
+   Selection — pick up the active neon color
+   ============================================================= */
+.neon-active ::selection {
+  background: rgba(var(--ofx-neon-rgb), 0.4);
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(var(--ofx-neon-rgb), 0.5);
+}
+
+/* =============================================================
+   Standalone OmniTask neon buttons (drop-in classes)
+   These do not depend on Dawn's .button base styles — useful for
+   custom liquid blocks or rich text where merchants want a pure
+   OmniTask look.
+   ============================================================= */
+.ofx-neon-button,
+.ofx-neon-button-fill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 2.4rem;
+  border-radius: 0.8rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  background: rgba(var(--ofx-neon-rgb), 0.08);
+  border: 2px solid rgb(var(--ofx-neon-rgb));
+  color: rgb(var(--ofx-neon-rgb));
+  text-shadow: 0 0 10px rgba(var(--ofx-neon-rgb), 0.7);
+  box-shadow:
+    0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
+    0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
+    inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08);
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.ofx-neon-button::before,
+.ofx-neon-button-fill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--ofx-neon-rgb), 0.25),
+    transparent
+  );
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.ofx-neon-button:hover,
+.ofx-neon-button-fill:hover {
+  background: rgba(var(--ofx-neon-rgb), 0.16);
+  box-shadow:
+    0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
+    0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18);
+  transform: translateY(-1px);
+}
+
+.ofx-neon-button:hover::before,
+.ofx-neon-button-fill:hover::before {
+  left: 100%;
+}
+
+/* Filled variant — neon background, dark text */
+.ofx-neon-button-fill {
+  background: rgba(var(--ofx-neon-rgb), 0.85);
+  color: #050810;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
+    0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 8px rgba(255, 255, 255, 0.15);
+}
+
+.ofx-neon-button-fill:hover {
+  background: rgba(var(--ofx-neon-rgb), 1);
+  color: #050810;
+  box-shadow:
+    0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
+    0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+/* Color variants — apply alongside .ofx-neon-button[-fill] */
+.ofx-neon--cyan    { --ofx-neon-rgb: var(--ofx-cyan-rgb); }
+.ofx-neon--purple  { --ofx-neon-rgb: var(--ofx-purple-rgb); }
+.ofx-neon--magenta { --ofx-neon-rgb: var(--ofx-magenta-rgb); }
+.ofx-neon--pink    { --ofx-neon-rgb: var(--ofx-pink-rgb); }
+.ofx-neon--green   { --ofx-neon-rgb: var(--ofx-green-rgb); }
+.ofx-neon--blue    { --ofx-neon-rgb: var(--ofx-blue-rgb); }
+
+/* =============================================================
+   Dawn .button neon overlay — applies neon glow to existing
+   theme buttons (.button--primary, .button--secondary). Use
+   alongside .button to get an OmniTask-flavored hover without
+   discarding Dawn's box model.
+   ============================================================= */
+.button.button--neon {
+  position: relative;
+  border: 2px solid rgb(var(--ofx-neon-rgb)) !important;
+  background-color: rgba(var(--ofx-neon-rgb), 0.08) !important;
+  color: rgb(var(--ofx-neon-rgb)) !important;
+  text-shadow: 0 0 10px rgba(var(--ofx-neon-rgb), 0.7);
+  box-shadow:
+    0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
+    0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
+    inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08);
+  transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  overflow: hidden;
+}
+
+.button.button--neon::after {
+  /* Suppress Dawn's interior border ring so the neon outline reads cleanly */
+  box-shadow: none !important;
+}
+
+.button.button--neon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--ofx-neon-rgb), 0.25),
+    transparent
+  );
+  transition: left 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.button.button--neon:not([disabled]):hover {
+  background-color: rgba(var(--ofx-neon-rgb), 0.16) !important;
+  box-shadow:
+    0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
+    0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18);
+  transform: translateY(-1px);
+}
+
+.button.button--neon:not([disabled]):hover::before {
+  left: 100%;
+}
+
+/* Filled neon variant for Dawn buttons */
+.button.button--neon-fill {
+  position: relative;
+  border: 2px solid rgb(var(--ofx-neon-rgb)) !important;
+  background-color: rgba(var(--ofx-neon-rgb), 0.85) !important;
+  color: #050810 !important;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
+    0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 8px rgba(255, 255, 255, 0.15);
+  transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  overflow: hidden;
+}
+
+.button.button--neon-fill::after {
+  box-shadow: none !important;
+}
+
+.button.button--neon-fill:not([disabled]):hover {
+  background-color: rgba(var(--ofx-neon-rgb), 1) !important;
+  color: #050810 !important;
+  box-shadow:
+    0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
+    0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 12px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Color helpers — same names as the standalone variants for parity */
+.button--neon.button--neon--cyan,
+.button--neon-fill.button--neon--cyan      { --ofx-neon-rgb: var(--ofx-cyan-rgb); }
+.button--neon.button--neon--purple,
+.button--neon-fill.button--neon--purple    { --ofx-neon-rgb: var(--ofx-purple-rgb); }
+.button--neon.button--neon--magenta,
+.button--neon-fill.button--neon--magenta   { --ofx-neon-rgb: var(--ofx-magenta-rgb); }
+.button--neon.button--neon--pink,
+.button--neon-fill.button--neon--pink      { --ofx-neon-rgb: var(--ofx-pink-rgb); }
+.button--neon.button--neon--green,
+.button--neon-fill.button--neon--green     { --ofx-neon-rgb: var(--ofx-green-rgb); }
+.button--neon.button--neon--blue,
+.button--neon-fill.button--neon--blue      { --ofx-neon-rgb: var(--ofx-blue-rgb); }
+
+/* =============================================================
+   Pulsing glow + flickering text utilities
+   ============================================================= */
+.cyber-pulse {
+  animation: ofx-cyber-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ofx-cyber-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(var(--ofx-neon-rgb), 0.3),
+      inset 0 0 15px rgba(var(--ofx-neon-rgb), 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(var(--ofx-neon-rgb), 0.5),
+      inset 0 0 25px rgba(var(--ofx-neon-rgb), 0.2);
+  }
+}
+
+.cyber-border-glow {
+  border: 1px solid rgba(var(--ofx-neon-rgb), 0.4);
+  box-shadow:
+    0 0 10px rgba(var(--ofx-neon-rgb), 0.25),
+    inset 0 0 10px rgba(var(--ofx-neon-rgb), 0.08);
+  transition: all 0.25s ease;
+}
+
+.cyber-border-glow:hover {
+  border-color: rgba(var(--ofx-neon-rgb), 0.7);
+  box-shadow:
+    0 0 18px rgba(var(--ofx-neon-rgb), 0.5),
+    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.15);
+}
+
+.text-neon {
+  color: rgb(var(--ofx-neon-rgb));
+  text-shadow:
+    0 0 5px rgb(var(--ofx-neon-rgb)),
+    0 0 10px rgb(var(--ofx-neon-rgb)),
+    0 0 20px rgb(var(--ofx-neon-rgb)),
+    0 0 40px var(--ofx-cyan-dark);
+}
+
+.text-neon-flicker {
+  color: rgb(var(--ofx-neon-rgb));
+  text-shadow:
+    0 0 8px rgba(var(--ofx-neon-rgb), 0.8),
+    0 0 16px rgba(var(--ofx-neon-rgb), 0.5);
+  animation: ofx-text-flicker 3s infinite;
+}
+
+@keyframes ofx-text-flicker {
+  0%, 100% {
+    text-shadow:
+      0 0 8px rgba(var(--ofx-neon-rgb), 0.8),
+      0 0 16px rgba(var(--ofx-neon-rgb), 0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 12px rgba(var(--ofx-neon-rgb), 1),
+      0 0 22px rgba(var(--ofx-neon-rgb), 0.7);
+  }
+}
+
+/* =============================================================
+   Text scrambler / decode overlay
+   See assets/neon-glitch.js for the runtime that actually mutates
+   .scramble-overlay characters during hover.
+   ============================================================= */
+[data-scramble] {
+  cursor: default;
+  position: relative;
+}
+
+[data-scramble].is-scrambling {
+  white-space: nowrap;
+}
+
+[data-scramble].is-scrambling span {
+  font-family: inherit;
+}
+
+[data-scramble] > .scramble-overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-shadow: inherit;
+  white-space: inherit;
+}
+
+[data-scramble] > .scramble-overlay:empty {
+  display: none;
+}
+
+/* During the decode the original text is hidden via transparency
+   so layout stays identical before/during/after. */
+[data-scramble].is-scrambling {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+/* =============================================================
+   Chromatic-aberration glitch animations
+   Trigger via [data-fx-glitch], [data-fx-glitch-hover],
+   [data-fx-glitch-click] for text targets, and [data-fx-glitch-box]
+   for non-text elements (cards, icon buttons).
+   ============================================================= */
+
+/* --- Hover flicker (short, subtle) --- */
+@keyframes ofx-fx-glitch-hover {
+  0% {
+    clip-path: inset(0 0 0 0);
+    text-shadow: none;
+    filter: none;
+    transform: translateX(0);
+  }
+  12% {
+    clip-path: inset(44% 0 42% 0);
+    transform: translateX(-2px);
+    text-shadow: 2px 0 rgba(0, 210, 255, 0.85), -2px 0 rgba(255, 42, 160, 0.85);
+    filter: brightness(1.1);
+  }
+  16% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(1px);
+    text-shadow: -1px 0 rgba(0, 210, 255, 0.6), 1px 0 rgba(255, 42, 160, 0.6);
+    filter: none;
+  }
+  32% {
+    clip-path: inset(12% 0 70% 0);
+    transform: translateX(-1px);
+    text-shadow: 2px 0 rgba(0, 210, 255, 0.8), -2px 0 rgba(255, 42, 160, 0.8);
+    filter: hue-rotate(8deg);
+  }
+  36% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+    text-shadow: none;
+    filter: none;
+  }
+  58% {
+    clip-path: inset(65% 0 8% 0);
+    transform: translateX(2px);
+    text-shadow: -2px 0 rgba(0, 210, 255, 0.75), 2px 0 rgba(255, 42, 160, 0.75);
+    filter: hue-rotate(-10deg) brightness(1.08);
+  }
+  62% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+    text-shadow: 1px 0 rgba(0, 210, 255, 0.3), -1px 0 rgba(255, 42, 160, 0.3);
+  }
+  82% { opacity: 0.85; }
+  100% {
+    clip-path: inset(0 0 0 0);
+    text-shadow: none;
+    filter: none;
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* --- Click burst (stronger, more slices, opacity stutter) --- */
+@keyframes ofx-fx-glitch-click {
+  0% {
+    clip-path: inset(0 0 0 0);
+    text-shadow: none;
+    filter: none;
+    transform: translateX(0);
+    opacity: 1;
+  }
+  8% {
+    clip-path: inset(30% 0 55% 0);
+    transform: translateX(-4px);
+    text-shadow: 4px 0 rgba(0, 210, 255, 0.95), -4px 0 rgba(255, 42, 160, 0.95);
+    filter: hue-rotate(25deg) brightness(1.25) contrast(1.15);
+  }
+  12% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(3px);
+    opacity: 0.6;
+    text-shadow: -3px 0 rgba(0, 210, 255, 0.8), 3px 0 rgba(255, 42, 160, 0.8);
+    filter: none;
+  }
+  20% {
+    clip-path: inset(72% 0 6% 0);
+    transform: translateX(-3px);
+    text-shadow: 3px 0 rgba(0, 210, 255, 0.9), -3px 0 rgba(255, 42, 160, 0.9);
+    filter: hue-rotate(-30deg) brightness(1.1);
+  }
+  28% {
+    clip-path: inset(8% 0 78% 0);
+    transform: translateX(2px);
+    text-shadow: -4px 0 rgba(0, 210, 255, 0.85), 4px 0 rgba(255, 42, 160, 0.85);
+  }
+  34% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+    opacity: 0.85;
+    filter: none;
+  }
+  52% {
+    clip-path: inset(48% 0 38% 0);
+    transform: translateX(-2px);
+    text-shadow: 3px 0 rgba(0, 210, 255, 0.8), -3px 0 rgba(255, 42, 160, 0.8);
+    filter: hue-rotate(18deg);
+  }
+  60% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(1px);
+    text-shadow: 1px 0 rgba(0, 210, 255, 0.5), -1px 0 rgba(255, 42, 160, 0.5);
+  }
+  75% { opacity: 0.92; }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+    text-shadow: none;
+    filter: none;
+    opacity: 1;
+  }
+}
+
+/* --- Box-level chromatic aberration (cards, icon buttons) --- */
+@keyframes ofx-fx-glitch-box-hover {
+  0%, 100% {
+    clip-path: inset(0 0 0 0);
+    filter: none;
+    transform: translateX(0);
+  }
+  15% {
+    clip-path: inset(42% 0 44% 0);
+    transform: translateX(-2px);
+    filter: drop-shadow(2px 0 rgba(0, 210, 255, 0.7))
+            drop-shadow(-2px 0 rgba(255, 42, 160, 0.7))
+            brightness(1.1);
+  }
+  18% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(1px);
+    filter: drop-shadow(-1px 0 rgba(0, 210, 255, 0.45))
+            drop-shadow(1px 0 rgba(255, 42, 160, 0.45));
+  }
+  40% {
+    clip-path: inset(15% 0 65% 0);
+    transform: translateX(-1px);
+    filter: drop-shadow(2px 0 rgba(0, 210, 255, 0.65))
+            drop-shadow(-2px 0 rgba(255, 42, 160, 0.65))
+            hue-rotate(10deg);
+  }
+  44% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+    filter: none;
+  }
+  68% {
+    clip-path: inset(60% 0 8% 0);
+    transform: translateX(2px);
+    filter: drop-shadow(-2px 0 rgba(0, 210, 255, 0.6))
+            drop-shadow(2px 0 rgba(255, 42, 160, 0.6))
+            hue-rotate(-8deg);
+  }
+  82% { opacity: 0.88; }
+}
+
+@keyframes ofx-fx-glitch-box-click {
+  0%, 100% {
+    clip-path: inset(0 0 0 0);
+    filter: none;
+    transform: translateX(0);
+    opacity: 1;
+  }
+  10% {
+    clip-path: inset(32% 0 52% 0);
+    transform: translateX(-4px);
+    filter: drop-shadow(4px 0 rgba(0, 210, 255, 0.95))
+            drop-shadow(-4px 0 rgba(255, 42, 160, 0.95))
+            brightness(1.3) contrast(1.2);
+  }
+  14% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(3px);
+    opacity: 0.55;
+    filter: drop-shadow(-3px 0 rgba(0, 210, 255, 0.85))
+            drop-shadow(3px 0 rgba(255, 42, 160, 0.85));
+  }
+  24% {
+    clip-path: inset(70% 0 6% 0);
+    transform: translateX(-3px);
+    filter: drop-shadow(3px 0 rgba(0, 210, 255, 0.9))
+            drop-shadow(-3px 0 rgba(255, 42, 160, 0.9))
+            hue-rotate(-28deg);
+  }
+  32% {
+    clip-path: inset(8% 0 76% 0);
+    transform: translateX(2px);
+    filter: drop-shadow(-4px 0 rgba(0, 210, 255, 0.85))
+            drop-shadow(4px 0 rgba(255, 42, 160, 0.85))
+            hue-rotate(18deg);
+  }
+  38% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.8;
+    filter: none;
+  }
+  55% {
+    clip-path: inset(46% 0 38% 0);
+    transform: translateX(-2px);
+    filter: drop-shadow(2px 0 rgba(0, 210, 255, 0.7))
+            drop-shadow(-2px 0 rgba(255, 42, 160, 0.7));
+  }
+  78% { opacity: 0.92; }
+}
+
+[data-fx-glitch],
+[data-fx-glitch-hover],
+[data-fx-glitch-click],
+[data-fx-glitch-box] {
+  will-change: clip-path, transform, filter, opacity, text-shadow;
+}
+
+[data-fx-glitch]:hover,
+[data-fx-glitch-hover]:hover {
+  animation: ofx-fx-glitch-hover 0.45s steps(12, end);
+}
+
+[data-fx-glitch]:active,
+[data-fx-glitch-click]:active {
+  animation: ofx-fx-glitch-click 0.32s steps(14, end);
+}
+
+[data-fx-glitch-box]:hover {
+  animation: ofx-fx-glitch-box-hover 0.45s steps(12, end);
+}
+
+[data-fx-glitch-box]:active {
+  animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fx-glitch]:hover,
+  [data-fx-glitch-hover]:hover,
+  [data-fx-glitch]:active,
+  [data-fx-glitch-click]:active,
+  [data-fx-glitch-box]:hover,
+  [data-fx-glitch-box]:active,
+  .cyber-pulse,
+  .text-neon-flicker {
+    animation: none !important;
+  }
+}

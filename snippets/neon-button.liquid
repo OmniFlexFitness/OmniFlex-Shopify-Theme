@@ -1,0 +1,64 @@
+{% comment %}
+  Renders an OmniTask-flavored neon button.
+
+  Accepts:
+    label   {string}  - button text (required)
+    link    {string}  - href; if blank, renders as aria-disabled
+    color   {string}  - cyan | purple | magenta | pink | green | blue (default cyan)
+    style   {string}  - 'outline' | 'fill' (default 'outline')
+    base    {string}  - 'dawn' | 'standalone' (default 'dawn')
+                        'dawn' layers neon classes on Dawn's .button so
+                        sizing matches the rest of the theme; 'standalone'
+                        uses .ofx-neon-button which more closely mimics
+                        OmniTask's exact pill shape.
+    glitch  {boolean} - apply chromatic-aberration glitch on hover/active
+    decode  {boolean} - apply text decode/scramble on first hover
+    classes {string}  - extra classes to append
+
+  Usage:
+    {% render 'neon-button',
+        label: 'Shop now', link: '/collections/all',
+        color: 'purple', style: 'outline', glitch: true %}
+{% endcomment %}
+
+{%- liquid
+  assign btn_label = label | default: ''
+  assign btn_link = link | default: ''
+  assign btn_color = color | default: 'cyan'
+  assign btn_style = style | default: 'outline'
+  assign btn_base = base | default: 'dawn'
+  assign extra_classes = classes | default: ''
+
+  assign class_list = ''
+  if btn_base == 'standalone'
+    if btn_style == 'fill'
+      assign class_list = 'ofx-neon-button-fill'
+    else
+      assign class_list = 'ofx-neon-button'
+    endif
+    assign class_list = class_list | append: ' ofx-neon--' | append: btn_color
+  else
+    assign class_list = 'button'
+    if btn_style == 'fill'
+      assign class_list = class_list | append: ' button--neon-fill'
+    else
+      assign class_list = class_list | append: ' button--neon'
+    endif
+    assign class_list = class_list | append: ' button--neon--' | append: btn_color
+  endif
+
+  if extra_classes != blank
+    assign class_list = class_list | append: ' ' | append: extra_classes
+  endif
+-%}
+
+{%- if btn_label != blank -%}
+  <a
+    {% if btn_link == blank %}role="link" aria-disabled="true"{% else %}href="{{ btn_link }}"{% endif %}
+    class="{{ class_list }}"
+    {% if glitch %}data-fx-glitch{% endif %}
+    {% if decode %}data-scramble{% endif %}
+  >
+    {{- btn_label | escape -}}
+  </a>
+{%- endif -%}
