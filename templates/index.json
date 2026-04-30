@@ -65,7 +65,7 @@
         "video": "shopify://files/videos/Site Video Banner.mp4",
         "video_url": "",
         "enable_video_looping": true,
-        "image_overlay_opacity": 0,
+        "image_overlay_opacity": 10,
         "video_height": "large",
         "show_play_pause": false,
         "pause_offscreen": false,
