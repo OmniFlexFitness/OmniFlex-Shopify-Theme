@@ -55,7 +55,16 @@
                 style: block.settings.style,
                 base: block.settings.base,
                 glitch: block.settings.glitch,
-                decode: block.settings.decode
+                decode: block.settings.decode,
+                glitch_duration: block.settings.glitch_duration,
+                glitch_slices: block.settings.glitch_slices,
+                glitch_velocity: block.settings.glitch_velocity,
+                glitch_shake: block.settings.glitch_shake,
+                glitch_color: block.settings.glitch_color,
+                decode_duration: block.settings.decode_duration,
+                decode_color: block.settings.decode_color,
+                decode_charset: block.settings.decode_charset,
+                decode_replay: block.settings.decode_replay
               %}
             </div>
         {%- endcase -%}
@@ -258,6 +267,128 @@
           "label": "Decode label on first hover",
           "info": "Characters scramble through random glyphs before settling on the label.",
           "default": false
+        },
+        {
+          "type": "header",
+          "content": "Glitch overrides (optional)"
+        },
+        {
+          "type": "paragraph",
+          "content": "Leave at zero / Inherit to use the global Glitch animation settings."
+        },
+        {
+          "type": "range",
+          "id": "glitch_duration",
+          "label": "Duration",
+          "min": 0,
+          "max": 2000,
+          "step": 50,
+          "unit": "ms",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "glitch_slices",
+          "label": "Slice count",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "glitch_velocity",
+          "label": "Slice displacement",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "select",
+          "id": "glitch_shake",
+          "label": "Shake whole button",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "true", "label": "On" },
+            { "value": "false", "label": "Off" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "glitch_color",
+          "label": "Slice color source",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "match", "label": "Match button color" },
+            { "value": "chromatic", "label": "Chromatic aberration" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "header",
+          "content": "Decode overrides (optional)"
+        },
+        {
+          "type": "range",
+          "id": "decode_duration",
+          "label": "Duration",
+          "min": 0,
+          "max": 2000,
+          "step": 50,
+          "unit": "ms",
+          "default": 0
+        },
+        {
+          "type": "select",
+          "id": "decode_color",
+          "label": "Glyph color source",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "rotate", "label": "Rotate (cyan/pink/purple/magenta)" },
+            { "value": "match", "label": "Match button label color" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "decode_charset",
+          "label": "Glyph set",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "mixed", "label": "Mixed" },
+            { "value": "blocks", "label": "Blocks" },
+            { "value": "symbols", "label": "Symbols" },
+            { "value": "binary", "label": "Binary" },
+            { "value": "hex", "label": "Hexadecimal" },
+            { "value": "katakana", "label": "Katakana" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "decode_replay",
+          "label": "Replay decode on hover",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "once", "label": "Once per page load" },
+            { "value": "always", "label": "Every hover" }
+          ],
+          "default": ""
         }
       ]
     }

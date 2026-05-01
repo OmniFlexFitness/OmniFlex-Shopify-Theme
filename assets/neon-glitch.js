@@ -24,26 +24,82 @@
 
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-  var GLITCH_CHARS = '▓▒░█▄▀■□◆◇▲▼►◄!@#$%^&*()_+={}[]|\\:;"<>?,./`~';
+  var DEFAULT_GLITCH_CHARS = '▓▒░█▄▀■□◆◇▲▼►◄!@#$%^&*()_+={}[]|\\:;"<>?,./`~';
+  var GLITCH_CHARSETS = {
+    mixed:   '▓▒░█▄▀■□◆◇▲▼►◄!@#$%^&*()_+={}[]|\\:;"<>?,./`~',
+    blocks:  '▓▒░█▄▀■□◆◇▲▼►◄',
+    symbols: '!@#$%^&*()_+={}[]|\\:;"<>?,./`~',
+    binary:  '01',
+    hex:     '0123456789ABCDEF',
+    katakana: 'アァカサタナハマヤラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨロヲゴゾドボポヴッン',
+  };
+
   // Pulls live from the OmniFlex neon palette so merchant overrides in
   // theme settings flow through to the scramble flicker colors too.
-  var GLITCH_COLORS = [
+  var ROTATE_COLORS = [
     'var(--ofx-cyan)',
     'var(--ofx-pink)',
     'var(--ofx-purple)',
     'var(--ofx-magenta)',
   ];
+  var COLOR_VARS = {
+    cyan:    'var(--ofx-cyan)',
+    purple:  'var(--ofx-purple)',
+    magenta: 'var(--ofx-magenta)',
+    pink:    'var(--ofx-pink)',
+    green:   'var(--ofx-green)',
+    blue:    'var(--ofx-blue)',
+  };
 
-  function randomChar() {
-    return GLITCH_CHARS.charAt(Math.floor(Math.random() * GLITCH_CHARS.length));
+  function getScrambleConfig(el) {
+    // Walk up the DOM looking for the data attributes — they live on
+    // the bound element (the one with [data-scramble]), but the
+    // scrambler itself runs on the inner overlay. Default to the
+    // global config from theme.liquid.
+    var ds = el.dataset;
+    var globalCfg = (window.OmniFlexNeonConfig && window.OmniFlexNeonConfig.decode) || {};
+
+    var charsetName = ds.scrambleCharset || globalCfg.charset || 'mixed';
+    var charset = GLITCH_CHARSETS[charsetName] || DEFAULT_GLITCH_CHARS;
+
+    var colorMode = ds.scrambleColor || globalCfg.color || 'rotate';
+
+    var duration = parseInt(ds.scrambleDuration || globalCfg.duration, 10);
+    if (isNaN(duration) || duration <= 0) duration = 400;
+    // Internal "frame budget" scales with duration. Defaults are
+    // tuned for ~400ms; larger durations spread the scramble over
+    // proportionally more frames.
+    var frameScale = duration / 400;
+
+    return {
+      charset: charset,
+      colorMode: colorMode,
+      frameScale: frameScale,
+    };
   }
 
-  function randomColor() {
-    return GLITCH_COLORS[Math.floor(Math.random() * GLITCH_COLORS.length)];
+  function pickGlitchChar(cfg) {
+    return cfg.charset.charAt(Math.floor(Math.random() * cfg.charset.length));
   }
 
-  function TextScrambler(element) {
+  function pickGlitchColor(cfg, el) {
+    var mode = cfg.colorMode;
+    if (mode === 'rotate' || !mode) {
+      return ROTATE_COLORS[Math.floor(Math.random() * ROTATE_COLORS.length)];
+    }
+    if (mode === 'match') {
+      // Use the scrambling element's own rendered color.
+      return window.getComputedStyle(el).color;
+    }
+    if (COLOR_VARS[mode]) return COLOR_VARS[mode];
+    return mode; // raw CSS color string
+  }
+
+  function TextScrambler(element, hostElement) {
     this.el = element;
+    // hostElement is the [data-scramble]-tagged element where
+    // configuration lives — the overlay is a child of it.
+    this.host = hostElement || element;
     this.queue = [];
     this.frame = 0;
     this.frameRequest = null;
@@ -54,6 +110,8 @@
     var self = this;
     var oldText = this.el.textContent;
     var length = Math.max(oldText.length, newText.length);
+    this.cfg = getScrambleConfig(this.host);
+    var fs = this.cfg.frameScale;
     var promise = new Promise(function (resolve) {
       self.resolve = resolve;
     });
@@ -62,8 +120,8 @@
     for (var i = 0; i < length; i++) {
       var from = oldText[i] || '';
       var to = newText[i] || '';
-      var start = Math.floor(Math.random() * 8);
-      var end = start + Math.floor(Math.random() * 8) + 4;
+      var start = Math.floor(Math.random() * 8 * fs);
+      var end = start + Math.floor(Math.random() * 8 * fs) + Math.round(4 * fs);
       this.queue.push({ from: from, to: to, start: start, end: end });
     }
 
@@ -95,11 +153,11 @@
         fragment.appendChild(document.createTextNode(entry.to));
       } else if (this.frame >= entry.start) {
         if (!ch || Math.random() < 0.28) {
-          ch = randomChar();
+          ch = pickGlitchChar(this.cfg);
           entry.char = ch;
         }
         var span = document.createElement('span');
-        span.style.color = randomColor();
+        span.style.color = pickGlitchColor(this.cfg, this.host);
         span.appendChild(document.createTextNode(ch));
         fragment.appendChild(span);
       } else {
@@ -146,10 +204,26 @@
     overlay.setAttribute('aria-hidden', 'true');
     el.appendChild(overlay);
 
-    var scrambler = new TextScrambler(overlay);
+    var scrambler = new TextScrambler(overlay, el);
+    var animating = false;
+
+    // Replay mode: 'once' (default — fires the first hover then
+    // unbinds) or 'always' (re-fires every time the cursor enters).
+    // Per-element data-scramble-replay overrides the global setting.
+    function getReplayMode() {
+      if (el.dataset.scrambleReplay === 'always') return 'always';
+      if (el.dataset.scrambleReplay === 'once') return 'once';
+      var cfg = (window.OmniFlexNeonConfig && window.OmniFlexNeonConfig.decode) || {};
+      return cfg.replay === true || cfg.replay === 'always' ? 'always' : 'once';
+    }
 
     function onEnter() {
-      el.removeEventListener('mouseenter', onEnter);
+      if (animating) return;
+      animating = true;
+      var replayMode = getReplayMode();
+      if (replayMode === 'once') {
+        el.removeEventListener('mouseenter', onEnter);
+      }
 
       var finalText = textExcludingOverlay(el, overlay);
 
@@ -175,6 +249,7 @@
         el.classList.remove('is-scrambling');
         el.style.minWidth = originalMinWidth;
         el.style.display = originalDisplay;
+        animating = false;
       });
     }
 
@@ -266,23 +341,65 @@
    * animation duration so the bands appear to "slip" across the
    * button. Skips elements where prefers-reduced-motion is set.
    *
-   * Differences from the full library:
-   *   - Slice-only (no shake / hue-rotate); matches OmniTask's
-   *     POWERGLITCH_CONFIG which sets shake: false, hueRotate: false.
-   *   - Steps every ~33ms rather than per-frame so the slip reads as
-   *     a digital glitch, not a smooth motion.
-   *   - Skips a portion of frames during the last 40% of the
-   *     animation (matches glitchTimeSpan: { start: 0, end: 0.6 }).
+   * Configurable via window.OmniFlexNeonConfig.glitch (theme settings)
+   * and per-element data attributes:
+   *
+   *   data-fx-glitch-duration  ms (number)
+   *   data-fx-glitch-slices    1-8
+   *   data-fx-glitch-velocity  px (max horizontal offset)
+   *   data-fx-glitch-shake     "true" / "false"
+   *   data-fx-glitch-color     match | chromatic | cyan | purple |
+   *                            magenta | pink | green | blue
    */
-  var POWERGLITCH = {
-    sliceCount: 3,
-    duration: 400,
-    velocity: 18,
-    minHeight: 0.05,
-    maxHeight: 0.15,
-    glitchEnd: 0.6,
-    stepCount: 12,
+
+  // Hue-rotation angles applied via CSS filter. Approximate — the
+  // exact rendered tint depends on the button's source colors, but
+  // the relative shift is enough to push slices toward the chosen
+  // accent.
+  var HUE_ROTATIONS = {
+    cyan:    180,
+    blue:    220,
+    purple:  280,
+    magenta: 300,
+    pink:    320,
+    green:   100,
   };
+
+  function getGlitchConfig(el) {
+    var ds = el.dataset;
+    var globalCfg = (window.OmniFlexNeonConfig && window.OmniFlexNeonConfig.glitch) || {};
+
+    function pickInt(dsKey, globalKey, fallback) {
+      var raw = ds[dsKey];
+      if (raw != null && raw !== '') {
+        var n = parseInt(raw, 10);
+        if (!isNaN(n) && n > 0) return n;
+      }
+      var g = parseInt(globalCfg[globalKey], 10);
+      if (!isNaN(g) && g > 0) return g;
+      return fallback;
+    }
+
+    function pickBool(dsKey, globalKey, fallback) {
+      if (ds[dsKey] === 'true') return true;
+      if (ds[dsKey] === 'false') return false;
+      if (globalCfg[globalKey] === true) return true;
+      if (globalCfg[globalKey] === false) return false;
+      return fallback;
+    }
+
+    return {
+      sliceCount: pickInt('fxGlitchSlices', 'sliceCount', 3),
+      duration:   pickInt('fxGlitchDuration', 'duration', 400),
+      velocity:   pickInt('fxGlitchVelocity', 'velocity', 18),
+      minHeight:  0.05,
+      maxHeight:  0.15,
+      shake:      pickBool('fxGlitchShake', 'shake', false),
+      color:      ds.fxGlitchColor || globalCfg.color || 'match',
+      glitchEnd:  0.6,
+      stepCount:  12,
+    };
+  }
 
   function bindPowerGlitch(el) {
     if (el.dataset.pgBound === 'true') return;
@@ -293,16 +410,32 @@
     el.addEventListener('mouseenter', function () {
       if (animating) return;
       animating = true;
-      runPowerGlitch(el, function () {
+      var cfg = getGlitchConfig(el);
+      runPowerGlitch(el, cfg, function () {
         animating = false;
       });
     });
   }
 
-  function runPowerGlitch(el, onComplete) {
-    var cfg = POWERGLITCH;
+  function applySliceColor(slice, mode, idx) {
+    if (!mode || mode === 'match') return;
+    if (mode === 'chromatic') {
+      // Alternating cyan / magenta hue shifts — classic RGB
+      // chromatic-aberration look.
+      slice.style.filter = idx % 2 === 0 ? 'hue-rotate(90deg)' : 'hue-rotate(-90deg)';
+      slice.style.mixBlendMode = 'screen';
+      return;
+    }
+    var rotation = HUE_ROTATIONS[mode];
+    if (typeof rotation === 'number') {
+      slice.style.filter = 'hue-rotate(' + rotation + 'deg) saturate(1.4)';
+    }
+  }
+
+  function runPowerGlitch(el, cfg, onComplete) {
     var computed = window.getComputedStyle(el);
     var originalPosition = el.style.position;
+    var originalTransform = el.style.transform;
     if (computed.position === 'static') {
       el.style.position = 'relative';
     }
@@ -310,7 +443,8 @@
     // Build slice clones inside the original element.
     // Each clone is the full button laid on top, then clipped to a
     // band — so the slice color is whatever the button renders as
-    // (background + border + label all included).
+    // (background + border + label all included). When color !=
+    // 'match' a CSS filter is applied to tint the slice.
     var slices = [];
     for (var i = 0; i < cfg.sliceCount; i++) {
       var clone = el.cloneNode(true);
@@ -339,7 +473,8 @@
       clone.style.zIndex = '1';
       clone.style.clipPath = 'inset(100%)';
       clone.style.transform = 'translateX(0)';
-      clone.style.willChange = 'clip-path, transform';
+      clone.style.willChange = 'clip-path, transform, filter';
+      applySliceColor(clone, cfg.color, i);
       el.appendChild(clone);
       slices.push(clone);
     }
@@ -357,6 +492,7 @@
           if (slices[s].parentNode === el) el.removeChild(slices[s]);
         }
         el.style.position = originalPosition;
+        el.style.transform = originalTransform;
         if (onComplete) onComplete();
         return;
       }
@@ -379,6 +515,15 @@
             slices[i].style.clipPath = 'inset(' + insetTop + '% 0 ' + insetBottom + '% 0)';
             slices[i].style.transform = 'translateX(' + offsetX.toFixed(2) + 'px)';
           }
+        }
+
+        // Whole-element shake — matches OmniTask's optional
+        // shake: { velocity, ... } config. Velocity here is reused
+        // as the shake amplitude.
+        if (cfg.shake && inGlitchPhase) {
+          var sx = (Math.random() - 0.5) * 2 * (cfg.velocity * 0.4);
+          var sy = (Math.random() - 0.5) * 2 * (cfg.velocity * 0.25);
+          el.style.transform = 'translate(' + sx.toFixed(2) + 'px,' + sy.toFixed(2) + 'px)';
         }
       }
 

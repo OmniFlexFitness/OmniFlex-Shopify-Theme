@@ -15,10 +15,27 @@
     decode  {boolean} - apply text decode/scramble on first hover
     classes {string}  - extra classes to append
 
+    Glitch overrides (only meaningful with glitch: true):
+      glitch_duration {number} - ms; falls back to global setting
+      glitch_slices   {number} - 1-8 slice count override
+      glitch_velocity {number} - max horizontal slice offset (px)
+      glitch_shake    {string} - 'true' | 'false'
+      glitch_color    {string} - match | chromatic | cyan | purple |
+                                 magenta | pink | green | blue
+
+    Decode overrides (only meaningful with decode: true):
+      decode_duration {number} - ms; falls back to global setting
+      decode_color    {string} - rotate | match | cyan | purple |
+                                 magenta | pink | green | blue
+      decode_charset  {string} - mixed | blocks | symbols | binary |
+                                 hex | katakana
+      decode_replay   {string} - 'once' | 'always'
+
   Usage:
     {% render 'neon-button',
         label: 'Shop now', link: '/collections/all',
-        color: 'purple', style: 'outline', glitch: true %}
+        color: 'purple', style: 'outline',
+        glitch: true, glitch_duration: 600, glitch_color: 'chromatic' %}
 {% endcomment %}
 
 {%- liquid
@@ -56,8 +73,21 @@
   <a
     {% if btn_link == blank %}role="link" aria-disabled="true"{% else %}href="{{ btn_link }}"{% endif %}
     class="{{ class_list }}"
-    {% if glitch %}data-fx-glitch{% endif %}
-    {% if decode %}data-scramble{% endif %}
+    {% if glitch %}
+      data-fx-glitch
+      {% if glitch_duration %}data-fx-glitch-duration="{{ glitch_duration }}"{% endif %}
+      {% if glitch_slices %}data-fx-glitch-slices="{{ glitch_slices }}"{% endif %}
+      {% if glitch_velocity %}data-fx-glitch-velocity="{{ glitch_velocity }}"{% endif %}
+      {% if glitch_shake %}data-fx-glitch-shake="{{ glitch_shake }}"{% endif %}
+      {% if glitch_color != blank %}data-fx-glitch-color="{{ glitch_color }}"{% endif %}
+    {% endif %}
+    {% if decode %}
+      data-scramble
+      {% if decode_duration %}data-scramble-duration="{{ decode_duration }}"{% endif %}
+      {% if decode_color != blank %}data-scramble-color="{{ decode_color }}"{% endif %}
+      {% if decode_charset != blank %}data-scramble-charset="{{ decode_charset }}"{% endif %}
+      {% if decode_replay != blank %}data-scramble-replay="{{ decode_replay }}"{% endif %}
+    {% endif %}
   >
     {{- btn_label | escape -}}
   </a>

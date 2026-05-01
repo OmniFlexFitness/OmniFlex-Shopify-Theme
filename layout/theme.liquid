@@ -39,7 +39,20 @@
         glitchSelector: {{ settings.neon_glitch_selector | default: '' | json }},
         decodeSelector: {{ settings.neon_decode_selector | default: '' | json }},
         decodeHeadings: {{ settings.neon_decode_headings | default: false | json }},
-        decodeButtons: {{ settings.neon_decode_buttons | default: false | json }}
+        decodeButtons: {{ settings.neon_decode_buttons | default: false | json }},
+        glitch: {
+          duration: {{ settings.neon_glitch_duration | default: 400 | json }},
+          sliceCount: {{ settings.neon_glitch_slice_count | default: 3 | json }},
+          velocity: {{ settings.neon_glitch_velocity | default: 18 | json }},
+          shake: {{ settings.neon_glitch_shake | default: false | json }},
+          color: {{ settings.neon_glitch_color | default: 'match' | json }}
+        },
+        decode: {
+          duration: {{ settings.neon_decode_duration | default: 400 | json }},
+          color: {{ settings.neon_decode_color | default: 'rotate' | json }},
+          charset: {{ settings.neon_decode_charset | default: 'mixed' | json }},
+          replay: {{ settings.neon_decode_replay | default: false | json }}
+        }
       };
     </script>
     <script src="{{ 'neon-glitch.js' | asset_url }}" defer="defer"></script>

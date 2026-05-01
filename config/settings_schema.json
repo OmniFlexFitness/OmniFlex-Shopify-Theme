@@ -1590,6 +1590,125 @@
       },
       {
         "type": "header",
+        "content": "Glitch (PowerGlitch) animation"
+      },
+      {
+        "type": "paragraph",
+        "content": "Tunes the chromatic-aberration slice effect on button hover. Per-button overrides on the section blocks beat these defaults."
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_duration",
+        "label": "Duration (ms)",
+        "min": 100,
+        "max": 2000,
+        "step": 50,
+        "unit": "ms",
+        "default": 400
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_slice_count",
+        "label": "Slice count",
+        "info": "Number of horizontal slices the button breaks into per glitch frame.",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_velocity",
+        "label": "Slice displacement",
+        "info": "Maximum horizontal offset (in pixels) applied to each slice per step.",
+        "min": 4,
+        "max": 60,
+        "step": 2,
+        "unit": "px",
+        "default": 18
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_glitch_shake",
+        "label": "Shake the whole button while slicing",
+        "info": "Adds OmniTask's shake mode on top of the slice effect. Off matches the default OmniTask config.",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_color",
+        "label": "Slice color source",
+        "info": "How slices are tinted. 'Match button' is a clean clone (default). 'Chromatic aberration' splits slices into RGB ghosts. The named colors apply a hue-rotation toward that color.",
+        "options": [
+          { "value": "match", "label": "Match button color" },
+          { "value": "chromatic", "label": "Chromatic aberration (RGB split)" },
+          { "value": "cyan", "label": "Cyan" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": "match"
+      },
+      {
+        "type": "header",
+        "content": "Decode (text scramble) animation"
+      },
+      {
+        "type": "paragraph",
+        "content": "Tunes the character-scramble decode effect. Per-element data-scramble-* attributes beat these defaults."
+      },
+      {
+        "type": "range",
+        "id": "neon_decode_duration",
+        "label": "Duration (ms)",
+        "info": "Approximate total time for all characters to settle. Longer = slower decode.",
+        "min": 100,
+        "max": 2000,
+        "step": 50,
+        "unit": "ms",
+        "default": 400
+      },
+      {
+        "type": "select",
+        "id": "neon_decode_color",
+        "label": "Glyph color source",
+        "options": [
+          { "value": "rotate", "label": "Rotate (cyan / pink / purple / magenta)" },
+          { "value": "match", "label": "Match the element's own color" },
+          { "value": "cyan", "label": "Cyan" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": "rotate"
+      },
+      {
+        "type": "select",
+        "id": "neon_decode_charset",
+        "label": "Glyph set",
+        "options": [
+          { "value": "mixed", "label": "Mixed (blocks + symbols, OmniTask default)" },
+          { "value": "blocks", "label": "Block characters" },
+          { "value": "symbols", "label": "Symbols / punctuation" },
+          { "value": "binary", "label": "Binary (0 / 1)" },
+          { "value": "hex", "label": "Hexadecimal" },
+          { "value": "katakana", "label": "Katakana (Matrix-style)" }
+        ],
+        "default": "mixed"
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_replay",
+        "label": "Replay decode on every hover",
+        "info": "Off (default) plays the decode once per page load. On replays it whenever the cursor enters the element.",
+        "default": false
+      },
+      {
+        "type": "header",
         "content": "Color palette"
       },
       {
