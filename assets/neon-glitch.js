@@ -256,11 +256,161 @@
     }
   }
 
+  /* ------- PowerGlitch port (vanilla JS) -------
+   *
+   * Reproduces the slice-and-displace look of OmniTask's powerglitch
+   * library (npm: powerglitch). On hover, the button is wrapped and N
+   * absolute-positioned clones are stacked on top. Each clone is
+   * clipped to a thin horizontal band via clip-path and translated
+   * horizontally by a random amount. Re-randomized in steps over the
+   * animation duration so the bands appear to "slip" across the
+   * button. Skips elements where prefers-reduced-motion is set.
+   *
+   * Differences from the full library:
+   *   - Slice-only (no shake / hue-rotate); matches OmniTask's
+   *     POWERGLITCH_CONFIG which sets shake: false, hueRotate: false.
+   *   - Steps every ~33ms rather than per-frame so the slip reads as
+   *     a digital glitch, not a smooth motion.
+   *   - Skips a portion of frames during the last 40% of the
+   *     animation (matches glitchTimeSpan: { start: 0, end: 0.6 }).
+   */
+  var POWERGLITCH = {
+    sliceCount: 3,
+    duration: 400,
+    velocity: 18,
+    minHeight: 0.05,
+    maxHeight: 0.15,
+    glitchEnd: 0.6,
+    stepCount: 12,
+  };
+
+  function bindPowerGlitch(el) {
+    if (el.dataset.pgBound === 'true') return;
+    el.dataset.pgBound = 'true';
+
+    var animating = false;
+
+    el.addEventListener('mouseenter', function () {
+      if (animating) return;
+      animating = true;
+      runPowerGlitch(el, function () {
+        animating = false;
+      });
+    });
+  }
+
+  function runPowerGlitch(el, onComplete) {
+    var cfg = POWERGLITCH;
+    var computed = window.getComputedStyle(el);
+    var originalPosition = el.style.position;
+    if (computed.position === 'static') {
+      el.style.position = 'relative';
+    }
+
+    // Build slice clones inside the original element.
+    // Each clone is the full button laid on top, then clipped to a
+    // band — so the slice color is whatever the button renders as
+    // (background + border + label all included).
+    var slices = [];
+    for (var i = 0; i < cfg.sliceCount; i++) {
+      var clone = el.cloneNode(true);
+      // Strip attributes that would cause re-binding or duplicate
+      // accessibility nodes.
+      clone.removeAttribute('id');
+      clone.removeAttribute('data-fx-glitch');
+      clone.removeAttribute('data-fx-glitch-hover');
+      clone.removeAttribute('data-fx-glitch-click');
+      clone.removeAttribute('data-fx-glitch-box');
+      clone.removeAttribute('data-scramble');
+      clone.removeAttribute('data-scramble-bound');
+      clone.removeAttribute('data-pg-bound');
+      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute('tabindex', '-1');
+      clone.style.position = 'absolute';
+      clone.style.top = '0';
+      clone.style.left = '0';
+      clone.style.right = '0';
+      clone.style.bottom = '0';
+      clone.style.width = '100%';
+      clone.style.height = '100%';
+      clone.style.margin = '0';
+      clone.style.pointerEvents = 'none';
+      clone.style.userSelect = 'none';
+      clone.style.zIndex = '1';
+      clone.style.clipPath = 'inset(100%)';
+      clone.style.transform = 'translateX(0)';
+      clone.style.willChange = 'clip-path, transform';
+      el.appendChild(clone);
+      slices.push(clone);
+    }
+
+    var startTime = performance.now();
+    var stepDuration = cfg.duration / cfg.stepCount;
+    var lastStep = -1;
+
+    function tick(now) {
+      var elapsed = now - startTime;
+      var progress = elapsed / cfg.duration;
+
+      if (progress >= 1) {
+        for (var s = 0; s < slices.length; s++) {
+          if (slices[s].parentNode === el) el.removeChild(slices[s]);
+        }
+        el.style.position = originalPosition;
+        if (onComplete) onComplete();
+        return;
+      }
+
+      var step = Math.floor(elapsed / stepDuration);
+      if (step !== lastStep) {
+        lastStep = step;
+        var inGlitchPhase = progress < cfg.glitchEnd;
+        for (var i = 0; i < slices.length; i++) {
+          if (!inGlitchPhase || Math.random() < 0.18) {
+            // Hide this slice for this step — gives the stuttery feel
+            slices[i].style.clipPath = 'inset(100%)';
+            slices[i].style.transform = 'translateX(0)';
+          } else {
+            var top = Math.random();
+            var height = cfg.minHeight + Math.random() * (cfg.maxHeight - cfg.minHeight);
+            var offsetX = (Math.random() - 0.5) * 2 * cfg.velocity;
+            var insetTop = (top * 100).toFixed(2);
+            var insetBottom = Math.max(0, (1 - top - height) * 100).toFixed(2);
+            slices[i].style.clipPath = 'inset(' + insetTop + '% 0 ' + insetBottom + '% 0)';
+            slices[i].style.transform = 'translateX(' + offsetX.toFixed(2) + 'px)';
+          }
+        }
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }
+
   function scan() {
     applySelectorOptIns();
-    var targets = document.querySelectorAll('[data-scramble]:not([data-scramble-bound])');
-    for (var i = 0; i < targets.length; i++) {
-      bindScramble(targets[i]);
+
+    // Decode/scramble targets
+    var scrambleTargets = document.querySelectorAll(
+      '[data-scramble]:not([data-scramble-bound])'
+    );
+    for (var i = 0; i < scrambleTargets.length; i++) {
+      bindScramble(scrambleTargets[i]);
+    }
+
+    // PowerGlitch buttons — JS slice port. Match anything that's a
+    // theme button or one of our standalone neon buttons carrying
+    // the glitch attribute. Non-button elements still get the
+    // CSS-only chromatic-aberration via the [data-fx-glitch]:hover
+    // keyframes in neon-glitch.css.
+    var glitchTargets = document.querySelectorAll(
+      '.button[data-fx-glitch]:not([data-pg-bound]),' +
+        '.ofx-neon-button[data-fx-glitch]:not([data-pg-bound]),' +
+        '.ofx-neon-button-fill[data-fx-glitch]:not([data-pg-bound])'
+    );
+    for (var g = 0; g < glitchTargets.length; g++) {
+      bindPowerGlitch(glitchTargets[g]);
     }
   }
 
@@ -292,6 +442,7 @@
   /* Expose for debugging / theme editor re-init */
   window.OmniFlexNeon = {
     bindScramble: bindScramble,
+    bindPowerGlitch: bindPowerGlitch,
     scan: scan,
   };
 })();

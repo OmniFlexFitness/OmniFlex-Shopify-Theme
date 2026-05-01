@@ -60,6 +60,7 @@
    ============================================================= */
 .ofx-neon-button,
 .ofx-neon-button-fill {
+  --ofx-neon-fill-rgb: 5, 8, 16;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -72,10 +73,16 @@
   letter-spacing: 0.08em;
   text-decoration: none;
   cursor: pointer;
-  background: rgba(var(--ofx-neon-rgb), 0.08);
+  background-color: rgba(var(--ofx-neon-fill-rgb), 0.78);
+  background-image: linear-gradient(
+    rgba(var(--ofx-neon-rgb), 0.12),
+    rgba(var(--ofx-neon-rgb), 0.12)
+  );
   border: 2px solid rgb(var(--ofx-neon-rgb));
   color: rgb(var(--ofx-neon-rgb));
-  text-shadow: 0 0 10px rgba(var(--ofx-neon-rgb), 0.7);
+  text-shadow:
+    0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 14px rgba(var(--ofx-neon-rgb), 0.45);
   box-shadow:
     0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
     0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
@@ -102,9 +109,12 @@
   pointer-events: none;
 }
 
-.ofx-neon-button:hover,
-.ofx-neon-button-fill:hover {
-  background: rgba(var(--ofx-neon-rgb), 0.16);
+.ofx-neon-button:hover {
+  background-color: rgba(var(--ofx-neon-fill-rgb), 0.85);
+  background-image: linear-gradient(
+    rgba(var(--ofx-neon-rgb), 0.22),
+    rgba(var(--ofx-neon-rgb), 0.22)
+  );
   box-shadow:
     0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
     0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
@@ -117,11 +127,16 @@
   left: 100%;
 }
 
-/* Filled variant — neon background, dark text */
+/* Filled variant — neon background with white-haloed dark label.
+   Override the dark base + tint set on the shared rule above so the
+   fill reads as a solid neon panel. */
 .ofx-neon-button-fill {
-  background: rgba(var(--ofx-neon-rgb), 0.85);
+  background-color: rgba(var(--ofx-neon-rgb), 0.9);
+  background-image: none;
   color: #050810;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.85),
+    0 0 14px rgba(255, 255, 255, 0.45);
   box-shadow:
     0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
     0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
@@ -129,8 +144,10 @@
 }
 
 .ofx-neon-button-fill:hover {
-  background: rgba(var(--ofx-neon-rgb), 1);
+  background-color: rgba(var(--ofx-neon-rgb), 1);
+  background-image: none;
   color: #050810;
+  transform: translateY(-1px);
   box-shadow:
     0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
     0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
@@ -163,16 +180,30 @@
    ============================================================= */
 
 /* Outline neon — uses scheme's secondary-button-text as the single
-   accent color for border, label, and box glow. */
+   accent color for border, label, and box glow. The fill uses a
+   dark navy base (overridable via --ofx-neon-fill-rgb) layered with
+   a subtle neon tint, so the button reads as a solid darker shape
+   regardless of the section background — not a near-transparent
+   pane that fades into the page. */
 .button.button--neon {
   /* --ofx-neon-rgb: scheme outline color, can be overridden by the
-     color-modifier classes below. */
+     color-modifier classes below.
+     --ofx-neon-fill-rgb: dark fill base. Defaults to OmniTask's
+     deep cyber-blue; merchants can override per-button via inline
+     style if a particular section needs a different backdrop. */
   --ofx-neon-rgb: var(--color-secondary-button-text);
+  --ofx-neon-fill-rgb: 5, 8, 16;
   --ofx-glitch-color-1: var(--ofx-neon-rgb);
   --ofx-glitch-color-2: var(--ofx-neon-rgb);
   position: relative;
   border: 2px solid rgb(var(--ofx-neon-rgb)) !important;
-  background-color: rgba(var(--ofx-neon-rgb), 0.08) !important;
+  /* Layered backgrounds — Liquid CSS engine paints first declared on
+     top, so the neon tint sits over the dark base. */
+  background-color: rgba(var(--ofx-neon-fill-rgb), 0.78) !important;
+  background-image: linear-gradient(
+    rgba(var(--ofx-neon-rgb), 0.12),
+    rgba(var(--ofx-neon-rgb), 0.12)
+  ) !important;
   color: rgb(var(--ofx-neon-rgb)) !important;
   text-shadow:
     0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
@@ -209,7 +240,11 @@
 }
 
 .button.button--neon:not([disabled]):hover {
-  background-color: rgba(var(--ofx-neon-rgb), 0.16) !important;
+  background-color: rgba(var(--ofx-neon-fill-rgb), 0.85) !important;
+  background-image: linear-gradient(
+    rgba(var(--ofx-neon-rgb), 0.22),
+    rgba(var(--ofx-neon-rgb), 0.22)
+  ) !important;
   box-shadow:
     0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
     0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
@@ -612,20 +647,19 @@
   animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
 }
 
-/* For buttons specifically, the box-level keyframes (drop-shadow on
-   the whole element) read more like PowerGlitch's slice effect than
-   the text-only chromatic-aberration. Override [data-fx-glitch] on
-   buttons so a single attribute gives the right look automatically. */
-.button[data-fx-glitch]:hover,
-.ofx-neon-button[data-fx-glitch]:hover,
-.ofx-neon-button-fill[data-fx-glitch]:hover {
-  animation: ofx-fx-glitch-box-hover 0.45s steps(12, end);
-}
-
-.button[data-fx-glitch]:active,
-.ofx-neon-button[data-fx-glitch]:active,
-.ofx-neon-button-fill[data-fx-glitch]:active {
-  animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
+/* Buttons get the JS PowerGlitch slice port (see neon-glitch.js).
+   Suppress the CSS text-shadow keyframes on buttons so the two don't
+   double-fire. The bound JS sentinel data-pg-bound is set as soon as
+   neon-glitch.js scans the element, so this rule kicks in once the
+   runtime is in place. Non-button elements still use the keyframe
+   chromatic-aberration above. */
+.button[data-fx-glitch][data-pg-bound]:hover,
+.ofx-neon-button[data-fx-glitch][data-pg-bound]:hover,
+.ofx-neon-button-fill[data-fx-glitch][data-pg-bound]:hover,
+.button[data-fx-glitch][data-pg-bound]:active,
+.ofx-neon-button[data-fx-glitch][data-pg-bound]:active,
+.ofx-neon-button-fill[data-fx-glitch][data-pg-bound]:active {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
