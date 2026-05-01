@@ -249,15 +249,59 @@
           "shadow": "#000000"
         }
       },
-      "scheme-omnitask": {
+      "scheme-omnitask-cyan": {
         "settings": {
           "background": "#0a0f1e",
           "background_gradient": "linear-gradient(180deg, rgba(5, 8, 16, 0.92) 0%, rgba(10, 20, 60, 0.75) 50%, rgba(15, 30, 80, 0.65) 100%)",
           "text": "#f0f6ff",
           "button": "#00d2ff",
           "button_label": "#050810",
-          "secondary_button_label": "#e040fb",
+          "secondary_button_label": "#00d2ff",
           "shadow": "#00d2ff"
+        }
+      },
+      "scheme-omnitask-purple": {
+        "settings": {
+          "background": "#0a0f1e",
+          "background_gradient": "linear-gradient(180deg, rgba(5, 8, 16, 0.92) 0%, rgba(20, 8, 50, 0.75) 50%, rgba(30, 12, 70, 0.65) 100%)",
+          "text": "#f0f6ff",
+          "button": "#e040fb",
+          "button_label": "#050810",
+          "secondary_button_label": "#e040fb",
+          "shadow": "#e040fb"
+        }
+      },
+      "scheme-omnitask-magenta": {
+        "settings": {
+          "background": "#0a0f1e",
+          "background_gradient": "linear-gradient(180deg, rgba(5, 8, 16, 0.92) 0%, rgba(40, 5, 50, 0.75) 50%, rgba(60, 8, 70, 0.65) 100%)",
+          "text": "#f0f6ff",
+          "button": "#d500f9",
+          "button_label": "#050810",
+          "secondary_button_label": "#d500f9",
+          "shadow": "#d500f9"
+        }
+      },
+      "scheme-omnitask-pink": {
+        "settings": {
+          "background": "#100612",
+          "background_gradient": "linear-gradient(180deg, rgba(15, 5, 20, 0.92) 0%, rgba(50, 6, 30, 0.75) 50%, rgba(70, 10, 40, 0.65) 100%)",
+          "text": "#f0f6ff",
+          "button": "#ff1493",
+          "button_label": "#050810",
+          "secondary_button_label": "#ff1493",
+          "shadow": "#ff1493"
+        }
+      },
+      "scheme-omnitask-green": {
+        "settings": {
+          "background": "#06110b",
+          "background_gradient": "linear-gradient(180deg, rgba(5, 16, 10, 0.92) 0%, rgba(8, 35, 20, 0.75) 50%, rgba(12, 50, 28, 0.65) 100%)",
+          "text": "#f0f6ff",
+          "button": "#8ce696",
+          "button_label": "#050810",
+          "secondary_button_label": "#8ce696",
+          "shadow": "#8ce696"
         }
       }
     }

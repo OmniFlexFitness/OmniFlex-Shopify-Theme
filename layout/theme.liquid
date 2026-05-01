@@ -406,12 +406,15 @@
         {%- endif -%}
 
         {%- if settings.neon_global_glitch -%}
-          /* Hover/active chromatic-aberration glitch on all theme buttons. */
+          /* PowerGlitch-style slice on every theme button. The box
+             keyframes use drop-shadow filters so the whole rectangle
+             slices into chromatic-aberration ghosts (rather than just
+             the text). One run per hover — does not loop. */
           .button:not([disabled]):hover {
-            animation: ofx-fx-glitch-hover 0.45s steps(12, end);
+            animation: ofx-fx-glitch-box-hover 0.45s steps(12, end);
           }
           .button:not([disabled]):active {
-            animation: ofx-fx-glitch-click 0.32s steps(14, end);
+            animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
           }
           @media (prefers-reduced-motion: reduce) {
             .button:not([disabled]):hover,
