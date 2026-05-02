@@ -62,10 +62,10 @@
       ],
       "name": "Video banner",
       "settings": {
-        "video": "shopify://files/videos/Site Video Banner.mp4",
+        "video": "shopify://files/videos/Website Video Banner (Unfiltered).mp4",
         "video_url": "",
         "enable_video_looping": true,
-        "image_overlay_opacity": 10,
+        "image_overlay_opacity": 0,
         "video_height": "large",
         "show_play_pause": false,
         "pause_offscreen": false,
