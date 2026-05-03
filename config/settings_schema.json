@@ -1516,6 +1516,10 @@
     "name": "Neon & glitch effects",
     "settings": [
       {
+        "type": "paragraph",
+        "content": "Every parameter below is a default that flows through the whole storefront. Glitch and decode colors automatically match the active section's color scheme, so picking one of the scheme-omnitask-cyan / -purple / -magenta / -pink / -green schemes is usually enough to get a tuned look on its own. Sections expose 'Apply glitch / decode to all buttons' toggles to switch the effect on without re-configuring each block."
+      },
+      {
         "type": "header",
         "content": "Global toggles"
       },
@@ -1594,13 +1598,13 @@
       },
       {
         "type": "paragraph",
-        "content": "Choose the default glitch effect that fires on button hover. Per-button overrides on the section blocks beat these defaults."
+        "content": "Defaults for every element with a glitch effect. Glitch slices and chromatic ghosts automatically match the active Shopify color scheme's primary button color, so picking a scheme is usually all the configuration a section needs."
       },
       {
         "type": "select",
-        "id": "neon_glitch_type",
-        "label": "Glitch type",
-        "info": "Slice = OmniTask's PowerGlitch port (DOM clones cut into bands). Chromatic = CSS keyframes that ghost the element into RGB shadows. Shake / Flicker / RGB split are simpler standalone effects.",
+        "id": "neon_glitch_type_button",
+        "label": "Glitch type — buttons",
+        "info": "Default effect on .button / neon button hover. Slice is OmniTask's PowerGlitch port (DOM clones cut into bands).",
         "options": [
           { "value": "slice", "label": "Slice (PowerGlitch)" },
           { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
@@ -1612,6 +1616,36 @@
         "default": "slice"
       },
       {
+        "type": "select",
+        "id": "neon_glitch_type_heading",
+        "label": "Glitch type — headings",
+        "info": "Default for h1 / h2 / h3 with [data-fx-glitch].",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "chromatic-text"
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_type_box",
+        "label": "Glitch type — cards & other elements",
+        "info": "Catch-all default for non-button, non-heading targets (cards, icons, etc.). Box variants use drop-shadow filters instead of text-shadow so the chromatic ghosts wrap the whole rectangle.",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "chromatic-box"
+      },
+      {
         "type": "range",
         "id": "neon_glitch_duration",
         "label": "Duration (ms)",
@@ -1621,6 +1655,16 @@
         "step": 50,
         "unit": "ms",
         "default": 400
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_step_count",
+        "label": "Step granularity (slice type only)",
+        "info": "How many discrete random slice configurations the animation cycles through. Higher = grainier / more digital.",
+        "min": 4,
+        "max": 24,
+        "step": 1,
+        "default": 12
       },
       {
         "type": "paragraph",
@@ -1657,10 +1701,10 @@
       {
         "type": "select",
         "id": "neon_glitch_color",
-        "label": "Slice color source",
-        "info": "How slices are tinted. 'Match button' is a clean clone (default). 'Chromatic aberration' splits slices into RGB ghosts. The named colors apply a hue-rotation toward that color.",
+        "label": "Glitch color source",
+        "info": "Default tint for glitch slices and chromatic ghosts. 'Match scheme primary button' is the recommended default — slices reuse the active section's primary button color, so each scheme automatically themes its own glitch. The named colors force a specific neon hue regardless of scheme.",
         "options": [
-          { "value": "match", "label": "Match button color" },
+          { "value": "match", "label": "Match scheme primary button (recommended)" },
           { "value": "chromatic", "label": "Chromatic aberration (RGB split)" },
           { "value": "cyan", "label": "Cyan" },
           { "value": "purple", "label": "Purple" },
@@ -1677,7 +1721,7 @@
       },
       {
         "type": "paragraph",
-        "content": "Tunes the character-scramble decode effect. Per-element data-scramble-* attributes beat these defaults."
+        "content": "Defaults for the character-scramble decode. The 'Rotate' color mode automatically picks from the active scheme's neon palette so each section's decode glyphs match its theme."
       },
       {
         "type": "range",
@@ -1694,8 +1738,9 @@
         "type": "select",
         "id": "neon_decode_color",
         "label": "Glyph color source",
+        "info": "Rotate uses the active section's scheme palette automatically. Match copies the element's own rendered color (so decoded glyphs stay the button label color).",
         "options": [
-          { "value": "rotate", "label": "Rotate (cyan / pink / purple / magenta)" },
+          { "value": "rotate", "label": "Rotate scheme palette (recommended)" },
           { "value": "match", "label": "Match the element's own color" },
           { "value": "cyan", "label": "Cyan" },
           { "value": "purple", "label": "Purple" },

@@ -432,9 +432,9 @@
     //   1. Per-element data-fx-glitch-type
     //   2. Inherited from a parent (section wrapper etc.) carrying
     //      data-fx-glitch-type
-    //   3. Global config from theme settings
-    //   4. Default based on element kind (buttons -> slice,
-    //      otherwise chromatic-text)
+    //   3. Per-component-type default from theme settings
+    //      (typeButton / typeHeading / typeBox)
+    //   4. Hardcoded per-component-type fallback
     var type = ds.fxGlitchType;
     if (!type) {
       var ancestor = el.parentElement
@@ -442,13 +442,22 @@
         : null;
       if (ancestor) type = ancestor.getAttribute('data-fx-glitch-type');
     }
-    if (!type) type = globalCfg.type;
     if (!type) {
       var isButton =
         el.classList.contains('button') ||
         el.classList.contains('ofx-neon-button') ||
-        el.classList.contains('ofx-neon-button-fill');
-      type = isButton ? 'slice' : 'chromatic-text';
+        el.classList.contains('ofx-neon-button-fill') ||
+        el.tagName === 'BUTTON';
+      var tag = el.tagName;
+      var isHeading = tag === 'H1' || tag === 'H2' || tag === 'H3' ||
+                      tag === 'H4' || tag === 'H5' || tag === 'H6';
+      if (isButton) {
+        type = globalCfg.typeButton || 'slice';
+      } else if (isHeading) {
+        type = globalCfg.typeHeading || 'chromatic-text';
+      } else {
+        type = globalCfg.typeBox || 'chromatic-box';
+      }
     }
 
     return {
@@ -456,12 +465,12 @@
       sliceCount: pickInt('fxGlitchSlices', 'sliceCount', 3),
       duration:   pickInt('fxGlitchDuration', 'duration', 400),
       velocity:   pickInt('fxGlitchVelocity', 'velocity', 18),
+      stepCount:  pickInt('fxGlitchSteps', 'stepCount', 12),
       minHeight:  0.05,
       maxHeight:  0.15,
       shake:      pickBool('fxGlitchShake', 'shake', false),
       color:      ds.fxGlitchColor || globalCfg.color || 'match',
       glitchEnd:  0.6,
-      stepCount:  12,
     };
   }
 

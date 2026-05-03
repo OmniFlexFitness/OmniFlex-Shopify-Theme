@@ -41,10 +41,13 @@
         decodeHeadings: {{ settings.neon_decode_headings | default: false | json }},
         decodeButtons: {{ settings.neon_decode_buttons | default: false | json }},
         glitch: {
-          type: {{ settings.neon_glitch_type | default: 'slice' | json }},
+          typeButton: {{ settings.neon_glitch_type_button | default: 'slice' | json }},
+          typeHeading: {{ settings.neon_glitch_type_heading | default: 'chromatic-text' | json }},
+          typeBox: {{ settings.neon_glitch_type_box | default: 'chromatic-box' | json }},
           duration: {{ settings.neon_glitch_duration | default: 400 | json }},
           sliceCount: {{ settings.neon_glitch_slice_count | default: 3 | json }},
           velocity: {{ settings.neon_glitch_velocity | default: 18 | json }},
+          stepCount: {{ settings.neon_glitch_step_count | default: 12 | json }},
           shake: {{ settings.neon_glitch_shake | default: false | json }},
           color: {{ settings.neon_glitch_color | default: 'match' | json }}
         },
