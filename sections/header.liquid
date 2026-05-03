@@ -115,7 +115,9 @@
     .header-wrapper.header-wrapper--transparent {
       background-color: transparent;
       background-image: none;
-      transition: background-color 0.3s ease, background-image 0.3s ease, border-bottom-color 0.3s ease;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: background-color 0.35s ease-out, backdrop-filter 0.35s ease-out, -webkit-backdrop-filter 0.35s ease-out, border-bottom-color 0.35s ease-out;
     }
 
     .header-wrapper.header-wrapper--transparent .header__heading-link,
@@ -138,27 +140,22 @@
       border-bottom-color: transparent;
     }
 
+    /* Glass morphism: semi-transparent background appears when scrolling up after scrolling past header */
     .scrolled-past-header .header-wrapper.header-wrapper--transparent {
-      background-color: rgb(var(--color-background));
-    }
-
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__heading-link,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__menu-item,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .list-menu__item,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__icon,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .localization-form__select,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent summary {
-      color: rgba(var(--color-foreground), 0.75);
-    }
-
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent .header__icon svg path,
-    .scrolled-past-header .header-wrapper.header-wrapper--transparent summary svg path {
-      fill: rgb(var(--color-foreground));
-      stroke: rgb(var(--color-foreground));
+      background-color: rgba(var(--color-background), 0.72);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
     }
 
     .scrolled-past-header .header-wrapper.header-wrapper--transparent.header-wrapper--border-bottom {
       border-bottom-color: rgba(var(--color-foreground), 0.08);
+    }
+
+    /* Fallback for browsers without backdrop-filter support (e.g. older Firefox) */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .scrolled-past-header .header-wrapper.header-wrapper--transparent {
+        background-color: rgba(var(--color-background), 0.92);
+      }
     }
   {%- endif -%}
 {%- endstyle -%}
