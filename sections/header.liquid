@@ -102,16 +102,21 @@
   {%- if section.settings.enable_transparent_header -%}
     {%- assign transparent_opacity = section.settings.transparent_header_opacity | divided_by: 100.0 -%}
 
-    .section-header {
+    .shopify-section-group-header-group {
       position: absolute;
+      top: 0;
       left: 0;
       right: 0;
       z-index: 1001;
+    }
+
+    .section-header {
       margin-bottom: 0;
     }
 
     .section-header.shopify-section-header-sticky.scrolled-past-header {
       position: sticky;
+      top: 0;
     }
 
     .header-wrapper.header-wrapper--transparent {
