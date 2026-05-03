@@ -34,6 +34,38 @@
     <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+    <script>
+      window.OmniFlexNeonConfig = {
+        glitchSelector: {{ settings.neon_glitch_selector | default: '' | json }},
+        decodeSelector: {{ settings.neon_decode_selector | default: '' | json }},
+        decodeHeadings: {{ settings.neon_decode_headings | default: false | json }},
+        decodeButtons: {{ settings.neon_decode_buttons | default: false | json }},
+        glitch: {
+          typeButton: {{ settings.neon_glitch_type_button | default: 'slice' | json }},
+          typeHeading: {{ settings.neon_glitch_type_heading | default: 'chromatic-text' | json }},
+          typeBox: {{ settings.neon_glitch_type_box | default: 'chromatic-box' | json }},
+          duration: {{ settings.neon_glitch_duration | default: 400 | json }},
+          iterations: {{ settings.neon_glitch_iterations | default: 1 | json }},
+          trigger: {{ settings.neon_glitch_trigger | default: 'hover' | json }},
+          sliceCount: {{ settings.neon_glitch_slice_count | default: 3 | json }},
+          velocity: {{ settings.neon_glitch_velocity | default: 18 | json }},
+          stepCount: {{ settings.neon_glitch_step_count | default: 12 | json }},
+          sliceMin: {{ settings.neon_glitch_slice_min | default: 5 | json }},
+          sliceMax: {{ settings.neon_glitch_slice_max | default: 15 | json }},
+          glitchStart: {{ settings.neon_glitch_start | default: 0 | json }},
+          glitchEnd: {{ settings.neon_glitch_end | default: 60 | json }},
+          shake: {{ settings.neon_glitch_shake | default: false | json }},
+          color: {{ settings.neon_glitch_color | default: 'match' | json }}
+        },
+        decode: {
+          duration: {{ settings.neon_decode_duration | default: 400 | json }},
+          color: {{ settings.neon_decode_color | default: 'rotate' | json }},
+          charset: {{ settings.neon_decode_charset | default: 'mixed' | json }},
+          replay: {{ settings.neon_decode_replay | default: false | json }}
+        }
+      };
+    </script>
+    <script src="{{ 'neon-glitch.js' | asset_url }}" defer="defer"></script>
 
     {%- if settings.animations_reveal_on_scroll -%}
       <script src="{{ 'animations.js' | asset_url }}" defer="defer"></script>
@@ -256,6 +288,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'neon-glitch.css' | asset_url | stylesheet_tag }}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
@@ -301,6 +334,162 @@
     </script>
 
     {%- comment -%}
+      OmniFlex: Neon palette + global glitch/decode toggles.
+      Per-color overrides feed into assets/neon-glitch.css via CSS variables.
+      Added by Claude Code.
+    {%- endcomment -%}
+    {%- liquid
+      assign neon_glow = settings.neon_glow_intensity | default: 100 | divided_by: 100.0
+      assign neon_text_glow = settings.neon_text_glow_intensity | default: 100 | divided_by: 100.0
+      assign neon_pulse_speed = settings.neon_pulse_speed | default: 2000
+      assign neon_flicker_speed = settings.neon_flicker_speed | default: 3000
+    -%}
+    <style>
+      :root {
+        {%- if settings.neon_color_cyan != blank -%}
+          --ofx-cyan: {{ settings.neon_color_cyan }};
+          --ofx-cyan-rgb: {{ settings.neon_color_cyan.red }}, {{ settings.neon_color_cyan.green }}, {{ settings.neon_color_cyan.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_purple != blank -%}
+          --ofx-purple: {{ settings.neon_color_purple }};
+          --ofx-purple-rgb: {{ settings.neon_color_purple.red }}, {{ settings.neon_color_purple.green }}, {{ settings.neon_color_purple.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_magenta != blank -%}
+          --ofx-magenta: {{ settings.neon_color_magenta }};
+          --ofx-magenta-rgb: {{ settings.neon_color_magenta.red }}, {{ settings.neon_color_magenta.green }}, {{ settings.neon_color_magenta.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_pink != blank -%}
+          --ofx-pink: {{ settings.neon_color_pink }};
+          --ofx-pink-rgb: {{ settings.neon_color_pink.red }}, {{ settings.neon_color_pink.green }}, {{ settings.neon_color_pink.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_green != blank -%}
+          --ofx-green: {{ settings.neon_color_green }};
+          --ofx-green-rgb: {{ settings.neon_color_green.red }}, {{ settings.neon_color_green.green }}, {{ settings.neon_color_green.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_blue != blank -%}
+          --ofx-blue: {{ settings.neon_color_blue }};
+          --ofx-blue-rgb: {{ settings.neon_color_blue.red }}, {{ settings.neon_color_blue.green }}, {{ settings.neon_color_blue.blue }};
+        {%- endif -%}
+        {%- if settings.neon_default_color != blank -%}
+          --ofx-neon-rgb: var(--ofx-{{ settings.neon_default_color }}-rgb);
+          --ofx-neon: rgb(var(--ofx-neon-rgb));
+        {%- endif -%}
+        --ofx-glow-intensity: {{ neon_glow }};
+        --ofx-text-glow-intensity: {{ neon_text_glow }};
+        --ofx-pulse-duration: {{ neon_pulse_speed }}ms;
+        --ofx-flicker-duration: {{ neon_flicker_speed }}ms;
+      }
+    </style>
+
+    {%- if settings.neon_global_buttons or settings.neon_global_glitch -%}
+      <style>
+        {%- if settings.neon_global_buttons -%}
+          /* Apply neon glow to every theme button while keeping Dawn's
+             box model. !important is required throughout because Dawn's
+             .animate--hover-3d-lift / .animate--hover-vertical-lift
+             rules carry higher selector specificity (0,4,1) than ours
+             and would otherwise wipe the glow + transform on hover.
+             Dawn's :focus-visible accessibility ring also overrides
+             box-shadow, so the focus rules below reassert the glow and
+             use outline (which Dawn zeroes) for the a11y ring. */
+          .button--primary,
+          .shopify-payment-button__button--unbranded {
+            position: relative;
+            border: 2px solid rgb(var(--ofx-neon-rgb)) !important;
+            background-color: rgba(var(--ofx-neon-rgb), 0.85) !important;
+            color: #050810 !important;
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+            box-shadow:
+              0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
+              0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
+              inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+            transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+            overflow: hidden;
+          }
+          .button--primary::before,
+          .shopify-payment-button__button--unbranded::before,
+          .button--secondary::before {
+            box-shadow: none !important;
+          }
+          .button--primary::after,
+          .shopify-payment-button__button--unbranded::after {
+            box-shadow: none !important;
+          }
+          .button--primary:not([disabled]):hover,
+          .shopify-payment-button__button--unbranded:not([disabled]):hover {
+            background-color: rgba(var(--ofx-neon-rgb), 1) !important;
+            box-shadow:
+              0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
+              0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
+              inset 0 0 12px rgba(255, 255, 255, 0.25) !important;
+            transform: translateY(-1px) !important;
+          }
+          .button--primary:focus-visible,
+          .button--primary:focus,
+          .shopify-payment-button__button--unbranded:focus-visible,
+          .shopify-payment-button__button--unbranded:focus {
+            outline: 2px solid rgb(var(--ofx-neon-rgb));
+            outline-offset: 3px;
+            box-shadow:
+              0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
+              0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
+              inset 0 0 12px rgba(255, 255, 255, 0.25) !important;
+          }
+          .button--secondary {
+            position: relative;
+            border: 2px solid rgb(var(--ofx-neon-rgb)) !important;
+            background-color: rgba(var(--ofx-neon-rgb), 0.08) !important;
+            color: rgb(var(--ofx-neon-rgb)) !important;
+            text-shadow: 0 0 10px rgba(var(--ofx-neon-rgb), 0.7);
+            box-shadow:
+              0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
+              0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
+              inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08) !important;
+            transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+            overflow: hidden;
+          }
+          .button--secondary::after { box-shadow: none !important; }
+          .button--secondary:not([disabled]):hover {
+            background-color: rgba(var(--ofx-neon-rgb), 0.16) !important;
+            box-shadow:
+              0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
+              0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
+              inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18) !important;
+            transform: translateY(-1px) !important;
+          }
+          .button--secondary:focus-visible,
+          .button--secondary:focus {
+            outline: 2px solid rgb(var(--ofx-neon-rgb));
+            outline-offset: 3px;
+            box-shadow:
+              0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
+              0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
+              inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18) !important;
+          }
+        {%- endif -%}
+
+        {%- if settings.neon_global_glitch -%}
+          /* PowerGlitch-style slice on every theme button. The box
+             keyframes use drop-shadow filters so the whole rectangle
+             slices into chromatic-aberration ghosts (rather than just
+             the text). One run per hover — does not loop. */
+          .button:not([disabled]):hover {
+            animation: ofx-fx-glitch-box-hover 0.45s steps(12, end);
+          }
+          .button:not([disabled]):active {
+            animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .button:not([disabled]):hover,
+            .button:not([disabled]):active {
+              animation: none !important;
+            }
+          }
+        {%- endif -%}
+      </style>
+    {%- endif -%}
+
+    {%- comment -%}
       OmniFlex: Global background image controlled via Theme Settings → Background.
       Added by Claude Code.
     {%- endcomment -%}
@@ -331,7 +520,7 @@
     {%- endif -%}
   </head>
 
-  <body class="gradient template-{{ request.page_type | handle }}{% if request.page_type == 'page' %}-{{ page.handle }}{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient template-{{ request.page_type | handle }}{% if request.page_type == 'page' %}-{{ page.handle }}{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}{% if settings.neon_global_buttons or settings.neon_global_glitch or settings.neon_default_color != blank %} neon-active{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

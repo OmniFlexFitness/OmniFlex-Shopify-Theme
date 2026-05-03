@@ -1,0 +1,511 @@
+{{ 'neon-glitch.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .neon-button-group__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.button_gap }}px;
+    justify-content: {{ section.settings.alignment }};
+    align-items: center;
+  }
+
+  .neon-button-group__block {
+    display: inline-flex;
+  }
+
+  .neon-button-group__heading {
+    text-align: {{ section.settings.text_alignment }};
+    margin: 0 0 2.4rem;
+  }
+{%- endstyle -%}
+
+<div
+  class="neon-button-group color-{{ section.settings.color_scheme }} gradient"
+  {% if section.settings.section_apply_glitch %}data-fx-glitch-section="true"{% endif %}
+  {% if section.settings.section_apply_decode %}data-scramble-section="true"{% endif %}
+  {% if section.settings.section_glitch_type != blank %}data-fx-glitch-type="{{ section.settings.section_glitch_type }}"{% endif %}
+  {% if section.settings.section_decode_color != blank %}data-scramble-color="{{ section.settings.section_decode_color }}"{% endif %}
+  {% if section.settings.section_decode_replay != blank %}data-scramble-replay="{{ section.settings.section_decode_replay }}"{% endif %}
+>
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2
+        class="neon-button-group__heading {{ section.settings.heading_size }}{% if section.settings.heading_neon %} text-neon{% endif %}{% if section.settings.heading_flicker %} text-neon-flicker{% endif %}"
+        {% if section.settings.heading_decode %}data-scramble{% endif %}
+        {% if section.settings.heading_neon_color != blank %}style="--ofx-neon-rgb: var(--ofx-{{ section.settings.heading_neon_color }}-rgb);"{% endif %}
+      >
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    <div class="neon-button-group__inner">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'neon_button' -%}
+            <div class="neon-button-group__block" {{ block.shopify_attributes }}>
+              {% render 'neon-button',
+                label: block.settings.button_label,
+                link: block.settings.button_link,
+                color: block.settings.color,
+                style: block.settings.style,
+                base: block.settings.base,
+                glitch: block.settings.glitch,
+                decode: block.settings.decode,
+                glitch_type: block.settings.glitch_type,
+                glitch_duration: block.settings.glitch_duration,
+                glitch_slices: block.settings.glitch_slices,
+                glitch_velocity: block.settings.glitch_velocity,
+                glitch_shake: block.settings.glitch_shake,
+                glitch_color: block.settings.glitch_color,
+                decode_duration: block.settings.decode_duration,
+                decode_color: block.settings.decode_color,
+                decode_charset: block.settings.decode_charset,
+                decode_replay: block.settings.decode_replay
+              %}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Neon button group",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Power up"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "H2" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h0", "label": "H0" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_neon",
+      "label": "Apply neon glow to heading",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_flicker",
+      "label": "Flicker the neon glow",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_decode",
+      "label": "Decode/scramble heading on first hover",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_neon_color",
+      "label": "Heading neon color",
+      "options": [
+        { "value": "cyan", "label": "Cyan" },
+        { "value": "purple", "label": "Purple" },
+        { "value": "magenta", "label": "Magenta" },
+        { "value": "pink", "label": "Pink" },
+        { "value": "green", "label": "Green" },
+        { "value": "blue", "label": "Blue" }
+      ],
+      "default": "cyan"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Button alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "label": "Gap between buttons",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "info": "Pick scheme-omnitask-cyan / -purple / -magenta / -pink / -green for tuned glitch + decode colors out of the box.",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Activate effects for this section"
+    },
+    {
+      "type": "paragraph",
+      "content": "These switches apply the effects globally configured in Theme settings → Neon & glitch effects to every button / decode target in this section, so you don't have to flip the per-block checkbox on each one. Per-block toggles still work for surgical overrides."
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_glitch",
+      "label": "Apply glitch to all neon buttons in this section",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_decode",
+      "label": "Apply decode to all button labels in this section",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "section_glitch_type",
+      "label": "Glitch type override (optional)",
+      "info": "Leave on Inherit to use the global Glitch type from theme settings.",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "slice", "label": "Slice (PowerGlitch)" },
+        { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+        { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+        { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+        { "value": "shake", "label": "Shake" },
+        { "value": "flicker", "label": "Flicker" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "section_decode_color",
+      "label": "Decode glyph color override (optional)",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "rotate", "label": "Rotate (uses scheme palette)" },
+        { "value": "match", "label": "Match the element's own color" },
+        { "value": "cyan", "label": "Cyan" },
+        { "value": "purple", "label": "Purple" },
+        { "value": "magenta", "label": "Magenta" },
+        { "value": "pink", "label": "Pink" },
+        { "value": "green", "label": "Green" },
+        { "value": "blue", "label": "Blue" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "section_decode_replay",
+      "label": "Replay decode on hover (optional)",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "once", "label": "Once per page load" },
+        { "value": "always", "label": "Every hover" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "neon_button",
+      "name": "Neon button",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "color",
+          "label": "Neon color",
+          "options": [
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": "cyan"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            { "value": "outline", "label": "Outline (transparent fill)" },
+            { "value": "fill", "label": "Filled (solid neon)" }
+          ],
+          "default": "outline"
+        },
+        {
+          "type": "select",
+          "id": "base",
+          "label": "Sizing",
+          "info": "Theme buttons follow Dawn's sizing; standalone matches OmniTask's exact pill.",
+          "options": [
+            { "value": "dawn", "label": "Theme buttons (.button)" },
+            { "value": "standalone", "label": "Standalone (.ofx-neon-button)" }
+          ],
+          "default": "dawn"
+        },
+        {
+          "type": "checkbox",
+          "id": "glitch",
+          "label": "Glitch on hover/click",
+          "info": "Chromatic-aberration animation on hover and an extra burst on click.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "decode",
+          "label": "Decode label on first hover",
+          "info": "Characters scramble through random glyphs before settling on the label.",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Glitch overrides (optional)"
+        },
+        {
+          "type": "paragraph",
+          "content": "Leave at zero / Inherit to use the global Glitch animation settings."
+        },
+        {
+          "type": "select",
+          "id": "glitch_type",
+          "label": "Glitch type",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "slice", "label": "Slice (PowerGlitch)" },
+            { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+            { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+            { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+            { "value": "shake", "label": "Shake" },
+            { "value": "flicker", "label": "Flicker" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "range",
+          "id": "glitch_duration",
+          "label": "Duration",
+          "min": 0,
+          "max": 2000,
+          "step": 50,
+          "unit": "ms",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "glitch_slices",
+          "label": "Slice count",
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "glitch_velocity",
+          "label": "Slice displacement",
+          "min": 0,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "select",
+          "id": "glitch_shake",
+          "label": "Shake whole button",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "true", "label": "On" },
+            { "value": "false", "label": "Off" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "glitch_color",
+          "label": "Slice color source",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "match", "label": "Match button color" },
+            { "value": "chromatic", "label": "Chromatic aberration" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "header",
+          "content": "Decode overrides (optional)"
+        },
+        {
+          "type": "range",
+          "id": "decode_duration",
+          "label": "Duration",
+          "min": 0,
+          "max": 2000,
+          "step": 50,
+          "unit": "ms",
+          "default": 0
+        },
+        {
+          "type": "select",
+          "id": "decode_color",
+          "label": "Glyph color source",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "rotate", "label": "Rotate (cyan/pink/purple/magenta)" },
+            { "value": "match", "label": "Match button label color" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "decode_charset",
+          "label": "Glyph set",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "mixed", "label": "Mixed" },
+            { "value": "blocks", "label": "Blocks" },
+            { "value": "symbols", "label": "Symbols" },
+            { "value": "binary", "label": "Binary" },
+            { "value": "hex", "label": "Hexadecimal" },
+            { "value": "katakana", "label": "Katakana" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "decode_replay",
+          "label": "Replay decode on hover",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "once", "label": "Once per page load" },
+            { "value": "always", "label": "Every hover" }
+          ],
+          "default": ""
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Neon button group",
+      "blocks": [
+        {
+          "type": "neon_button",
+          "settings": {
+            "button_label": "Shop now",
+            "color": "cyan",
+            "style": "outline",
+            "glitch": true,
+            "decode": true
+          }
+        },
+        {
+          "type": "neon_button",
+          "settings": {
+            "button_label": "Learn more",
+            "color": "purple",
+            "style": "fill",
+            "glitch": true
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

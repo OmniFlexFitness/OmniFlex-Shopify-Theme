@@ -94,7 +94,12 @@
     </div>
 
     <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-      <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient">
+      <div
+        class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient"
+        {% if section.settings.section_apply_glitch %}data-fx-glitch-section="true"{% endif %}
+        {% if section.settings.section_apply_decode %}data-scramble-section="true"{% endif %}
+        {% if section.settings.section_glitch_type != blank %}data-fx-glitch-type="{{ section.settings.section_glitch_type }}"{% endif %}
+      >
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'heading' -%}
@@ -113,6 +118,10 @@
                 class="banner__buttons{% if block.settings.button_label_1 != blank and block.settings.button_label_2 != blank %} banner__buttons--multiple{% endif %}"
                 {{ block.shopify_attributes }}
               >
+                {%- liquid
+                  assign neon_color_1 = block.settings.neon_color_1 | default: ''
+                  assign neon_color_2 = block.settings.neon_color_2 | default: ''
+                -%}
                 {%- if block.settings.button_label_1 != blank -%}
                   <a
                     {% if block.settings.button_link_1 == blank %}
@@ -120,7 +129,9 @@
                     {% else %}
                       href="{{ block.settings.button_link_1 }}"
                     {% endif %}
-                    class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
+                    class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}{% if block.settings.neon_style_1 == 'outline' %} button--neon{% elsif block.settings.neon_style_1 == 'fill' %} button--neon-fill{% endif %}{% if neon_color_1 != blank %} button--neon--{{ neon_color_1 }}{% endif %}"
+                    {% if block.settings.button_glitch_1 %}data-fx-glitch{% endif %}
+                    {% if block.settings.button_decode_1 %}data-scramble{% endif %}
                   >
                     {{- block.settings.button_label_1 | escape -}}
                   </a>
@@ -132,7 +143,9 @@
                     {% else %}
                       href="{{ block.settings.button_link_2 }}"
                     {% endif %}
-                    class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}"
+                    class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}{% if block.settings.neon_style_2 == 'outline' %} button--neon{% elsif block.settings.neon_style_2 == 'fill' %} button--neon-fill{% endif %}{% if neon_color_2 != blank %} button--neon--{{ neon_color_2 }}{% endif %}"
+                    {% if block.settings.button_glitch_2 %}data-fx-glitch{% endif %}
+                    {% if block.settings.button_decode_2 %}data-scramble{% endif %}
                   >
                     {{- block.settings.button_label_2 | escape -}}
                   </a>
@@ -301,7 +314,44 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Color scheme",
+      "info": "Pick scheme-omnitask-cyan / -purple / -magenta / -pink / -green for tuned glitch + decode colors out of the box.",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Activate effects for this section"
+    },
+    {
+      "type": "paragraph",
+      "content": "Apply the global glitch / decode effects to every button in this section in one click — duration, slice count and other parameters live in Theme settings → Neon & glitch effects."
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_glitch",
+      "label": "Apply glitch to all buttons in this section",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_decode",
+      "label": "Apply decode to all button labels in this section",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "section_glitch_type",
+      "label": "Glitch type override (optional)",
+      "info": "Leave on Inherit to use the global Glitch type from theme settings.",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "slice", "label": "Slice (PowerGlitch)" },
+        { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+        { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+        { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+        { "value": "shake", "label": "Shake" },
+        { "value": "flicker", "label": "Flicker" }
+      ],
+      "default": ""
     },
     {
       "type": "header",
@@ -411,6 +461,46 @@
           "label": "Use outline button style"
         },
         {
+          "type": "select",
+          "id": "neon_style_1",
+          "label": "First button — neon style",
+          "info": "Layers OmniTask neon glow on top of the standard button.",
+          "options": [
+            { "value": "", "label": "None (theme default)" },
+            { "value": "outline", "label": "Neon outline" },
+            { "value": "fill", "label": "Neon fill" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "neon_color_1",
+          "label": "First button — neon color",
+          "info": "Leave on Default to inherit from the section's color scheme.",
+          "options": [
+            { "value": "", "label": "Default (scheme)" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "checkbox",
+          "id": "button_glitch_1",
+          "label": "First button — glitch on hover/click",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "button_decode_1",
+          "label": "First button — decode label on first hover",
+          "default": false
+        },
+        {
           "type": "header",
           "content": "Button 2"
         },
@@ -431,6 +521,46 @@
           "id": "button_style_secondary_2",
           "default": false,
           "label": "Use outline button style"
+        },
+        {
+          "type": "select",
+          "id": "neon_style_2",
+          "label": "Second button — neon style",
+          "info": "Layers OmniTask neon glow on top of the standard button.",
+          "options": [
+            { "value": "", "label": "None (theme default)" },
+            { "value": "outline", "label": "Neon outline" },
+            { "value": "fill", "label": "Neon fill" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "neon_color_2",
+          "label": "Second button — neon color",
+          "info": "Leave on Default to inherit from the section's color scheme.",
+          "options": [
+            { "value": "", "label": "Default (scheme)" },
+            { "value": "cyan", "label": "Cyan" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "magenta", "label": "Magenta" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "green", "label": "Green" },
+            { "value": "blue", "label": "Blue" }
+          ],
+          "default": ""
+        },
+        {
+          "type": "checkbox",
+          "id": "button_glitch_2",
+          "label": "Second button — glitch on hover/click",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "button_decode_2",
+          "label": "Second button — decode label on first hover",
+          "default": false
         }
       ]
     }

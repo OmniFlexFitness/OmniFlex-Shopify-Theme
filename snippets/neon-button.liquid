@@ -1,0 +1,97 @@
+{% comment %}
+  Renders an OmniTask-flavored neon button.
+
+  Accepts:
+    label   {string}  - button text (required)
+    link    {string}  - href; if blank, renders as aria-disabled
+    color   {string}  - cyan | purple | magenta | pink | green | blue (default cyan)
+    style   {string}  - 'outline' | 'fill' (default 'outline')
+    base    {string}  - 'dawn' | 'standalone' (default 'dawn')
+                        'dawn' layers neon classes on Dawn's .button so
+                        sizing matches the rest of the theme; 'standalone'
+                        uses .ofx-neon-button which more closely mimics
+                        OmniTask's exact pill shape.
+    glitch  {boolean} - apply chromatic-aberration glitch on hover/active
+    decode  {boolean} - apply text decode/scramble on first hover
+    classes {string}  - extra classes to append
+
+    Glitch overrides (only meaningful with glitch: true):
+      glitch_type     {string} - slice | chromatic-text | chromatic-box |
+                                 rgb-split | shake | flicker
+      glitch_duration {number} - ms; falls back to global setting
+      glitch_slices   {number} - 1-8 slice count override (slice type only)
+      glitch_velocity {number} - max horizontal slice offset (px) (slice only)
+      glitch_shake    {string} - 'true' | 'false' (slice type only)
+      glitch_color    {string} - match | chromatic | cyan | purple |
+                                 magenta | pink | green | blue
+
+    Decode overrides (only meaningful with decode: true):
+      decode_duration {number} - ms; falls back to global setting
+      decode_color    {string} - rotate | match | cyan | purple |
+                                 magenta | pink | green | blue
+      decode_charset  {string} - mixed | blocks | symbols | binary |
+                                 hex | katakana
+      decode_replay   {string} - 'once' | 'always'
+
+  Usage:
+    {% render 'neon-button',
+        label: 'Shop now', link: '/collections/all',
+        color: 'purple', style: 'outline',
+        glitch: true, glitch_duration: 600, glitch_color: 'chromatic' %}
+{% endcomment %}
+
+{%- liquid
+  assign btn_label = label | default: ''
+  assign btn_link = link | default: ''
+  assign btn_color = color | default: 'cyan'
+  assign btn_style = style | default: 'outline'
+  assign btn_base = base | default: 'dawn'
+  assign extra_classes = classes | default: ''
+
+  assign class_list = ''
+  if btn_base == 'standalone'
+    if btn_style == 'fill'
+      assign class_list = 'ofx-neon-button-fill'
+    else
+      assign class_list = 'ofx-neon-button'
+    endif
+    assign class_list = class_list | append: ' ofx-neon--' | append: btn_color
+  else
+    assign class_list = 'button'
+    if btn_style == 'fill'
+      assign class_list = class_list | append: ' button--neon-fill'
+    else
+      assign class_list = class_list | append: ' button--neon'
+    endif
+    assign class_list = class_list | append: ' button--neon--' | append: btn_color
+  endif
+
+  if extra_classes != blank
+    assign class_list = class_list | append: ' ' | append: extra_classes
+  endif
+-%}
+
+{%- if btn_label != blank -%}
+  <a
+    {% if btn_link == blank %}role="link" aria-disabled="true"{% else %}href="{{ btn_link }}"{% endif %}
+    class="{{ class_list }}"
+    {% if glitch %}
+      data-fx-glitch
+      {% if glitch_type != blank %}data-fx-glitch-type="{{ glitch_type }}"{% endif %}
+      {% if glitch_duration %}data-fx-glitch-duration="{{ glitch_duration }}"{% endif %}
+      {% if glitch_slices %}data-fx-glitch-slices="{{ glitch_slices }}"{% endif %}
+      {% if glitch_velocity %}data-fx-glitch-velocity="{{ glitch_velocity }}"{% endif %}
+      {% if glitch_shake %}data-fx-glitch-shake="{{ glitch_shake }}"{% endif %}
+      {% if glitch_color != blank %}data-fx-glitch-color="{{ glitch_color }}"{% endif %}
+    {% endif %}
+    {% if decode %}
+      data-scramble
+      {% if decode_duration %}data-scramble-duration="{{ decode_duration }}"{% endif %}
+      {% if decode_color != blank %}data-scramble-color="{{ decode_color }}"{% endif %}
+      {% if decode_charset != blank %}data-scramble-charset="{{ decode_charset }}"{% endif %}
+      {% if decode_replay != blank %}data-scramble-replay="{{ decode_replay }}"{% endif %}
+    {% endif %}
+  >
+    {{- btn_label | escape -}}
+  </a>
+{%- endif -%}

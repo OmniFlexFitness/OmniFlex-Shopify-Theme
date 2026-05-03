@@ -1511,5 +1511,429 @@
         "unit": "%"
       }
     ]
+  },
+  {
+    "name": "Neon & glitch effects",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Every parameter below is a default that flows through the whole storefront. Glitch and decode colors automatically match the active section's color scheme, so picking one of the scheme-omnitask-cyan / -purple / -magenta / -pink / -green schemes is usually enough to get a tuned look on its own. Sections expose 'Apply glitch / decode to all buttons' toggles to switch the effect on without re-configuring each block."
+      },
+      {
+        "type": "header",
+        "content": "Global toggles"
+      },
+      {
+        "type": "paragraph",
+        "content": "Brings OmniTask's cyberpunk styling into the storefront. Enable per-effect or apply to every theme button at once."
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_global_buttons",
+        "label": "Apply neon glow to all theme buttons",
+        "info": "Replaces the default fill / outline buttons with the OmniTask neon look (filled for primary, outline for secondary).",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_global_glitch",
+        "label": "Glitch animation on every button hover/click",
+        "info": "Chromatic-aberration flicker on hover, harder burst on click. Skips automatically when the visitor has Reduce Motion on.",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "neon_default_color",
+        "label": "Default neon color",
+        "info": "Sets --ofx-neon-rgb at the document root so any element using neon classes picks up this color by default.",
+        "options": [
+          { "value": "", "label": "Cyan (default)" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": ""
+      },
+      {
+        "type": "header",
+        "content": "Per-element opt-in"
+      },
+      {
+        "type": "paragraph",
+        "content": "Apply effects to specific elements anywhere on the storefront via CSS selectors. JS auto-tags matching elements with the data attributes. Comma-separate multiple selectors."
+      },
+      {
+        "type": "text",
+        "id": "neon_glitch_selector",
+        "label": "Glitch on hover — CSS selectors",
+        "info": "Examples: .shopify-section-template--16-image-banner .button--primary, .product-form__submit, [data-cta='hero']",
+        "default": ""
+      },
+      {
+        "type": "text",
+        "id": "neon_decode_selector",
+        "label": "Decode on first hover — CSS selectors",
+        "info": "Examples: .banner__heading, h1.title, .featured-product__title",
+        "default": ""
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_headings",
+        "label": "Auto-decode H1 / H2 in main content",
+        "info": "Adds the decode/scramble effect to every H1 and H2 inside section blocks (skips header/footer/menus).",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_buttons",
+        "label": "Auto-decode all theme button labels",
+        "info": "Decodes button text on first hover. Skipped automatically when 'Reduce motion' is set in the OS.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Glitch animation"
+      },
+      {
+        "type": "paragraph",
+        "content": "Defaults for every element with a glitch effect. Glitch slices and chromatic ghosts automatically match the active Shopify color scheme's primary button color, so picking a scheme is usually all the configuration a section needs."
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_type_button",
+        "label": "Glitch type — buttons",
+        "info": "Default effect on .button / neon button hover. Slice is OmniTask's PowerGlitch port (DOM clones cut into bands).",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "slice"
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_type_heading",
+        "label": "Glitch type — headings",
+        "info": "Default for h1 / h2 / h3 with [data-fx-glitch].",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "chromatic-text"
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_type_box",
+        "label": "Glitch type — cards & other elements",
+        "info": "Catch-all default for non-button, non-heading targets (cards, icons, etc.). Box variants use drop-shadow filters instead of text-shadow so the chromatic ghosts wrap the whole rectangle.",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "chromatic-box"
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_duration",
+        "label": "Duration (ms)",
+        "info": "Total animation length. All glitch types respect this.",
+        "min": 100,
+        "max": 2000,
+        "step": 50,
+        "unit": "ms",
+        "default": 400
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_iterations",
+        "label": "Iterations per trigger",
+        "info": "How many times the glitch repeats on a single hover/click. Matches OmniTask's PowerGlitch `iterations` (default 1 = one-shot).",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_trigger",
+        "label": "Trigger mode (slice type)",
+        "info": "When the slice/PowerGlitch effect fires. 'Hover' matches OmniTask's PowerGlitch playMode. The other glitch types (chromatic, shake, flicker, rgb-split) always fire on both hover and click via CSS.",
+        "options": [
+          { "value": "hover", "label": "Hover only (OmniTask default)" },
+          { "value": "click", "label": "Click only" },
+          { "value": "both", "label": "Hover + click" }
+        ],
+        "default": "hover"
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_step_count",
+        "label": "Step granularity (slice type only)",
+        "info": "How many discrete random slice configurations the animation cycles through. Higher = grainier / more digital.",
+        "min": 4,
+        "max": 24,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "paragraph",
+        "content": "The settings below only apply to the Slice (PowerGlitch) type."
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_slice_count",
+        "label": "Slice count",
+        "info": "Number of horizontal slices the button breaks into per glitch frame.",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_velocity",
+        "label": "Slice displacement",
+        "info": "Maximum horizontal offset (in pixels) applied to each slice per step.",
+        "min": 4,
+        "max": 60,
+        "step": 2,
+        "unit": "px",
+        "default": 18
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_slice_min",
+        "label": "Slice min height",
+        "info": "Smallest height (% of button) a slice can take. Maps to OmniTask's `slice.minHeight`.",
+        "min": 1,
+        "max": 25,
+        "step": 1,
+        "unit": "%",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_slice_max",
+        "label": "Slice max height",
+        "info": "Largest height (% of button) a slice can take. Maps to OmniTask's `slice.maxHeight`.",
+        "min": 5,
+        "max": 60,
+        "step": 1,
+        "unit": "%",
+        "default": 15
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_start",
+        "label": "Glitch phase start",
+        "info": "Point in the animation (% of duration) when slices first appear. Maps to OmniTask's `glitchTimeSpan.start`.",
+        "min": 0,
+        "max": 80,
+        "step": 5,
+        "unit": "%",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "neon_glitch_end",
+        "label": "Glitch phase end",
+        "info": "Point in the animation (% of duration) when slices stop and the button settles. Maps to OmniTask's `glitchTimeSpan.end` (default 60%).",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "default": 60
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_glitch_shake",
+        "label": "Shake the whole button while slicing",
+        "info": "Adds OmniTask's shake mode on top of the slice effect. Off matches the default OmniTask config.",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_color",
+        "label": "Glitch color source",
+        "info": "Default tint for glitch slices and chromatic ghosts. 'Match scheme primary button' is the recommended default — slices reuse the active section's primary button color, so each scheme automatically themes its own glitch. The named colors force a specific neon hue regardless of scheme.",
+        "options": [
+          { "value": "match", "label": "Match scheme primary button (recommended)" },
+          { "value": "chromatic", "label": "Chromatic aberration (RGB split)" },
+          { "value": "cyan", "label": "Cyan" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": "match"
+      },
+      {
+        "type": "header",
+        "content": "Decode (text scramble) animation"
+      },
+      {
+        "type": "paragraph",
+        "content": "Defaults for the character-scramble decode. The 'Rotate' color mode automatically picks from the active scheme's neon palette so each section's decode glyphs match its theme."
+      },
+      {
+        "type": "range",
+        "id": "neon_decode_duration",
+        "label": "Duration (ms)",
+        "info": "Approximate total time for all characters to settle. Longer = slower decode.",
+        "min": 100,
+        "max": 2000,
+        "step": 50,
+        "unit": "ms",
+        "default": 400
+      },
+      {
+        "type": "select",
+        "id": "neon_decode_color",
+        "label": "Glyph color source",
+        "info": "Rotate uses the active section's scheme palette automatically. Match copies the element's own rendered color (so decoded glyphs stay the button label color).",
+        "options": [
+          { "value": "rotate", "label": "Rotate scheme palette (recommended)" },
+          { "value": "match", "label": "Match the element's own color" },
+          { "value": "cyan", "label": "Cyan" },
+          { "value": "purple", "label": "Purple" },
+          { "value": "magenta", "label": "Magenta" },
+          { "value": "pink", "label": "Pink" },
+          { "value": "green", "label": "Green" },
+          { "value": "blue", "label": "Blue" }
+        ],
+        "default": "rotate"
+      },
+      {
+        "type": "select",
+        "id": "neon_decode_charset",
+        "label": "Glyph set",
+        "options": [
+          { "value": "mixed", "label": "Mixed (blocks + symbols, OmniTask default)" },
+          { "value": "blocks", "label": "Block characters" },
+          { "value": "symbols", "label": "Symbols / punctuation" },
+          { "value": "binary", "label": "Binary (0 / 1)" },
+          { "value": "hex", "label": "Hexadecimal" },
+          { "value": "katakana", "label": "Katakana (Matrix-style)" }
+        ],
+        "default": "mixed"
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_decode_replay",
+        "label": "Replay decode on every hover",
+        "info": "Off (default) plays the decode once per page load. On replays it whenever the cursor enters the element.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Neon glow strength"
+      },
+      {
+        "type": "paragraph",
+        "content": "Multipliers applied to every neon halo and pulse. Increase for a more saturated, in-your-face neon; decrease for a subtler glow."
+      },
+      {
+        "type": "range",
+        "id": "neon_glow_intensity",
+        "label": "Outer glow intensity",
+        "info": "Scales the box-shadow radius of every neon button and bordered element. 100% = OmniTask default.",
+        "min": 25,
+        "max": 250,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "neon_text_glow_intensity",
+        "label": "Text glow intensity",
+        "info": "Scales the text-shadow halo on .text-neon, neon button labels, and the flickering text utility.",
+        "min": 25,
+        "max": 250,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "neon_pulse_speed",
+        "label": "Pulse speed (.cyber-pulse)",
+        "info": "Cycle length of the pulsing glow used by .cyber-pulse and .cyber-active. Lower = faster.",
+        "min": 500,
+        "max": 5000,
+        "step": 100,
+        "unit": "ms",
+        "default": 2000
+      },
+      {
+        "type": "range",
+        "id": "neon_flicker_speed",
+        "label": "Text flicker speed (.text-neon-flicker)",
+        "info": "Cycle length of the text-flicker animation. Lower = faster pulse.",
+        "min": 500,
+        "max": 6000,
+        "step": 100,
+        "unit": "ms",
+        "default": 3000
+      },
+      {
+        "type": "header",
+        "content": "Color palette"
+      },
+      {
+        "type": "paragraph",
+        "content": "Override the OmniTask palette to match your brand. Leave blank to keep the defaults."
+      },
+      {
+        "type": "color",
+        "id": "neon_color_cyan",
+        "label": "Cyan",
+        "default": "#00d2ff"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_purple",
+        "label": "Purple",
+        "default": "#e040fb"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_magenta",
+        "label": "Magenta",
+        "default": "#d500f9"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_pink",
+        "label": "Pink",
+        "default": "#ff1493"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_green",
+        "label": "Green",
+        "default": "#8ce696"
+      },
+      {
+        "type": "color",
+        "id": "neon_color_blue",
+        "label": "Blue",
+        "default": "#50beff"
+      }
+    ]
   }
 ]
