@@ -11,6 +11,7 @@
   "sections": {
     "animated_divider_QJJ4Xf": {
       "type": "animated-divider",
+      "disabled": true,
       "custom_css": [],
       "settings": {
         "divider_height": 70,

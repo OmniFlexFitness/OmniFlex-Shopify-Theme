@@ -13,9 +13,7 @@
   "sections": {
     "header": {
       "type": "header",
-      "custom_css": [
-        ".section-header {z-index: 2;}"
-      ],
+      "custom_css": [],
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
