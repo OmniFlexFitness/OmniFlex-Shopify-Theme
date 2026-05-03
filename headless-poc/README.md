@@ -36,15 +36,18 @@ A working scaffold that demonstrates Option C from `docs/webflow-integration-inv
 
 | File | Purpose |
 |---|---|
-| `omniflex-headless.js` | Single ES module loaded by Webflow. Auto-mounts on `data-of-*` attributes for PDP, PLP, cart drawer, add-to-cart. Exposes a `window.OmniFlex` API for ad-hoc page-level scripts. |
+| `omniflex-headless.js` | Single ES module loaded by Webflow. Auto-mounts on `data-of-*` attributes for PDP, PLP, cart drawer, add-to-cart. Multi-currency via `@inContext`. Injects JSON-LD on PDP. Exposes a `window.OmniFlex` API for ad-hoc page-level scripts. |
 | `omniflex-headless.css` | Minimal default styles. Class names are namespaced `of-*` so Webflow CSS can override. |
 | `webflow-embeds/site-wide-head.html` | The script + style tags + config `<meta>`s to paste into Webflow's site-wide custom code. |
 | `webflow-embeds/pdp-template.html` | Snippet for the Webflow Products CMS Template Page. |
 | `webflow-embeds/plp-template.html` | Two PLP variants — CMS-bound or script-rendered. |
 | `webflow-embeds/cart-icon.html` | Cart toggle attributes for the header. |
-| `sync/sync.mjs` | Node 20+ script that mirrors Shopify products into a Webflow CMS Collection. |
-| `sync/.env.example` | Required env vars for the sync. |
+| `sync/sync.mjs` | Node 20+ polling script. Mirrors Shopify products into a Webflow CMS Collection. Use for first import and as a CI reconciliation check. |
+| `sync/worker/` | Cloudflare Worker — same upsert logic but driven by Shopify webhooks for near-real-time. Replaces polling in production. See `sync/worker/README.md`. |
+| `customer-account/` | Customer Account API client (OAuth 2.0 + PKCE). Login, "my account" greeting, order history. See `customer-account/README.md`. |
+| `tests/` | Playwright e2e suite — PDP renders, add-to-cart, drawer persistence, checkout redirect, JSON-LD presence. Runs against a live staging URL. |
 | `webflow-setup.md` | Step-by-step setup walkthrough. |
+| `repo-strategy.md` | Recommendation on whether the headless frontend belongs in this repo or a new one (TL;DR: new repo). |
 
 ## Quickstart
 
@@ -63,17 +66,27 @@ A working scaffold that demonstrates Option C from `docs/webflow-integration-inv
 7. Add a header cart link with `data-of-cart-toggle` and a `<span data-of-cart-count>`.
 8. Open the staging URL, add a product to cart, click checkout, complete a Bogus-Gateway test order.
 
-## What's intentionally out of scope (for now)
+## What's now included (was deferred in v1)
+
+| Concern | Where |
+|---|---|
+| Multi-currency / Markets | `omniflex-headless.js` resolves country + language at boot from `<meta>`/`<html lang>`/`navigator.language` and threads them into every Storefront query via `@inContext`. The cart is created with matching `buyerIdentity.countryCode`. |
+| JSON-LD SEO | `injectProductJsonLd()` in `omniflex-headless.js` writes a `Product` schema (with per-variant `offers`) into `<head>` after PDP load. |
+| Webhook-driven sync | `sync/worker/worker.mjs` — Cloudflare Worker, validates HMAC, dispatches on Shopify webhook topics, runs the actual Webflow write in `ctx.waitUntil`. |
+| Customer accounts | `customer-account/customer-account.js` — full OAuth 2.0 + PKCE against the Customer Account API. Login state in header, order history page, logout that also clears Shop Pay sessions. |
+| Playwright e2e | `tests/` — five smoke tests (PDP, add-to-cart, persistence, checkout redirect, JSON-LD). Skips when `BASE_URL` is unset. |
+
+## What's still out of scope
 
 | Concern | Plan |
 |---|---|
-| Customer accounts (login/orders) | Redirect to Shopify on a separate route. The Customer Account API requires its own OAuth dance and a custom React-ish app to render. |
-| Multi-currency / Markets | Storefront API supports `@inContext(country: ...)` directives. Add country detection + presentment-currency handling once the single-locale flow is solid. |
 | Predictive search / facets | Replace with Algolia / Searchanise / Shopify Search & Discovery extension. |
-| Subscriptions / selling plans | Renders only at Shopify checkout — works as long as the redirect to `checkoutUrl` is preserved. The drawer does not yet show selling-plan UI. |
-| Webhook-driven sync | Today the sync polls. Migrate to Shopify webhooks (`products/update`, `inventory_levels/update`) hitting a Cloudflare Worker for near-real-time. |
-| Cart line item properties / gift recipient | Not yet wired in `addLine`. The Storefront API supports `attributes` on `CartLineInput` — easy add. |
-| Build pipeline / minification | Script ships as readable ES2022 from the repo. For production, bundle + pin to a commit SHA on jsDelivr. |
+| Subscriptions / selling plans UI | Renders at Shopify checkout — already works via the `checkoutUrl` redirect. Drawer does not yet expose selling-plan selection. |
+| Cart line item properties / gift recipient | The Storefront API supports `attributes` on `CartLineInput` — easy add when the form fields are needed. |
+| Build pipeline / minification | Script ships as readable ES2022 from the repo. For production, bundle + pin to a commit SHA on jsDelivr (or move to a real CDN — see `repo-strategy.md`). |
+| Address book CRUD on `/account` | Customer Account API supports it; UI not yet built. |
+| Refresh-token handling | Tokens expire ~1h; the customer is silently logged out and prompted to re-authenticate. |
+| Visual regression tests | Add `toHaveScreenshot()` once the design is locked. |
 
 ## Known limits and gotchas
 

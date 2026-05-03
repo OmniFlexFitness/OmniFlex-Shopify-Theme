@@ -23,12 +23,26 @@ const cfg = (() => {
   const shop = get('of-shop');
   const token = get('of-token');
   const apiVersion = get('of-api-version') || '2025-01';
+  // Country/language for @inContext — drives presentment currency & translations.
+  // Resolution order: explicit <meta>, <html lang>, browser language, fallback.
+  const country =
+    get('of-country')?.toUpperCase() ||
+    document.documentElement.lang?.split('-')[1]?.toUpperCase() ||
+    new Intl.Locale(navigator.language || 'en-US').region ||
+    'US';
+  const language =
+    get('of-language')?.toUpperCase() ||
+    document.documentElement.lang?.split('-')[0]?.toUpperCase() ||
+    new Intl.Locale(navigator.language || 'en-US').language?.toUpperCase() ||
+    'EN';
   if (!shop || !token) {
     console.error('[omniflex] missing <meta name="of-shop"> or <meta name="of-token">');
   }
   return {
     shop,
     token,
+    country,
+    language,
     endpoint: `https://${shop}/api/${apiVersion}/graphql.json`,
   };
 })();
@@ -77,24 +91,30 @@ const PRODUCT_FIELDS = `
   }
 `;
 
-const Q_PRODUCT = `query Product($handle: String!) {
-  product(handle: $handle) { ${PRODUCT_FIELDS} }
-}`;
+// All product/collection queries take @inContext directives so prices and
+// availability are returned in the visitor's presentment currency. Cart
+// mutations also accept country/language and Shopify will create the cart
+// with the matching buyerIdentity.countryCode automatically.
+const Q_PRODUCT = `query Product($handle: String!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    product(handle: $handle) { ${PRODUCT_FIELDS} }
+  }`;
 
-const Q_COLLECTION = `query Collection($handle: String!, $first: Int!) {
-  collection(handle: $handle) {
-    id
-    title
-    description
-    products(first: $first) {
-      nodes {
-        id handle title
-        featuredImage { url altText }
-        priceRange { minVariantPrice { amount currencyCode } }
+const Q_COLLECTION = `query Collection($handle: String!, $first: Int!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      id
+      title
+      description
+      products(first: $first) {
+        nodes {
+          id handle title
+          featuredImage { url altText }
+          priceRange { minVariantPrice { amount currencyCode } }
+        }
       }
     }
-  }
-}`;
+  }`;
 
 const CART_FIELDS = `
   id
@@ -121,7 +141,12 @@ const CART_FIELDS = `
   }
 `;
 
-const M_CART_CREATE = `mutation { cartCreate { cart { ${CART_FIELDS} } userErrors { message } } }`;
+const M_CART_CREATE = `mutation($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    cartCreate(input: { buyerIdentity: { countryCode: $country } }) {
+      cart { ${CART_FIELDS} } userErrors { message }
+    }
+  }`;
 
 const M_CART_LINES_ADD = `mutation($cartId: ID!, $lines: [CartLineInput!]!) {
   cartLinesAdd(cartId: $cartId, lines: $lines) {
@@ -178,7 +203,10 @@ async function ensureCart() {
   if (cartState) return cartState;
   const existing = await loadCart();
   if (existing) return existing;
-  const { cartCreate } = await gql(M_CART_CREATE);
+  const { cartCreate } = await gql(M_CART_CREATE, {
+    country: cfg.country,
+    language: cfg.language,
+  });
   const cart = cartCreate.cart;
   localStorage.setItem(CART_KEY, cart.id);
   cartState = cart;
@@ -352,6 +380,39 @@ function renderProduct(host, product) {
   updateForSelection();
 }
 
+function injectProductJsonLd(product) {
+  if (!product) return;
+  // Webflow does not SSR Shopify product data, so search engines will only
+  // see structured data if we inject it client-side. Googlebot reliably
+  // executes JS for JSON-LD; other crawlers vary. For tighter SEO, render
+  // these tags from a Cloudflare Worker that proxies the Webflow PDP.
+  const offers = product.variants.nodes.map((v) => ({
+    '@type': 'Offer',
+    sku: v.id,
+    price: v.price.amount,
+    priceCurrency: v.price.currencyCode,
+    availability: v.availableForSale
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock',
+    url: location.href,
+  }));
+  const ld = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    image: product.images.nodes.map((i) => i.url),
+    sku: product.id,
+    offers: offers.length === 1 ? offers[0] : offers,
+  };
+  document.querySelectorAll('script[data-of-jsonld]').forEach((n) => n.remove());
+  const tag = document.createElement('script');
+  tag.type = 'application/ld+json';
+  tag.dataset.ofJsonld = 'product';
+  tag.textContent = JSON.stringify(ld);
+  document.head.appendChild(tag);
+}
+
 function renderCollection(host, collection) {
   if (!collection) {
     host.innerHTML = '<p class="of-empty">Collection not found.</p>';
@@ -510,7 +571,11 @@ async function mountAll() {
     }
     const handle = btn.dataset.ofHandle;
     if (!handle) return;
-    const { product } = await gql(Q_PRODUCT, { handle });
+    const { product } = await gql(Q_PRODUCT, {
+      handle,
+      country: cfg.country,
+      language: cfg.language,
+    });
     const firstAvailable = product?.variants.nodes.find((v) => v.availableForSale);
     if (firstAvailable) {
       await addLine(firstAvailable.id, 1);
@@ -522,8 +587,13 @@ async function mountAll() {
   for (const host of document.querySelectorAll('[data-of-product]')) {
     const handle = host.getAttribute('data-of-product');
     try {
-      const { product } = await gql(Q_PRODUCT, { handle });
+      const { product } = await gql(Q_PRODUCT, {
+        handle,
+        country: cfg.country,
+        language: cfg.language,
+      });
       renderProduct(host, product);
+      injectProductJsonLd(product);
     } catch (e) {
       console.error('[omniflex] PDP failed', handle, e);
     }
@@ -534,7 +604,12 @@ async function mountAll() {
     const handle = host.getAttribute('data-of-collection');
     const limit = parseInt(host.getAttribute('data-of-limit') || '24', 10);
     try {
-      const { collection } = await gql(Q_COLLECTION, { handle, first: limit });
+      const { collection } = await gql(Q_COLLECTION, {
+        handle,
+        first: limit,
+        country: cfg.country,
+        language: cfg.language,
+      });
       renderCollection(host, collection);
     } catch (e) {
       console.error('[omniflex] PLP failed', handle, e);
