@@ -53,6 +53,84 @@
 }
 
 /* =============================================================
+   Scheme integration — when a section uses any Shopify color
+   scheme, glitch + decode pick up scheme-derived colors so a
+   single scheme choice configures the whole component without
+   per-button styling. Per-scheme overrides below provide a
+   tailored OmniTask palette for the scheme-omnitask-* schemes.
+
+   Cascade order:
+     1. Per-element data-fx-glitch-color attribute (highest)
+     2. Per-element CSS modifier class (.button--neon--cyan etc.)
+     3. Per-scheme override (.color-scheme-omnitask-cyan)
+     4. Generic scheme fallback (any .color-* element)
+     5. :root defaults (cyan + magenta)
+   ============================================================= */
+
+/* Generic fallback — every Shopify color scheme element auto-feeds
+   glitch colors from its own button colors. So a merchant who picks
+   any scheme (theirs or one of ours) gets glitch slices that
+   conform to that scheme's primary button + outline colors. */
+[class*=" color-"],
+[class^="color-"] {
+  --ofx-glitch-color-1: var(--color-button);
+  --ofx-glitch-color-2: var(--color-secondary-button-text);
+  --ofx-decode-color-1: rgb(var(--color-button));
+  --ofx-decode-color-2: rgb(var(--color-secondary-button-text));
+  --ofx-decode-color-3: rgb(var(--color-button));
+  --ofx-decode-color-4: rgb(var(--color-secondary-button-text));
+}
+
+/* OmniTask scheme overrides — replace the auto-derived pair with
+   curated cyan/magenta/etc. complements that match each scheme's
+   accent. Using class-on-class (.color-scheme-* alone) so any
+   section wrapper / nested element picks them up via inheritance. */
+.color-scheme-omnitask-cyan {
+  --ofx-glitch-color-1: var(--ofx-cyan-rgb);
+  --ofx-glitch-color-2: var(--ofx-magenta-rgb);
+  --ofx-decode-color-1: var(--ofx-cyan);
+  --ofx-decode-color-2: var(--ofx-pink);
+  --ofx-decode-color-3: var(--ofx-purple);
+  --ofx-decode-color-4: var(--ofx-magenta);
+}
+
+.color-scheme-omnitask-purple {
+  --ofx-glitch-color-1: var(--ofx-purple-rgb);
+  --ofx-glitch-color-2: var(--ofx-cyan-rgb);
+  --ofx-decode-color-1: var(--ofx-purple);
+  --ofx-decode-color-2: var(--ofx-cyan);
+  --ofx-decode-color-3: var(--ofx-magenta);
+  --ofx-decode-color-4: var(--ofx-pink);
+}
+
+.color-scheme-omnitask-magenta {
+  --ofx-glitch-color-1: var(--ofx-magenta-rgb);
+  --ofx-glitch-color-2: var(--ofx-cyan-rgb);
+  --ofx-decode-color-1: var(--ofx-magenta);
+  --ofx-decode-color-2: var(--ofx-cyan);
+  --ofx-decode-color-3: var(--ofx-pink);
+  --ofx-decode-color-4: var(--ofx-purple);
+}
+
+.color-scheme-omnitask-pink {
+  --ofx-glitch-color-1: var(--ofx-pink-rgb);
+  --ofx-glitch-color-2: var(--ofx-cyan-rgb);
+  --ofx-decode-color-1: var(--ofx-pink);
+  --ofx-decode-color-2: var(--ofx-cyan);
+  --ofx-decode-color-3: var(--ofx-magenta);
+  --ofx-decode-color-4: var(--ofx-purple);
+}
+
+.color-scheme-omnitask-green {
+  --ofx-glitch-color-1: var(--ofx-green-rgb);
+  --ofx-glitch-color-2: var(--ofx-magenta-rgb);
+  --ofx-decode-color-1: var(--ofx-green);
+  --ofx-decode-color-2: var(--ofx-cyan);
+  --ofx-decode-color-3: var(--ofx-yellow);
+  --ofx-decode-color-4: var(--ofx-magenta);
+}
+
+/* =============================================================
    Standalone OmniTask neon buttons (drop-in classes)
    These do not depend on Dawn's .button base styles — useful for
    custom liquid blocks or rich text where merchants want a pure

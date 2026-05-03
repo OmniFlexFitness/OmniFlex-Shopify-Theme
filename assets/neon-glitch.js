@@ -34,9 +34,11 @@
     katakana: 'アァカサタナハマヤラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨロヲゴゾドボポヴッン',
   };
 
-  // Pulls live from the OmniFlex neon palette so merchant overrides in
-  // theme settings flow through to the scramble flicker colors too.
-  var ROTATE_COLORS = [
+  // Default rotation when no scheme overrides --ofx-decode-color-*.
+  // When a section's color scheme defines those CSS vars, the
+  // scrambler uses those instead so the glyph colors automatically
+  // match whichever Shopify scheme is active.
+  var DEFAULT_ROTATE_COLORS = [
     'var(--ofx-cyan)',
     'var(--ofx-pink)',
     'var(--ofx-purple)',
@@ -51,20 +53,41 @@
     blue:    'var(--ofx-blue)',
   };
 
+  /**
+   * Walk up the DOM (starting at parentElement so the element's own
+   * attribute is excluded) looking for an ancestor data-* attribute.
+   * Returns the value as a string, or undefined if not found.
+   */
+  function inheritedAttr(el, attr) {
+    if (!el.parentElement) return undefined;
+    var ancestor = el.parentElement.closest('[' + attr + ']');
+    return ancestor ? ancestor.getAttribute(attr) : undefined;
+  }
+
   function getScrambleConfig(el) {
-    // Walk up the DOM looking for the data attributes — they live on
-    // the bound element (the one with [data-scramble]), but the
-    // scrambler itself runs on the inner overlay. Default to the
-    // global config from theme.liquid.
     var ds = el.dataset;
     var globalCfg = (window.OmniFlexNeonConfig && window.OmniFlexNeonConfig.decode) || {};
 
-    var charsetName = ds.scrambleCharset || globalCfg.charset || 'mixed';
+    // Cascade for each setting: per-element attr -> inherited from
+    // ancestor -> global config -> built-in default.
+    var charsetName =
+      ds.scrambleCharset ||
+      inheritedAttr(el, 'data-scramble-charset') ||
+      globalCfg.charset ||
+      'mixed';
     var charset = GLITCH_CHARSETS[charsetName] || DEFAULT_GLITCH_CHARS;
 
-    var colorMode = ds.scrambleColor || globalCfg.color || 'rotate';
+    var colorMode =
+      ds.scrambleColor ||
+      inheritedAttr(el, 'data-scramble-color') ||
+      globalCfg.color ||
+      'rotate';
 
-    var duration = parseInt(ds.scrambleDuration || globalCfg.duration, 10);
+    var durationRaw =
+      ds.scrambleDuration ||
+      inheritedAttr(el, 'data-scramble-duration') ||
+      globalCfg.duration;
+    var duration = parseInt(durationRaw, 10);
     if (isNaN(duration) || duration <= 0) duration = 400;
     // Internal "frame budget" scales with duration. Defaults are
     // tuned for ~400ms; larger durations spread the scramble over
@@ -82,10 +105,27 @@
     return cfg.charset.charAt(Math.floor(Math.random() * cfg.charset.length));
   }
 
+  /**
+   * Read the --ofx-decode-color-N CSS variables off the element and
+   * return any non-empty values as a list. Lets the active Shopify
+   * scheme drive the rotation colors without per-element JS config.
+   * Falls back to the OmniTask cyan/pink/purple/magenta defaults.
+   */
+  function rotateColorsFor(el) {
+    var styles = window.getComputedStyle(el);
+    var colors = [];
+    for (var i = 1; i <= 4; i++) {
+      var v = styles.getPropertyValue('--ofx-decode-color-' + i).trim();
+      if (v) colors.push(v);
+    }
+    return colors.length > 0 ? colors : DEFAULT_ROTATE_COLORS;
+  }
+
   function pickGlitchColor(cfg, el) {
     var mode = cfg.colorMode;
     if (mode === 'rotate' || !mode) {
-      return ROTATE_COLORS[Math.floor(Math.random() * ROTATE_COLORS.length)];
+      var colors = rotateColorsFor(el);
+      return colors[Math.floor(Math.random() * colors.length)];
     }
     if (mode === 'match') {
       // Use the scrambling element's own rendered color.
@@ -388,11 +428,21 @@
       return fallback;
     }
 
-    // Resolve the glitch type. Per-element data-fx-glitch-type wins,
-    // then global config, then a sensible default based on the
-    // element kind: buttons get the slice (PowerGlitch), everything
-    // else gets the chromatic-text variant.
-    var type = ds.fxGlitchType || globalCfg.type;
+    // Resolve the glitch type. Cascade order, highest first:
+    //   1. Per-element data-fx-glitch-type
+    //   2. Inherited from a parent (section wrapper etc.) carrying
+    //      data-fx-glitch-type
+    //   3. Global config from theme settings
+    //   4. Default based on element kind (buttons -> slice,
+    //      otherwise chromatic-text)
+    var type = ds.fxGlitchType;
+    if (!type) {
+      var ancestor = el.parentElement
+        ? el.parentElement.closest('[data-fx-glitch-type]')
+        : null;
+      if (ancestor) type = ancestor.getAttribute('data-fx-glitch-type');
+    }
+    if (!type) type = globalCfg.type;
     if (!type) {
       var isButton =
         el.classList.contains('button') ||

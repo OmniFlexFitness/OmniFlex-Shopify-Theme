@@ -31,7 +31,22 @@
   }
 {%- endstyle -%}
 
-<div class="neon-button-group color-{{ section.settings.color_scheme }} gradient">
+{%- liquid
+  assign section_inline_style = ''
+  if section.settings.section_glitch_duration > 0
+    assign section_inline_style = section_inline_style | append: '--ofx-glitch-duration:' | append: section.settings.section_glitch_duration | append: 'ms;'
+  endif
+  if section.settings.section_decode_duration > 0
+    assign section_inline_style = section_inline_style | append: '--ofx-decode-duration:' | append: section.settings.section_decode_duration | append: 'ms;'
+  endif
+-%}
+<div
+  class="neon-button-group color-{{ section.settings.color_scheme }} gradient"
+  {% if section.settings.section_glitch_type != blank %}data-fx-glitch-type="{{ section.settings.section_glitch_type }}"{% endif %}
+  {% if section.settings.section_decode_color != blank %}data-scramble-color="{{ section.settings.section_decode_color }}"{% endif %}
+  {% if section.settings.section_decode_replay != blank %}data-scramble-replay="{{ section.settings.section_decode_replay }}"{% endif %}
+  {% if section_inline_style != blank %}style="{{ section_inline_style }}"{% endif %}
+>
   <div class="page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
       <h2
@@ -176,7 +191,79 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
+      "info": "Pick scheme-omnitask-cyan / -purple / -magenta / -pink / -green for tuned glitch + decode colors out of the box.",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Glitch + decode defaults for this section"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set once and every neon button + decode element in this section inherits these. Per-block settings still override."
+    },
+    {
+      "type": "select",
+      "id": "section_glitch_type",
+      "label": "Glitch type",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "slice", "label": "Slice (PowerGlitch)" },
+        { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+        { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+        { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+        { "value": "shake", "label": "Shake" },
+        { "value": "flicker", "label": "Flicker" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "range",
+      "id": "section_glitch_duration",
+      "label": "Glitch duration",
+      "min": 0,
+      "max": 2000,
+      "step": 50,
+      "unit": "ms",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "section_decode_color",
+      "label": "Decode glyph color source",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "rotate", "label": "Rotate (uses scheme palette)" },
+        { "value": "match", "label": "Match the element's own color" },
+        { "value": "cyan", "label": "Cyan" },
+        { "value": "purple", "label": "Purple" },
+        { "value": "magenta", "label": "Magenta" },
+        { "value": "pink", "label": "Pink" },
+        { "value": "green", "label": "Green" },
+        { "value": "blue", "label": "Blue" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "range",
+      "id": "section_decode_duration",
+      "label": "Decode duration",
+      "min": 0,
+      "max": 2000,
+      "step": 50,
+      "unit": "ms",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "section_decode_replay",
+      "label": "Replay decode on hover",
+      "options": [
+        { "value": "", "label": "Inherit from theme settings" },
+        { "value": "once", "label": "Once per page load" },
+        { "value": "always", "label": "Every hover" }
+      ],
+      "default": ""
     },
     {
       "type": "header",
