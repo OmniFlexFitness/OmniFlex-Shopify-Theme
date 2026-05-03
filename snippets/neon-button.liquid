@@ -16,10 +16,12 @@
     classes {string}  - extra classes to append
 
     Glitch overrides (only meaningful with glitch: true):
+      glitch_type     {string} - slice | chromatic-text | chromatic-box |
+                                 rgb-split | shake | flicker
       glitch_duration {number} - ms; falls back to global setting
-      glitch_slices   {number} - 1-8 slice count override
-      glitch_velocity {number} - max horizontal slice offset (px)
-      glitch_shake    {string} - 'true' | 'false'
+      glitch_slices   {number} - 1-8 slice count override (slice type only)
+      glitch_velocity {number} - max horizontal slice offset (px) (slice only)
+      glitch_shake    {string} - 'true' | 'false' (slice type only)
       glitch_color    {string} - match | chromatic | cyan | purple |
                                  magenta | pink | green | blue
 
@@ -75,6 +77,7 @@
     class="{{ class_list }}"
     {% if glitch %}
       data-fx-glitch
+      {% if glitch_type != blank %}data-fx-glitch-type="{{ glitch_type }}"{% endif %}
       {% if glitch_duration %}data-fx-glitch-duration="{{ glitch_duration }}"{% endif %}
       {% if glitch_slices %}data-fx-glitch-slices="{{ glitch_slices }}"{% endif %}
       {% if glitch_velocity %}data-fx-glitch-velocity="{{ glitch_velocity }}"{% endif %}

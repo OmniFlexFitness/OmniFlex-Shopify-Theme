@@ -41,6 +41,7 @@
         decodeHeadings: {{ settings.neon_decode_headings | default: false | json }},
         decodeButtons: {{ settings.neon_decode_buttons | default: false | json }},
         glitch: {
+          type: {{ settings.neon_glitch_type | default: 'slice' | json }},
           duration: {{ settings.neon_glitch_duration | default: 400 | json }},
           sliceCount: {{ settings.neon_glitch_slice_count | default: 3 | json }},
           velocity: {{ settings.neon_glitch_velocity | default: 18 | json }},

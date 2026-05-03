@@ -56,6 +56,7 @@
                 base: block.settings.base,
                 glitch: block.settings.glitch,
                 decode: block.settings.decode,
+                glitch_type: block.settings.glitch_type,
                 glitch_duration: block.settings.glitch_duration,
                 glitch_slices: block.settings.glitch_slices,
                 glitch_velocity: block.settings.glitch_velocity,
@@ -275,6 +276,21 @@
         {
           "type": "paragraph",
           "content": "Leave at zero / Inherit to use the global Glitch animation settings."
+        },
+        {
+          "type": "select",
+          "id": "glitch_type",
+          "label": "Glitch type",
+          "options": [
+            { "value": "", "label": "Inherit" },
+            { "value": "slice", "label": "Slice (PowerGlitch)" },
+            { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+            { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+            { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+            { "value": "shake", "label": "Shake" },
+            { "value": "flicker", "label": "Flicker" }
+          ],
+          "default": ""
         },
         {
           "type": "range",

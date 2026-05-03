@@ -1590,21 +1590,41 @@
       },
       {
         "type": "header",
-        "content": "Glitch (PowerGlitch) animation"
+        "content": "Glitch animation"
       },
       {
         "type": "paragraph",
-        "content": "Tunes the chromatic-aberration slice effect on button hover. Per-button overrides on the section blocks beat these defaults."
+        "content": "Choose the default glitch effect that fires on button hover. Per-button overrides on the section blocks beat these defaults."
+      },
+      {
+        "type": "select",
+        "id": "neon_glitch_type",
+        "label": "Glitch type",
+        "info": "Slice = OmniTask's PowerGlitch port (DOM clones cut into bands). Chromatic = CSS keyframes that ghost the element into RGB shadows. Shake / Flicker / RGB split are simpler standalone effects.",
+        "options": [
+          { "value": "slice", "label": "Slice (PowerGlitch)" },
+          { "value": "chromatic-text", "label": "Chromatic — text ghosts" },
+          { "value": "chromatic-box", "label": "Chromatic — box ghosts" },
+          { "value": "rgb-split", "label": "RGB split (heavier chromatic)" },
+          { "value": "shake", "label": "Shake" },
+          { "value": "flicker", "label": "Flicker" }
+        ],
+        "default": "slice"
       },
       {
         "type": "range",
         "id": "neon_glitch_duration",
         "label": "Duration (ms)",
+        "info": "Total animation length. All glitch types respect this.",
         "min": 100,
         "max": 2000,
         "step": 50,
         "unit": "ms",
         "default": 400
+      },
+      {
+        "type": "paragraph",
+        "content": "The settings below only apply to the Slice (PowerGlitch) type."
       },
       {
         "type": "range",

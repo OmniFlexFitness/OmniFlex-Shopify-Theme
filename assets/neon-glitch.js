@@ -388,7 +388,21 @@
       return fallback;
     }
 
+    // Resolve the glitch type. Per-element data-fx-glitch-type wins,
+    // then global config, then a sensible default based on the
+    // element kind: buttons get the slice (PowerGlitch), everything
+    // else gets the chromatic-text variant.
+    var type = ds.fxGlitchType || globalCfg.type;
+    if (!type) {
+      var isButton =
+        el.classList.contains('button') ||
+        el.classList.contains('ofx-neon-button') ||
+        el.classList.contains('ofx-neon-button-fill');
+      type = isButton ? 'slice' : 'chromatic-text';
+    }
+
     return {
+      type:       type,
       sliceCount: pickInt('fxGlitchSlices', 'sliceCount', 3),
       duration:   pickInt('fxGlitchDuration', 'duration', 400),
       velocity:   pickInt('fxGlitchVelocity', 'velocity', 18),
@@ -401,7 +415,33 @@
     };
   }
 
-  function bindPowerGlitch(el) {
+  /**
+   * Front door for the glitch system — resolves the type and either
+   * binds the JS PowerGlitch slice runtime (for type === 'slice') or
+   * just stamps the type + duration on the element so the CSS rules
+   * take over. Idempotent via data-gl-bound.
+   */
+  function bindGlitch(el) {
+    if (el.dataset.glBound === 'true') return;
+    el.dataset.glBound = 'true';
+
+    var cfg = getGlitchConfig(el);
+
+    // Reflect the resolved type onto the element so the CSS
+    // [data-fx-glitch-type="..."] selectors fire the right keyframe.
+    if (!el.dataset.fxGlitchType) {
+      el.dataset.fxGlitchType = cfg.type;
+    }
+    el.style.setProperty('--ofx-glitch-duration', cfg.duration + 'ms');
+
+    if (cfg.type === 'slice') {
+      bindPowerGlitch(el, cfg);
+    }
+    // All other types are pure CSS — the [data-fx-glitch-type=...]
+    // selectors in neon-glitch.css handle :hover / :active.
+  }
+
+  function bindPowerGlitch(el, cfgArg) {
     if (el.dataset.pgBound === 'true') return;
     el.dataset.pgBound = 'true';
 
@@ -410,7 +450,7 @@
     el.addEventListener('mouseenter', function () {
       if (animating) return;
       animating = true;
-      var cfg = getGlitchConfig(el);
+      var cfg = cfgArg || getGlitchConfig(el);
       runPowerGlitch(el, cfg, function () {
         animating = false;
       });
@@ -544,18 +584,15 @@
       bindScramble(scrambleTargets[i]);
     }
 
-    // PowerGlitch buttons — JS slice port. Match anything that's a
-    // theme button or one of our standalone neon buttons carrying
-    // the glitch attribute. Non-button elements still get the
-    // CSS-only chromatic-aberration via the [data-fx-glitch]:hover
-    // keyframes in neon-glitch.css.
+    // Glitch targets — bindGlitch dispatches by type. For type
+    // 'slice' it kicks off the JS PowerGlitch port; for the other
+    // types it just stamps data-fx-glitch-type and the CSS keyframe
+    // selectors do the work.
     var glitchTargets = document.querySelectorAll(
-      '.button[data-fx-glitch]:not([data-pg-bound]),' +
-        '.ofx-neon-button[data-fx-glitch]:not([data-pg-bound]),' +
-        '.ofx-neon-button-fill[data-fx-glitch]:not([data-pg-bound])'
+      '[data-fx-glitch]:not([data-gl-bound])'
     );
     for (var g = 0; g < glitchTargets.length; g++) {
-      bindPowerGlitch(glitchTargets[g]);
+      bindGlitch(glitchTargets[g]);
     }
   }
 
@@ -587,6 +624,7 @@
   /* Expose for debugging / theme editor re-init */
   window.OmniFlexNeon = {
     bindScramble: bindScramble,
+    bindGlitch: bindGlitch,
     bindPowerGlitch: bindPowerGlitch,
     scan: scan,
   };

@@ -627,32 +627,156 @@
 [data-fx-glitch-click],
 [data-fx-glitch-box] {
   will-change: clip-path, transform, filter, opacity, text-shadow;
+  /* Per-element override of animation length. JS may also set this
+     inline based on the resolved glitch config; the fallback keeps
+     the animation working when JS hasn't run yet. */
+  --ofx-glitch-duration: 450ms;
 }
 
-[data-fx-glitch]:hover,
-[data-fx-glitch-hover]:hover {
-  animation: ofx-fx-glitch-hover 0.45s steps(12, end);
+/* =============================================================
+   Shake — quick whole-element jitter. No clip-path, no filters.
+   Useful for elements whose internal text would distort badly under
+   the chromatic variants (icon buttons, image cards, etc.).
+   ============================================================= */
+@keyframes ofx-fx-shake {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-2px, -1px); }
+  20%  { transform: translate(2px, 1px); }
+  30%  { transform: translate(-3px, 2px); }
+  45%  { transform: translate(3px, -2px); }
+  60%  { transform: translate(-2px, 1px); }
+  75%  { transform: translate(1px, -1px); }
+  100% { transform: translate(0, 0); }
 }
 
-[data-fx-glitch]:active,
-[data-fx-glitch-click]:active {
-  animation: ofx-fx-glitch-click 0.32s steps(14, end);
+/* =============================================================
+   Flicker — opacity stutter with a brief brightness lift mid-anim.
+   Reads as a CRT power surge.
+   ============================================================= */
+@keyframes ofx-fx-flicker {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  10%      { opacity: 0.55; filter: brightness(1.3); }
+  20%      { opacity: 1;    filter: brightness(0.95); }
+  35%      { opacity: 0.7;  filter: brightness(1.2); }
+  50%      { opacity: 1;    filter: brightness(1.05); }
+  68%      { opacity: 0.45; filter: brightness(1.4); }
+  78%      { opacity: 0.95; filter: brightness(1); }
+  88%      { opacity: 0.8;  filter: brightness(1.1); }
 }
 
-[data-fx-glitch-box]:hover {
-  animation: ofx-fx-glitch-box-hover 0.45s steps(12, end);
+/* =============================================================
+   RGB split — heavier chromatic-aberration variant where each
+   color channel is offset further than the standard chromatic
+   keyframes. Targets the same --ofx-glitch-color-1 / -2 vars.
+   ============================================================= */
+@keyframes ofx-fx-rgb-split {
+  0%, 100% {
+    text-shadow: none;
+    filter: none;
+    transform: translate(0, 0);
+  }
+  20% {
+    text-shadow:
+      6px 0 rgba(var(--ofx-glitch-color-1), 0.95),
+      -6px 0 rgba(var(--ofx-glitch-color-2), 0.95);
+    filter: drop-shadow(6px 0 rgba(var(--ofx-glitch-color-1), 0.6))
+            drop-shadow(-6px 0 rgba(var(--ofx-glitch-color-2), 0.6));
+    transform: translate(-1px, 0);
+  }
+  40% {
+    text-shadow:
+      -5px 0 rgba(var(--ofx-glitch-color-1), 0.85),
+      5px 0 rgba(var(--ofx-glitch-color-2), 0.85);
+    filter: drop-shadow(-5px 0 rgba(var(--ofx-glitch-color-1), 0.5))
+            drop-shadow(5px 0 rgba(var(--ofx-glitch-color-2), 0.5));
+    transform: translate(2px, 0);
+  }
+  60% {
+    text-shadow:
+      4px 0 rgba(var(--ofx-glitch-color-1), 0.9),
+      -4px 0 rgba(var(--ofx-glitch-color-2), 0.9);
+    transform: translate(-1px, 0);
+  }
+  80% {
+    text-shadow:
+      2px 0 rgba(var(--ofx-glitch-color-1), 0.5),
+      -2px 0 rgba(var(--ofx-glitch-color-2), 0.5);
+    transform: translate(0, 0);
+  }
 }
 
-[data-fx-glitch-box]:active {
-  animation: ofx-fx-glitch-box-click 0.32s steps(14, end);
+/* =============================================================
+   Type dispatch — each [data-fx-glitch-type] value maps to one
+   keyframe. JS sets data-fx-glitch-type on every element it
+   binds (from per-element data attribute or global config), so
+   these selectors fire exactly one animation per type. The
+   element's --ofx-glitch-duration controls the animation length.
+
+   Type "slice" is intentionally a no-op here — the JS
+   PowerGlitch port handles it via DOM clones.
+   ============================================================= */
+[data-fx-glitch-type="chromatic-text"]:hover,
+[data-fx-glitch-type="chromatic-text"]:focus-visible {
+  animation: ofx-fx-glitch-hover var(--ofx-glitch-duration) steps(12, end);
 }
 
-/* Buttons get the JS PowerGlitch slice port (see neon-glitch.js).
-   Suppress the CSS text-shadow keyframes on buttons so the two don't
-   double-fire. The bound JS sentinel data-pg-bound is set as soon as
-   neon-glitch.js scans the element, so this rule kicks in once the
-   runtime is in place. Non-button elements still use the keyframe
-   chromatic-aberration above. */
+[data-fx-glitch-type="chromatic-text"]:active {
+  animation: ofx-fx-glitch-click var(--ofx-glitch-duration) steps(14, end);
+}
+
+[data-fx-glitch-type="chromatic-box"]:hover,
+[data-fx-glitch-type="chromatic-box"]:focus-visible {
+  animation: ofx-fx-glitch-box-hover var(--ofx-glitch-duration) steps(12, end);
+}
+
+[data-fx-glitch-type="chromatic-box"]:active {
+  animation: ofx-fx-glitch-box-click var(--ofx-glitch-duration) steps(14, end);
+}
+
+[data-fx-glitch-type="shake"]:hover,
+[data-fx-glitch-type="shake"]:focus-visible {
+  animation: ofx-fx-shake var(--ofx-glitch-duration) ease-out;
+}
+
+[data-fx-glitch-type="flicker"]:hover,
+[data-fx-glitch-type="flicker"]:focus-visible {
+  animation: ofx-fx-flicker var(--ofx-glitch-duration) steps(10, end);
+}
+
+[data-fx-glitch-type="rgb-split"]:hover,
+[data-fx-glitch-type="rgb-split"]:focus-visible {
+  animation: ofx-fx-rgb-split var(--ofx-glitch-duration) steps(10, end);
+}
+
+[data-fx-glitch-type="slice"]:hover {
+  /* Intentionally empty — the JS PowerGlitch port animates this
+     type via DOM clones. */
+}
+
+/* Fallback for elements that haven't been touched by JS yet
+   (or with JS disabled). Keep the legacy selectors firing so the
+   chromatic-text effect runs by default — same behavior as before
+   the type system was introduced. */
+[data-fx-glitch]:not([data-fx-glitch-type]):hover,
+[data-fx-glitch-hover]:not([data-fx-glitch-type]):hover {
+  animation: ofx-fx-glitch-hover var(--ofx-glitch-duration) steps(12, end);
+}
+
+[data-fx-glitch]:not([data-fx-glitch-type]):active,
+[data-fx-glitch-click]:not([data-fx-glitch-type]):active {
+  animation: ofx-fx-glitch-click var(--ofx-glitch-duration) steps(14, end);
+}
+
+[data-fx-glitch-box]:not([data-fx-glitch-type]):hover {
+  animation: ofx-fx-glitch-box-hover var(--ofx-glitch-duration) steps(12, end);
+}
+
+[data-fx-glitch-box]:not([data-fx-glitch-type]):active {
+  animation: ofx-fx-glitch-box-click var(--ofx-glitch-duration) steps(14, end);
+}
+
+/* Buttons whose JS PowerGlitch is bound (data-pg-bound) — never
+   double-fire a CSS animation alongside it. */
 .button[data-fx-glitch][data-pg-bound]:hover,
 .ofx-neon-button[data-fx-glitch][data-pg-bound]:hover,
 .ofx-neon-button-fill[data-fx-glitch][data-pg-bound]:hover,
@@ -669,6 +793,9 @@
   [data-fx-glitch-click]:active,
   [data-fx-glitch-box]:hover,
   [data-fx-glitch-box]:active,
+  [data-fx-glitch-type]:hover,
+  [data-fx-glitch-type]:active,
+  [data-fx-glitch-type]:focus-visible,
   .cyber-pulse,
   .text-neon-flicker {
     animation: none !important;
