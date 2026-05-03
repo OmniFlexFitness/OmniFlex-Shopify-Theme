@@ -41,6 +41,14 @@
      the glitch slices conform to whichever button color is in play. */
   --ofx-glitch-color-1: 0, 210, 255;
   --ofx-glitch-color-2: 255, 42, 160;
+
+  /* Multipliers + animation timings — themeable via Theme Settings →
+     Neon & glitch effects → Neon glow strength. Theme.liquid emits
+     overrides at :root when merchants change the values. */
+  --ofx-glow-intensity: 1;
+  --ofx-text-glow-intensity: 1;
+  --ofx-pulse-duration: 2s;
+  --ofx-flicker-duration: 3s;
 }
 
 /* =============================================================
@@ -159,15 +167,15 @@
   border: 2px solid rgb(var(--ofx-neon-rgb));
   color: rgb(var(--ofx-neon-rgb));
   text-shadow:
-    0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
-    0 0 14px rgba(var(--ofx-neon-rgb), 0.45);
+    0 0 calc(6px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 calc(14px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45);
   /* Same symmetric inward + outward halo as .button.button--neon. */
   box-shadow:
-    0 0 8px rgba(var(--ofx-neon-rgb), 0.45),
-    0 0 18px rgba(var(--ofx-neon-rgb), 0.28),
-    0 0 36px rgba(var(--ofx-neon-rgb), 0.14),
-    inset 0 0 8px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.14);
+    0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
+    0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14),
+    inset 0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14);
   transition: all 0.25s ease;
   overflow: hidden;
 }
@@ -197,11 +205,11 @@
     rgba(var(--ofx-neon-rgb), 0.22)
   );
   box-shadow:
-    0 0 14px rgba(var(--ofx-neon-rgb), 0.7),
-    0 0 28px rgba(var(--ofx-neon-rgb), 0.45),
-    0 0 56px rgba(var(--ofx-neon-rgb), 0.22),
-    inset 0 0 14px rgba(var(--ofx-neon-rgb), 0.45),
-    inset 0 0 26px rgba(var(--ofx-neon-rgb), 0.22);
+    0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.7),
+    0 0 calc(28px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 calc(56px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22),
+    inset 0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 calc(26px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22);
   transform: translateY(-1px);
 }
 
@@ -218,14 +226,14 @@
   background-image: none;
   color: #050810;
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.85),
-    0 0 14px rgba(255, 255, 255, 0.45);
+    0 0 calc(6px * var(--ofx-text-glow-intensity)) rgba(255, 255, 255, 0.85),
+    0 0 calc(14px * var(--ofx-text-glow-intensity)) rgba(255, 255, 255, 0.45);
   box-shadow:
-    0 0 10px rgba(var(--ofx-neon-rgb), 0.55),
-    0 0 24px rgba(var(--ofx-neon-rgb), 0.35),
-    0 0 48px rgba(var(--ofx-neon-rgb), 0.18),
-    inset 0 0 6px rgba(255, 255, 255, 0.22),
-    inset 0 0 18px rgba(255, 255, 255, 0.08);
+    0 0 calc(10px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 calc(24px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.35),
+    0 0 calc(48px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.18),
+    inset 0 0 calc(6px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.22),
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.08);
 }
 
 .ofx-neon-button-fill:hover {
@@ -234,11 +242,11 @@
   color: #050810;
   transform: translateY(-1px);
   box-shadow:
-    0 0 16px rgba(var(--ofx-neon-rgb), 0.85),
-    0 0 36px rgba(var(--ofx-neon-rgb), 0.55),
-    0 0 70px rgba(var(--ofx-neon-rgb), 0.28),
-    inset 0 0 10px rgba(255, 255, 255, 0.35),
-    inset 0 0 22px rgba(255, 255, 255, 0.15);
+    0 0 calc(16px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 calc(70px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
+    inset 0 0 calc(10px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.35),
+    inset 0 0 calc(22px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.15);
 }
 
 /* Color variants — apply alongside .ofx-neon-button[-fill] */
@@ -293,19 +301,19 @@
   ) !important;
   color: rgb(var(--ofx-neon-rgb)) !important;
   text-shadow:
-    0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
-    0 0 14px rgba(var(--ofx-neon-rgb), 0.45);
+    0 0 calc(6px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 calc(14px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45);
   /* Symmetric glow — three outer halos at increasing radius for a
      soft falloff outward, plus two inset halos so the glow also
      pulses inward. The 0/0 offset on every shadow keeps the halo
      centered, so it spreads evenly on all four sides instead of
      drifting toward Dawn's directional --buttons-shadow-* offsets. */
   box-shadow:
-    0 0 8px rgba(var(--ofx-neon-rgb), 0.45),
-    0 0 18px rgba(var(--ofx-neon-rgb), 0.28),
-    0 0 36px rgba(var(--ofx-neon-rgb), 0.14),
-    inset 0 0 8px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.14);
+    0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
+    0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14),
+    inset 0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14);
   transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
@@ -348,11 +356,11 @@
      punched up — outer halos brighter + reaching further, inner
      halos thicker. */
   box-shadow:
-    0 0 14px rgba(var(--ofx-neon-rgb), 0.7),
-    0 0 28px rgba(var(--ofx-neon-rgb), 0.45),
-    0 0 56px rgba(var(--ofx-neon-rgb), 0.22),
-    inset 0 0 14px rgba(var(--ofx-neon-rgb), 0.45),
-    inset 0 0 26px rgba(var(--ofx-neon-rgb), 0.22);
+    0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.7),
+    0 0 calc(28px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 calc(56px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22),
+    inset 0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 calc(26px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22);
   transform: translateY(-1px);
 }
 
@@ -373,18 +381,18 @@
   background-color: rgba(var(--ofx-neon-rgb), 0.85) !important;
   color: rgb(var(--ofx-button-label-rgb)) !important;
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.85),
-    0 0 14px rgba(255, 255, 255, 0.45);
+    0 0 calc(6px * var(--ofx-text-glow-intensity)) rgba(255, 255, 255, 0.85),
+    0 0 calc(14px * var(--ofx-text-glow-intensity)) rgba(255, 255, 255, 0.45);
   /* Symmetric outward halo at three radii + a white inset rim so the
      glow reads as both inward and outward, not biased to one side
      by Dawn's --buttons-shadow-* offsets (which are suppressed on
      the ::before pseudo-element). */
   box-shadow:
-    0 0 10px rgba(var(--ofx-neon-rgb), 0.55),
-    0 0 24px rgba(var(--ofx-neon-rgb), 0.35),
-    0 0 48px rgba(var(--ofx-neon-rgb), 0.18),
-    inset 0 0 6px rgba(255, 255, 255, 0.22),
-    inset 0 0 18px rgba(255, 255, 255, 0.08);
+    0 0 calc(10px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 calc(24px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.35),
+    0 0 calc(48px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.18),
+    inset 0 0 calc(6px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.22),
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.08);
   transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
@@ -404,11 +412,11 @@
   background-color: rgba(var(--ofx-neon-rgb), 1) !important;
   color: rgb(var(--ofx-button-label-rgb)) !important;
   box-shadow:
-    0 0 16px rgba(var(--ofx-neon-rgb), 0.85),
-    0 0 36px rgba(var(--ofx-neon-rgb), 0.55),
-    0 0 70px rgba(var(--ofx-neon-rgb), 0.28),
-    inset 0 0 10px rgba(255, 255, 255, 0.35),
-    inset 0 0 22px rgba(255, 255, 255, 0.15);
+    0 0 calc(16px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 calc(70px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
+    inset 0 0 calc(10px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.35),
+    inset 0 0 calc(22px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
 }
 
@@ -431,64 +439,64 @@
    Pulsing glow + flickering text utilities
    ============================================================= */
 .cyber-pulse {
-  animation: ofx-cyber-pulse 2s ease-in-out infinite;
+  animation: ofx-cyber-pulse var(--ofx-pulse-duration) ease-in-out infinite;
 }
 
 @keyframes ofx-cyber-pulse {
   0%, 100% {
     box-shadow:
-      0 0 15px rgba(var(--ofx-neon-rgb), 0.3),
-      inset 0 0 15px rgba(var(--ofx-neon-rgb), 0.1);
+      0 0 calc(15px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.3),
+      inset 0 0 calc(15px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.1);
   }
   50% {
     box-shadow:
-      0 0 25px rgba(var(--ofx-neon-rgb), 0.5),
-      inset 0 0 25px rgba(var(--ofx-neon-rgb), 0.2);
+      0 0 calc(25px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.5),
+      inset 0 0 calc(25px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.2);
   }
 }
 
 .cyber-border-glow {
   border: 1px solid rgba(var(--ofx-neon-rgb), 0.4);
   box-shadow:
-    0 0 10px rgba(var(--ofx-neon-rgb), 0.25),
-    inset 0 0 10px rgba(var(--ofx-neon-rgb), 0.08);
+    0 0 calc(10px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.25),
+    inset 0 0 calc(10px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.08);
   transition: all 0.25s ease;
 }
 
 .cyber-border-glow:hover {
   border-color: rgba(var(--ofx-neon-rgb), 0.7);
   box-shadow:
-    0 0 18px rgba(var(--ofx-neon-rgb), 0.5),
-    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.15);
+    0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.5),
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.15);
 }
 
 .text-neon {
   color: rgb(var(--ofx-neon-rgb));
   text-shadow:
-    0 0 5px rgb(var(--ofx-neon-rgb)),
-    0 0 10px rgb(var(--ofx-neon-rgb)),
-    0 0 20px rgb(var(--ofx-neon-rgb)),
-    0 0 40px rgba(var(--ofx-neon-rgb), 0.4);
+    0 0 calc(5px * var(--ofx-text-glow-intensity)) rgb(var(--ofx-neon-rgb)),
+    0 0 calc(10px * var(--ofx-text-glow-intensity)) rgb(var(--ofx-neon-rgb)),
+    0 0 calc(20px * var(--ofx-text-glow-intensity)) rgb(var(--ofx-neon-rgb)),
+    0 0 calc(40px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.4);
 }
 
 .text-neon-flicker {
   color: rgb(var(--ofx-neon-rgb));
   text-shadow:
-    0 0 8px rgba(var(--ofx-neon-rgb), 0.8),
-    0 0 16px rgba(var(--ofx-neon-rgb), 0.5);
-  animation: ofx-text-flicker 3s infinite;
+    0 0 calc(8px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.8),
+    0 0 calc(16px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.5);
+  animation: ofx-text-flicker var(--ofx-flicker-duration) infinite;
 }
 
 @keyframes ofx-text-flicker {
   0%, 100% {
     text-shadow:
-      0 0 8px rgba(var(--ofx-neon-rgb), 0.8),
-      0 0 16px rgba(var(--ofx-neon-rgb), 0.5);
+      0 0 calc(8px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.8),
+      0 0 calc(16px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.5);
   }
   50% {
     text-shadow:
-      0 0 12px rgba(var(--ofx-neon-rgb), 1),
-      0 0 22px rgba(var(--ofx-neon-rgb), 0.7);
+      0 0 calc(12px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 1),
+      0 0 calc(22px * var(--ofx-text-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.7);
   }
 }
 

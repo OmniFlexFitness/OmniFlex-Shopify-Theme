@@ -45,9 +45,15 @@
           typeHeading: {{ settings.neon_glitch_type_heading | default: 'chromatic-text' | json }},
           typeBox: {{ settings.neon_glitch_type_box | default: 'chromatic-box' | json }},
           duration: {{ settings.neon_glitch_duration | default: 400 | json }},
+          iterations: {{ settings.neon_glitch_iterations | default: 1 | json }},
+          trigger: {{ settings.neon_glitch_trigger | default: 'hover' | json }},
           sliceCount: {{ settings.neon_glitch_slice_count | default: 3 | json }},
           velocity: {{ settings.neon_glitch_velocity | default: 18 | json }},
           stepCount: {{ settings.neon_glitch_step_count | default: 12 | json }},
+          sliceMin: {{ settings.neon_glitch_slice_min | default: 5 | json }},
+          sliceMax: {{ settings.neon_glitch_slice_max | default: 15 | json }},
+          glitchStart: {{ settings.neon_glitch_start | default: 0 | json }},
+          glitchEnd: {{ settings.neon_glitch_end | default: 60 | json }},
           shake: {{ settings.neon_glitch_shake | default: false | json }},
           color: {{ settings.neon_glitch_color | default: 'match' | json }}
         },
@@ -332,40 +338,48 @@
       Per-color overrides feed into assets/neon-glitch.css via CSS variables.
       Added by Claude Code.
     {%- endcomment -%}
-    {%- if settings.neon_color_cyan or settings.neon_color_purple or settings.neon_color_magenta or settings.neon_color_pink or settings.neon_color_green or settings.neon_color_blue or settings.neon_default_color != blank -%}
-      <style>
-        :root {
-          {%- if settings.neon_color_cyan != blank -%}
-            --ofx-cyan: {{ settings.neon_color_cyan }};
-            --ofx-cyan-rgb: {{ settings.neon_color_cyan.red }}, {{ settings.neon_color_cyan.green }}, {{ settings.neon_color_cyan.blue }};
-          {%- endif -%}
-          {%- if settings.neon_color_purple != blank -%}
-            --ofx-purple: {{ settings.neon_color_purple }};
-            --ofx-purple-rgb: {{ settings.neon_color_purple.red }}, {{ settings.neon_color_purple.green }}, {{ settings.neon_color_purple.blue }};
-          {%- endif -%}
-          {%- if settings.neon_color_magenta != blank -%}
-            --ofx-magenta: {{ settings.neon_color_magenta }};
-            --ofx-magenta-rgb: {{ settings.neon_color_magenta.red }}, {{ settings.neon_color_magenta.green }}, {{ settings.neon_color_magenta.blue }};
-          {%- endif -%}
-          {%- if settings.neon_color_pink != blank -%}
-            --ofx-pink: {{ settings.neon_color_pink }};
-            --ofx-pink-rgb: {{ settings.neon_color_pink.red }}, {{ settings.neon_color_pink.green }}, {{ settings.neon_color_pink.blue }};
-          {%- endif -%}
-          {%- if settings.neon_color_green != blank -%}
-            --ofx-green: {{ settings.neon_color_green }};
-            --ofx-green-rgb: {{ settings.neon_color_green.red }}, {{ settings.neon_color_green.green }}, {{ settings.neon_color_green.blue }};
-          {%- endif -%}
-          {%- if settings.neon_color_blue != blank -%}
-            --ofx-blue: {{ settings.neon_color_blue }};
-            --ofx-blue-rgb: {{ settings.neon_color_blue.red }}, {{ settings.neon_color_blue.green }}, {{ settings.neon_color_blue.blue }};
-          {%- endif -%}
-          {%- if settings.neon_default_color != blank -%}
-            --ofx-neon-rgb: var(--ofx-{{ settings.neon_default_color }}-rgb);
-            --ofx-neon: rgb(var(--ofx-neon-rgb));
-          {%- endif -%}
-        }
-      </style>
-    {%- endif -%}
+    {%- liquid
+      assign neon_glow = settings.neon_glow_intensity | default: 100 | divided_by: 100.0
+      assign neon_text_glow = settings.neon_text_glow_intensity | default: 100 | divided_by: 100.0
+      assign neon_pulse_speed = settings.neon_pulse_speed | default: 2000
+      assign neon_flicker_speed = settings.neon_flicker_speed | default: 3000
+    -%}
+    <style>
+      :root {
+        {%- if settings.neon_color_cyan != blank -%}
+          --ofx-cyan: {{ settings.neon_color_cyan }};
+          --ofx-cyan-rgb: {{ settings.neon_color_cyan.red }}, {{ settings.neon_color_cyan.green }}, {{ settings.neon_color_cyan.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_purple != blank -%}
+          --ofx-purple: {{ settings.neon_color_purple }};
+          --ofx-purple-rgb: {{ settings.neon_color_purple.red }}, {{ settings.neon_color_purple.green }}, {{ settings.neon_color_purple.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_magenta != blank -%}
+          --ofx-magenta: {{ settings.neon_color_magenta }};
+          --ofx-magenta-rgb: {{ settings.neon_color_magenta.red }}, {{ settings.neon_color_magenta.green }}, {{ settings.neon_color_magenta.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_pink != blank -%}
+          --ofx-pink: {{ settings.neon_color_pink }};
+          --ofx-pink-rgb: {{ settings.neon_color_pink.red }}, {{ settings.neon_color_pink.green }}, {{ settings.neon_color_pink.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_green != blank -%}
+          --ofx-green: {{ settings.neon_color_green }};
+          --ofx-green-rgb: {{ settings.neon_color_green.red }}, {{ settings.neon_color_green.green }}, {{ settings.neon_color_green.blue }};
+        {%- endif -%}
+        {%- if settings.neon_color_blue != blank -%}
+          --ofx-blue: {{ settings.neon_color_blue }};
+          --ofx-blue-rgb: {{ settings.neon_color_blue.red }}, {{ settings.neon_color_blue.green }}, {{ settings.neon_color_blue.blue }};
+        {%- endif -%}
+        {%- if settings.neon_default_color != blank -%}
+          --ofx-neon-rgb: var(--ofx-{{ settings.neon_default_color }}-rgb);
+          --ofx-neon: rgb(var(--ofx-neon-rgb));
+        {%- endif -%}
+        --ofx-glow-intensity: {{ neon_glow }};
+        --ofx-text-glow-intensity: {{ neon_text_glow }};
+        --ofx-pulse-duration: {{ neon_pulse_speed }}ms;
+        --ofx-flicker-duration: {{ neon_flicker_speed }}ms;
+      }
+    </style>
 
     {%- if settings.neon_global_buttons or settings.neon_global_glitch -%}
       <style>

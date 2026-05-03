@@ -362,11 +362,24 @@
     }
 
     if (cfg.decodeButtons) {
-      var buttons = document.querySelectorAll('.button, .ofx-neon-button, .ofx-neon-button-fill');
+      var buttons = document.querySelectorAll('.button, .ofx-neon-button, .ofx-neon-button-fill, .omni-glitch-btn');
       for (var b = 0; b < buttons.length; b++) {
         if (!buttons[b].hasAttribute('data-scramble')) {
           buttons[b].setAttribute('data-scramble', '');
         }
+      }
+    }
+
+    // OmniTask's exact opt-in class — auto-tag for slice glitch so
+    // merchants can drop the same class name from OmniTask onto any
+    // element and get the same effect.
+    var omniTargets = document.querySelectorAll(
+      '.omni-glitch-btn:not([data-fx-glitch])'
+    );
+    for (var o = 0; o < omniTargets.length; o++) {
+      omniTargets[o].setAttribute('data-fx-glitch', '');
+      if (!omniTargets[o].hasAttribute('data-fx-glitch-type')) {
+        omniTargets[o].setAttribute('data-fx-glitch-type', 'slice');
       }
     }
   }
@@ -447,6 +460,7 @@
         el.classList.contains('button') ||
         el.classList.contains('ofx-neon-button') ||
         el.classList.contains('ofx-neon-button-fill') ||
+        el.classList.contains('omni-glitch-btn') ||
         el.tagName === 'BUTTON';
       var tag = el.tagName;
       var isHeading = tag === 'H1' || tag === 'H2' || tag === 'H3' ||
@@ -460,17 +474,36 @@
       }
     }
 
+    function pickPercent(dsKey, globalKey, fallback) {
+      var raw = ds[dsKey];
+      if (raw != null && raw !== '') {
+        var n = parseFloat(raw);
+        if (!isNaN(n)) return n / 100;
+      }
+      var g = parseFloat(globalCfg[globalKey]);
+      if (!isNaN(g)) return g / 100;
+      return fallback;
+    }
+
+    var trigger = ds.fxGlitchTrigger || globalCfg.trigger || 'hover';
+    if (trigger !== 'hover' && trigger !== 'click' && trigger !== 'both') {
+      trigger = 'hover';
+    }
+
     return {
       type:       type,
       sliceCount: pickInt('fxGlitchSlices', 'sliceCount', 3),
       duration:   pickInt('fxGlitchDuration', 'duration', 400),
+      iterations: pickInt('fxGlitchIterations', 'iterations', 1),
+      trigger:    trigger,
       velocity:   pickInt('fxGlitchVelocity', 'velocity', 18),
       stepCount:  pickInt('fxGlitchSteps', 'stepCount', 12),
-      minHeight:  0.05,
-      maxHeight:  0.15,
+      minHeight:  pickPercent('fxGlitchSliceMin', 'sliceMin', 0.05),
+      maxHeight:  pickPercent('fxGlitchSliceMax', 'sliceMax', 0.15),
+      glitchStart: pickPercent('fxGlitchStart', 'glitchStart', 0),
+      glitchEnd:  pickPercent('fxGlitchEnd', 'glitchEnd', 0.6),
       shake:      pickBool('fxGlitchShake', 'shake', false),
       color:      ds.fxGlitchColor || globalCfg.color || 'match',
-      glitchEnd:  0.6,
     };
   }
 
@@ -506,14 +539,36 @@
 
     var animating = false;
 
-    el.addEventListener('mouseenter', function () {
+    function trigger() {
       if (animating) return;
       animating = true;
       var cfg = cfgArg || getGlitchConfig(el);
-      runPowerGlitch(el, cfg, function () {
-        animating = false;
+      var iterations = Math.max(1, cfg.iterations || 1);
+      var remaining = iterations;
+
+      function runOnce() {
+        runPowerGlitch(el, cfg, function () {
+          remaining--;
+          if (remaining > 0) {
+            runOnce();
+          } else {
+            animating = false;
+          }
+        });
+      }
+      runOnce();
+    }
+
+    var triggerMode = (cfgArg || getGlitchConfig(el)).trigger || 'hover';
+    if (triggerMode === 'hover' || triggerMode === 'both') {
+      el.addEventListener('mouseenter', trigger);
+    }
+    if (triggerMode === 'click' || triggerMode === 'both') {
+      el.addEventListener('mousedown', trigger);
+      el.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') trigger();
       });
-    });
+    }
   }
 
   function applySliceColor(slice, mode, idx) {
@@ -599,7 +654,7 @@
       var step = Math.floor(elapsed / stepDuration);
       if (step !== lastStep) {
         lastStep = step;
-        var inGlitchPhase = progress < cfg.glitchEnd;
+        var inGlitchPhase = progress >= (cfg.glitchStart || 0) && progress < cfg.glitchEnd;
         for (var i = 0; i < slices.length; i++) {
           if (!inGlitchPhase || Math.random() < 0.18) {
             // Hide this slice for this step — gives the stuttery feel
