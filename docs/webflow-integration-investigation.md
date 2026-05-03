@@ -1,6 +1,6 @@
 # Webflow Frontend + Shopify Backend — Feasibility Investigation
 
-Investigation of rebuilding the OmniFlex storefront on Webflow while keeping commerce on Shopify. Written against the current theme on `claude/webflow-integration-investigation-Hr7vb`.
+Investigation of rebuilding the OmniFlex storefront on Webflow while keeping commerce on Shopify. Written against the current theme version (Dawn 12.0.0).
 
 ## TL;DR
 
@@ -54,12 +54,23 @@ Webflow handles the homepage, About, founder, 3D landing, blog/editorial — any
 - ✅ Content team gets Webflow Designer + Editor for marketing iteration speed
 - ✅ Product/marketing teams can decouple deploy cycles
 - ✅ SEO friendly on both halves
-- ⚠️ Two CDNs, two analytics setups, two cookie domains → cross‑domain identity stitching for GA4/Shopify Customer Events
-- ⚠️ Shared header/footer must be either duplicated or served via embed (Webflow → Shopify via iframe/script is brittle; the typical pattern is to rebuild the same header in both)
+- ⚠️ Two CDNs, two analytics setups, two cookie domains → cross‑domain identity stitching for GA4/Shopify Customer Events. **Mitigated by sub‑option B1 below**, which collapses everything onto a single first‑party cookie domain via an edge proxy and is the recommended way to preserve attribution and SEO equity.
+- ⚠️ Shared header/footer must either be duplicated across both platforms or stitched together at the edge (see below) — pure embed via iframe/script is brittle and not recommended
 - ⚠️ Auth nav: "logged in as…" widget on `www` would need a small JS shim that calls Shopify Customer Account API
 - 💲 Webflow CMS or Business plan ($29–$49/mo) + existing Shopify plan
 
-This is the path most premium DTC brands run when they want Webflow's design polish (e.g., several brands use Shopify behind a Webflow marketing site).
+#### Sub-option B1 — Reverse proxy / edge stitching (preferred for shared chrome)
+A reverse proxy at the edge (Cloudflare Workers, Fly.io, Vercel rewrites, AWS Lambda@Edge) routes paths to either Webflow or Shopify origins under a single apex domain. Marketing routes (`/`, `/about`, `/founder`, `/blog/*`) proxy to Webflow; commerce routes (`/products/*`, `/collections/*`, `/cart`, `/checkout`, `/account/*`) proxy to Shopify. The Worker can also inject a single source-of-truth header/footer fragment into both responses (HTMLRewriter on Cloudflare, similar APIs elsewhere), eliminating the duplicate-chrome maintenance burden.
+
+- ✅ Single apex domain → no cross‑cookie/auth gymnastics, GA4/Shop Pay/Customer Events behave normally
+- ✅ One header/footer source of truth (hosted as a Webflow CMS item or a Worker-served fragment), injected into Shopify pages at the edge
+- ✅ SEO‑clean: no client‑side redirects, search engines see a single coherent site
+- ⚠️ Adds an edge service to operate (~$5–$25/mo on Cloudflare Workers for typical traffic) and a deploy step for Worker logic
+- ⚠️ Shopify checkout cannot be proxied — `/checkout` must redirect to `*.myshopify.com` (or the configured checkout domain) for PCI/Shop Pay reasons
+
+This is the more robust variant of Option B and the pattern used by most marketing-led DTC brands who want Webflow's design without splitting cookie domains. **Recommend defaulting to B1** unless ops capacity for an edge worker is a concern, in which case fall back to subdomain split with a duplicated header.
+
+This path is what most premium DTC brands run when they want Webflow's design polish behind a Shopify backend.
 
 ### Option C — Webflow as headless frontend, Shopify as commerce API
 Use a sync tool ([Udesly](https://udesly.com/), [Foxy.io](https://foxy.io/), [Webify](https://webify.app/), [Shoplift/Shoppy](https://shoplift.app/), or a custom worker) to mirror Shopify products into Webflow CMS Collections. Cart is custom JS over the Storefront API. Checkout still hands off to Shopify.
@@ -68,7 +79,7 @@ Use a sync tool ([Udesly](https://udesly.com/), [Foxy.io](https://foxy.io/), [We
 - ✅ CMS-templated PDP/PLP with Webflow's design system
 - ❌ **All commerce UI is custom JS you maintain forever** — variant selection, inventory, swatches, related products, predictive search, facets, cart drawer
 - ❌ Sync lag: product/inventory updates are not real-time. Out‑of‑stock states will drift unless you also call the Storefront API at runtime.
-- ❌ Webflow CMS limits: 10,000 items on Business, 20 reference fields per collection, 30 fields per item. Variant explosions (color × size × etc.) hit these ceilings fast.
+- ❌ Webflow CMS limits: 10,000 items on Business, 20 reference fields per collection, 30 fields per item. Variant explosions (color × size × etc.) hit these ceilings fast. **Combined with localization, this becomes a hard blocker:** if the sync mirrors one CMS item per product per locale, 28 locales × ~360 products exhausts the 10K cap. Even the Enterprise tier (typically 30K items) only buys headroom for ~1K SKUs at this locale count. For a global multi-region catalog, **Option C is effectively non‑viable on Webflow's CMS today.**
 - ❌ Metaobjects: must be flattened into separate Webflow CMS collections per metaobject definition, with manual schema mapping
 - ❌ Customer accounts: same problem as Option A — redirect to Shopify
 - ❌ Localization: as Option A
@@ -113,6 +124,8 @@ For completeness: Hydrogen (React, Shopify-native, Oxygen hosting included free 
 | QA, SEO redirects, launch | 1–2 weeks |
 | **Total** | **~11–17 weeks** with one designer + one engineer |
 
+**This is a best‑case estimate** that assumes the 28‑locale rebuild is *not* part of the initial scope (i.e., launch in English, layer locales in later, or keep localization on Shopify). Webflow Localization is per‑page rather than key‑value, so re‑translating and QA'ing 60+ section equivalents across all 28 locales is itself a multi‑month workstream that would roughly double the timeline if pulled into v1. Recommend treating localization as a separate, post‑launch phase — or as another reason to keep the localized commerce surfaces on Shopify (Option B / B1).
+
 Option C adds ~6–10 weeks for the commerce sync layer and custom PDP/PLP/cart.
 Option A is ~Option C + customer account redirect work, but with a flat Webflow learning curve.
 
@@ -125,7 +138,7 @@ Option A is ~Option C + customer account redirect work, but with a flat Webflow 
 3. **Customer account templates are non-trivial.** `customers/order.json` renders historical orders, refunds, fulfillment status — none of which is exposable outside Shopify without the Customer Account API and a custom React/JS app. Hybrid (Option B) avoids this by leaving `/account/*` on Shopify.
 4. **Theme app extensions break.** Any Shopify app injecting blocks via app embeds (reviews, upsells, A/B testing, klaviyo forms, etc.) needs to be re-evaluated. Many vendors offer Webflow embeds, but not all.
 5. **Discount UX.** Automatic discounts and Shopify Functions only render at checkout — they will work. But cart-page badges showing "you saved $X" are theme-rendered today and won't appear in a Webflow cart UI without custom code.
-6. **SEO migration.** Existing collection/product URLs are `myshopify`-style. Any URL changes require 301 maps. Hybrid keeps them stable; Option C requires a full redirect plan.
+6. **SEO migration.** Existing collection/product URLs use Shopify's standard path structure (`/products/<handle>`, `/collections/<handle>`). Hybrid (B/B1) keeps these stable; Option C requires a full 301 redirect plan. Even under Hybrid, any restructuring of marketing pages on the apex domain (homepage, about, blog) still needs its own 301 map — don't assume "Hybrid = no redirects."
 7. **Performance.** Shopify CDN + Liquid SSR is fast. Webflow + client‑side cart calls add round trips and tank Lighthouse on PDP. Plan for skeleton states.
 
 ---
