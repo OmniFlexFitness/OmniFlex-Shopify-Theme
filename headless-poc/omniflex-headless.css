@@ -1,0 +1,143 @@
+/*
+ * OmniFlex headless — minimal default styles.
+ * Override anything in Webflow Designer; class names are namespaced `of-*`.
+ */
+
+.of-product {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .of-product { grid-template-columns: 1fr 1fr; }
+}
+.of-product__image { width: 100%; height: auto; display: block; }
+.of-product__title { font-size: 2rem; margin: 0 0 0.5rem; }
+.of-product__price { font-size: 1.25rem; margin-bottom: 1rem; }
+.of-product__option { margin-bottom: 1rem; }
+.of-product__option-label {
+  display: block;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.of-product__option-values { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.of-product__option-value {
+  padding: 0.5rem 1rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.of-product__option-value[aria-pressed="true"] {
+  background: currentColor;
+  color: #fff;
+}
+.of-product__quantity { margin-bottom: 1rem; }
+.of-product__quantity input { width: 4rem; }
+.of-product__add {
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.of-product__add:disabled { opacity: 0.5; cursor: not-allowed; }
+.of-product__description { margin-top: 1.5rem; }
+
+.of-collection__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.of-collection__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.of-collection__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+.of-collection__name { font-size: 1rem; margin: 0.5rem 0 0.25rem; }
+.of-collection__price { font-size: 0.875rem; opacity: 0.8; }
+
+.of-drawer {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.of-drawer[aria-hidden="false"] { pointer-events: auto; }
+.of-drawer__scrim {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.of-drawer[aria-hidden="false"] .of-drawer__scrim { opacity: 1; }
+.of-drawer__panel {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(420px, 100%);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 250ms ease;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+}
+.of-drawer[aria-hidden="false"] .of-drawer__panel { transform: translateX(0); }
+.of-drawer__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem; border-bottom: 1px solid #eee;
+}
+.of-drawer__close {
+  font-size: 1.5rem; line-height: 1;
+  background: transparent; border: 0; cursor: pointer;
+}
+.of-drawer__lines {
+  list-style: none; margin: 0; padding: 0;
+  flex: 1; overflow-y: auto;
+}
+.of-drawer__empty { padding: 2rem; text-align: center; opacity: 0.7; }
+.of-drawer__line {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+.of-drawer__line-image { width: 64px; height: 64px; object-fit: cover; }
+.of-drawer__line-title { font-weight: 600; }
+.of-drawer__line-variant { font-size: 0.875rem; opacity: 0.7; }
+.of-drawer__line-controls { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+.of-drawer__line-qty { width: 3rem; }
+.of-drawer__line-remove {
+  background: transparent; border: 0; cursor: pointer;
+  font: inherit; text-decoration: underline; padding: 0;
+}
+.of-drawer__footer {
+  border-top: 1px solid #eee;
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.of-drawer__subtotal { font-weight: 600; }
+.of-drawer__checkout {
+  display: block; padding: 1rem; text-align: center;
+  background: #111; color: #fff; text-decoration: none;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.of-drawer__checkout:not([href]) { opacity: 0.5; pointer-events: none; }

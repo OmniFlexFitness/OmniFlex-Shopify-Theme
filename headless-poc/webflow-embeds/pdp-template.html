@@ -1,0 +1,11 @@
+<!--
+  PDP — paste into the Webflow CMS Template Page for the "Products" collection.
+
+  Wrap any container Div with the following attributes:
+    data-of-product = "{{ Slug }}"   (CMS-bound to the product slug)
+
+  The script will fetch the product live from Shopify Storefront API
+  and render variant picker + add-to-cart inside this container.
+-->
+
+<div data-of-product="{{wf {&quot;path&quot;:&quot;slug&quot;,&quot;type&quot;:&quot;PlainText&quot;\} }}"></div>
