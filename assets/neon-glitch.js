@@ -623,8 +623,47 @@
     requestAnimationFrame(tick);
   }
 
+  /**
+   * Section-level activation. Any wrapper carrying
+   * data-fx-glitch-section="true" / data-scramble-section="true"
+   * promotes every neon button (or button label) inside it into a
+   * glitch / decode target, without the merchant having to flip the
+   * per-block toggle on each one. Idempotent: only stamps elements
+   * that don't already carry the attribute.
+   */
+  var BUTTON_SELECTOR =
+    '.button, .ofx-neon-button, .ofx-neon-button-fill, ' +
+    'button.shopify-payment-button__button--unbranded';
+
+  function applySectionActivation() {
+    var glitchSections = document.querySelectorAll(
+      '[data-fx-glitch-section="true"]'
+    );
+    for (var i = 0; i < glitchSections.length; i++) {
+      var buttons = glitchSections[i].querySelectorAll(BUTTON_SELECTOR);
+      for (var b = 0; b < buttons.length; b++) {
+        if (!buttons[b].hasAttribute('data-fx-glitch')) {
+          buttons[b].setAttribute('data-fx-glitch', '');
+        }
+      }
+    }
+
+    var decodeSections = document.querySelectorAll(
+      '[data-scramble-section="true"]'
+    );
+    for (var d = 0; d < decodeSections.length; d++) {
+      var labels = decodeSections[d].querySelectorAll(BUTTON_SELECTOR);
+      for (var L = 0; L < labels.length; L++) {
+        if (!labels[L].hasAttribute('data-scramble')) {
+          labels[L].setAttribute('data-scramble', '');
+        }
+      }
+    }
+  }
+
   function scan() {
     applySelectorOptIns();
+    applySectionActivation();
 
     // Decode/scramble targets
     var scrambleTargets = document.querySelectorAll(

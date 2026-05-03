@@ -161,10 +161,13 @@
   text-shadow:
     0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
     0 0 14px rgba(var(--ofx-neon-rgb), 0.45);
+  /* Same symmetric inward + outward halo as .button.button--neon. */
   box-shadow:
-    0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
-    0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
-    inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08);
+    0 0 8px rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 18px rgba(var(--ofx-neon-rgb), 0.28),
+    0 0 36px rgba(var(--ofx-neon-rgb), 0.14),
+    inset 0 0 8px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.14);
   transition: all 0.25s ease;
   overflow: hidden;
 }
@@ -194,9 +197,11 @@
     rgba(var(--ofx-neon-rgb), 0.22)
   );
   box-shadow:
-    0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
-    0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18);
+    0 0 14px rgba(var(--ofx-neon-rgb), 0.7),
+    0 0 28px rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 56px rgba(var(--ofx-neon-rgb), 0.22),
+    inset 0 0 14px rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 26px rgba(var(--ofx-neon-rgb), 0.22);
   transform: translateY(-1px);
 }
 
@@ -216,9 +221,11 @@
     0 0 6px rgba(255, 255, 255, 0.85),
     0 0 14px rgba(255, 255, 255, 0.45);
   box-shadow:
-    0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
-    0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 8px rgba(255, 255, 255, 0.15);
+    0 0 10px rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 24px rgba(var(--ofx-neon-rgb), 0.35),
+    0 0 48px rgba(var(--ofx-neon-rgb), 0.18),
+    inset 0 0 6px rgba(255, 255, 255, 0.22),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
 }
 
 .ofx-neon-button-fill:hover {
@@ -227,9 +234,11 @@
   color: #050810;
   transform: translateY(-1px);
   box-shadow:
-    0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
-    0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
-    inset 0 0 12px rgba(255, 255, 255, 0.25);
+    0 0 16px rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 36px rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 70px rgba(var(--ofx-neon-rgb), 0.28),
+    inset 0 0 10px rgba(255, 255, 255, 0.35),
+    inset 0 0 22px rgba(255, 255, 255, 0.15);
 }
 
 /* Color variants — apply alongside .ofx-neon-button[-fill] */
@@ -286,10 +295,17 @@
   text-shadow:
     0 0 6px rgba(var(--ofx-neon-rgb), 0.85),
     0 0 14px rgba(var(--ofx-neon-rgb), 0.45);
+  /* Symmetric glow — three outer halos at increasing radius for a
+     soft falloff outward, plus two inset halos so the glow also
+     pulses inward. The 0/0 offset on every shadow keeps the halo
+     centered, so it spreads evenly on all four sides instead of
+     drifting toward Dawn's directional --buttons-shadow-* offsets. */
   box-shadow:
-    0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
-    0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
-    inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08);
+    0 0 8px rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 18px rgba(var(--ofx-neon-rgb), 0.28),
+    0 0 36px rgba(var(--ofx-neon-rgb), 0.14),
+    inset 0 0 8px rgba(var(--ofx-neon-rgb), 0.3),
+    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.14);
   transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
@@ -300,6 +316,11 @@
 }
 
 .button.button--neon::before {
+  /* Override Dawn's directional drop-shadow box-shadow that was
+     causing the asymmetric "hard edge on one side, blur on the
+     others" look on outline buttons. The symmetric box-shadow
+     stack on .button.button--neon above provides the glow. */
+  box-shadow: none !important;
   content: '';
   position: absolute;
   top: 0;
@@ -323,10 +344,15 @@
     rgba(var(--ofx-neon-rgb), 0.22),
     rgba(var(--ofx-neon-rgb), 0.22)
   ) !important;
+  /* Same symmetric inward + outward glow as the resting state, just
+     punched up — outer halos brighter + reaching further, inner
+     halos thicker. */
   box-shadow:
-    0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
-    0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18);
+    0 0 14px rgba(var(--ofx-neon-rgb), 0.7),
+    0 0 28px rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 56px rgba(var(--ofx-neon-rgb), 0.22),
+    inset 0 0 14px rgba(var(--ofx-neon-rgb), 0.45),
+    inset 0 0 26px rgba(var(--ofx-neon-rgb), 0.22);
   transform: translateY(-1px);
 }
 
@@ -349,10 +375,16 @@
   text-shadow:
     0 0 6px rgba(255, 255, 255, 0.85),
     0 0 14px rgba(255, 255, 255, 0.45);
+  /* Symmetric outward halo at three radii + a white inset rim so the
+     glow reads as both inward and outward, not biased to one side
+     by Dawn's --buttons-shadow-* offsets (which are suppressed on
+     the ::before pseudo-element). */
   box-shadow:
-    0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
-    0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 8px rgba(255, 255, 255, 0.15);
+    0 0 10px rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 24px rgba(var(--ofx-neon-rgb), 0.35),
+    0 0 48px rgba(var(--ofx-neon-rgb), 0.18),
+    inset 0 0 6px rgba(255, 255, 255, 0.22),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
   transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
@@ -361,13 +393,22 @@
   box-shadow: none !important;
 }
 
+.button.button--neon-fill::before {
+  /* Same fix as .button--neon — kill Dawn's directional drop shadow
+     so the symmetric box-shadow stack on the button itself reads as
+     an even halo on all four sides. */
+  box-shadow: none !important;
+}
+
 .button.button--neon-fill:not([disabled]):hover {
   background-color: rgba(var(--ofx-neon-rgb), 1) !important;
   color: rgb(var(--ofx-button-label-rgb)) !important;
   box-shadow:
-    0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
-    0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
-    inset 0 0 12px rgba(255, 255, 255, 0.25);
+    0 0 16px rgba(var(--ofx-neon-rgb), 0.85),
+    0 0 36px rgba(var(--ofx-neon-rgb), 0.55),
+    0 0 70px rgba(var(--ofx-neon-rgb), 0.28),
+    inset 0 0 10px rgba(255, 255, 255, 0.35),
+    inset 0 0 22px rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
 }
 

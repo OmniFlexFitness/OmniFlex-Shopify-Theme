@@ -116,16 +116,11 @@
     </div>
   {%- endif -%}
   <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-    {%- liquid
-      assign banner_inline_style = ''
-      if section.settings.section_glitch_duration > 0
-        assign banner_inline_style = banner_inline_style | append: '--ofx-glitch-duration:' | append: section.settings.section_glitch_duration | append: 'ms;'
-      endif
-    -%}
     <div
       class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient"
+      {% if section.settings.section_apply_glitch %}data-fx-glitch-section="true"{% endif %}
+      {% if section.settings.section_apply_decode %}data-scramble-section="true"{% endif %}
       {% if section.settings.section_glitch_type != blank %}data-fx-glitch-type="{{ section.settings.section_glitch_type }}"{% endif %}
-      {% if banner_inline_style != blank %}style="{{ banner_inline_style }}"{% endif %}
     >
       {%- for block in section.blocks -%}
         {%- case block.type -%}
@@ -344,13 +339,29 @@
     },
     {
       "type": "header",
-      "content": "Glitch defaults for buttons in this section"
+      "content": "Activate effects for this section"
+    },
+    {
+      "type": "paragraph",
+      "content": "Apply the global glitch / decode effects to every button in this section in one click — duration, slice count and other parameters live in Theme settings → Neon & glitch effects."
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_glitch",
+      "label": "Apply glitch to all buttons in this section",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_decode",
+      "label": "Apply decode to all button labels in this section",
+      "default": false
     },
     {
       "type": "select",
       "id": "section_glitch_type",
-      "label": "Glitch type",
-      "info": "Applied to any button in this section that has 'Glitch on hover/click' enabled. Per-button overrides still win.",
+      "label": "Glitch type override (optional)",
+      "info": "Leave on Inherit to use the global Glitch type from theme settings.",
       "options": [
         { "value": "", "label": "Inherit from theme settings" },
         { "value": "slice", "label": "Slice (PowerGlitch)" },
@@ -361,16 +372,6 @@
         { "value": "flicker", "label": "Flicker" }
       ],
       "default": ""
-    },
-    {
-      "type": "range",
-      "id": "section_glitch_duration",
-      "label": "Glitch duration",
-      "min": 0,
-      "max": 2000,
-      "step": 50,
-      "unit": "ms",
-      "default": 0
     },
     {
       "type": "header",

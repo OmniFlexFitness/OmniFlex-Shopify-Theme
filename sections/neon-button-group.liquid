@@ -31,21 +31,13 @@
   }
 {%- endstyle -%}
 
-{%- liquid
-  assign section_inline_style = ''
-  if section.settings.section_glitch_duration > 0
-    assign section_inline_style = section_inline_style | append: '--ofx-glitch-duration:' | append: section.settings.section_glitch_duration | append: 'ms;'
-  endif
-  if section.settings.section_decode_duration > 0
-    assign section_inline_style = section_inline_style | append: '--ofx-decode-duration:' | append: section.settings.section_decode_duration | append: 'ms;'
-  endif
--%}
 <div
   class="neon-button-group color-{{ section.settings.color_scheme }} gradient"
+  {% if section.settings.section_apply_glitch %}data-fx-glitch-section="true"{% endif %}
+  {% if section.settings.section_apply_decode %}data-scramble-section="true"{% endif %}
   {% if section.settings.section_glitch_type != blank %}data-fx-glitch-type="{{ section.settings.section_glitch_type }}"{% endif %}
   {% if section.settings.section_decode_color != blank %}data-scramble-color="{{ section.settings.section_decode_color }}"{% endif %}
   {% if section.settings.section_decode_replay != blank %}data-scramble-replay="{{ section.settings.section_decode_replay }}"{% endif %}
-  {% if section_inline_style != blank %}style="{{ section_inline_style }}"{% endif %}
 >
   <div class="page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
@@ -196,16 +188,29 @@
     },
     {
       "type": "header",
-      "content": "Glitch + decode defaults for this section"
+      "content": "Activate effects for this section"
     },
     {
       "type": "paragraph",
-      "content": "Set once and every neon button + decode element in this section inherits these. Per-block settings still override."
+      "content": "These switches apply the effects globally configured in Theme settings → Neon & glitch effects to every button / decode target in this section, so you don't have to flip the per-block checkbox on each one. Per-block toggles still work for surgical overrides."
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_glitch",
+      "label": "Apply glitch to all neon buttons in this section",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "section_apply_decode",
+      "label": "Apply decode to all button labels in this section",
+      "default": false
     },
     {
       "type": "select",
       "id": "section_glitch_type",
-      "label": "Glitch type",
+      "label": "Glitch type override (optional)",
+      "info": "Leave on Inherit to use the global Glitch type from theme settings.",
       "options": [
         { "value": "", "label": "Inherit from theme settings" },
         { "value": "slice", "label": "Slice (PowerGlitch)" },
@@ -218,19 +223,9 @@
       "default": ""
     },
     {
-      "type": "range",
-      "id": "section_glitch_duration",
-      "label": "Glitch duration",
-      "min": 0,
-      "max": 2000,
-      "step": 50,
-      "unit": "ms",
-      "default": 0
-    },
-    {
       "type": "select",
       "id": "section_decode_color",
-      "label": "Decode glyph color source",
+      "label": "Decode glyph color override (optional)",
       "options": [
         { "value": "", "label": "Inherit from theme settings" },
         { "value": "rotate", "label": "Rotate (uses scheme palette)" },
@@ -245,19 +240,9 @@
       "default": ""
     },
     {
-      "type": "range",
-      "id": "section_decode_duration",
-      "label": "Decode duration",
-      "min": 0,
-      "max": 2000,
-      "step": 50,
-      "unit": "ms",
-      "default": 0
-    },
-    {
       "type": "select",
       "id": "section_decode_replay",
-      "label": "Replay decode on hover",
+      "label": "Replay decode on hover (optional)",
       "options": [
         { "value": "", "label": "Inherit from theme settings" },
         { "value": "once", "label": "Once per page load" },
