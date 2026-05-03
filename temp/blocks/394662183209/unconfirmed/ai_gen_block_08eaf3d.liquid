@@ -1,6 +1,286 @@
+{% doc %}
+  @prompt
+    Add a "Neon Outline" button style option to the video banner section's button block. The neon outline style should have: a transparent background, a bright colored border with a glowing box-shadow effect, and text color matching the glow. Hover state should intensify the glow and shift the border/text to a brighter or complementary hue (not just muted). Active/click state should briefly invert or flash the colors (e.g., filled background) to feel like a real press. The neon color should be configurable via a color setting in the block schema. All three states (default, hover, active) must look distinct and vibrant.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-neon-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+  }
+
+  {% if block.settings.button_style == 'neon_outline' %}
+    .ai-neon-button-{{ ai_gen_id }} {
+      background-color: transparent;
+      color: {{ block.settings.neon_color }};
+      border: {{ block.settings.border_thickness }}px solid {{ block.settings.neon_color }};
+      padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 2 }}px;
+      border-radius: {{ block.settings.border_radius }}px;
+      box-shadow: 
+        0 0 {{ block.settings.glow_intensity }}px {{ block.settings.neon_color }},
+        inset 0 0 {{ block.settings.glow_intensity | divided_by: 2 }}px {{ block.settings.neon_color }};
+      font-size: {{ block.settings.font_size }}px;
+    }
+
+    .ai-neon-button-{{ ai_gen_id }}:hover {
+      color: {{ block.settings.neon_hover_color }};
+      border-color: {{ block.settings.neon_hover_color }};
+      box-shadow: 
+        0 0 {{ block.settings.glow_intensity | times: 2 }}px {{ block.settings.neon_hover_color }},
+        inset 0 0 {{ block.settings.glow_intensity }}px {{ block.settings.neon_hover_color }};
+      transform: translateY(-2px);
+    }
+
+    .ai-neon-button-{{ ai_gen_id }}:active {
+      background-color: {{ block.settings.neon_hover_color }};
+      color: {{ block.settings.active_text_color }};
+      border-color: {{ block.settings.neon_hover_color }};
+      box-shadow: 
+        0 0 {{ block.settings.glow_intensity | times: 3 }}px {{ block.settings.neon_hover_color }},
+        inset 0 0 {{ block.settings.glow_intensity | times: 1.5 }}px {{ block.settings.neon_hover_color }};
+      transform: translateY(0);
+    }
+  {% else %}
+    .ai-neon-button-{{ ai_gen_id }} {
+      background-color: {{ block.settings.standard_bg_color }};
+      color: {{ block.settings.standard_text_color }};
+      border: {{ block.settings.border_thickness }}px solid {{ block.settings.standard_border_color }};
+      padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 2 }}px;
+      border-radius: {{ block.settings.border_radius }}px;
+      font-size: {{ block.settings.font_size }}px;
+    }
+
+    .ai-neon-button-{{ ai_gen_id }}:hover {
+      background-color: {{ block.settings.standard_hover_bg_color }};
+      color: {{ block.settings.standard_hover_text_color }};
+      border-color: {{ block.settings.standard_hover_border_color }};
+    }
+
+    .ai-neon-button-{{ ai_gen_id }}:active {
+      transform: translateY(1px);
+    }
+  {% endif %}
+
+  .ai-neon-button-container-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: {{ block.settings.button_alignment }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-neon-button-container-{{ ai_gen_id }} {
+      width: {{ block.settings.desktop_width_percent }}%;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-neon-button-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.button_link != blank %}
+    <a href="{{ block.settings.button_link }}" class="ai-neon-button-{{ ai_gen_id }}">
+      {{ block.settings.button_text }}
+    </a>
+  {% else %}
+    <button type="button" class="ai-neon-button-{{ ai_gen_id }}">
+      {{ block.settings.button_text }}
+    </button>
+  {% endif %}
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Video banner button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Button content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "neon_outline",
+          "label": "Neon outline"
+        }
+      ],
+      "default": "neon_outline"
+    },
+    {
+      "type": "select",
+      "id": "button_alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Neon outline style"
+    },
+    {
+      "type": "color",
+      "id": "neon_color",
+      "label": "Neon color",
+      "default": "#00ffff"
+    },
+    {
+      "type": "color",
+      "id": "neon_hover_color",
+      "label": "Neon hover color",
+      "default": "#ff00ff"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "glow_intensity",
+      "label": "Glow intensity",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Standard style"
+    },
+    {
+      "type": "color",
+      "id": "standard_bg_color",
+      "label": "Background color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "standard_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "standard_border_color",
+      "label": "Border color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "standard_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#242833"
+    },
+    {
+      "type": "color",
+      "id": "standard_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "standard_hover_border_color",
+      "label": "Hover border color",
+      "default": "#242833"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video banner button"
+    }
+  ]
+}
 {% endschema %}
