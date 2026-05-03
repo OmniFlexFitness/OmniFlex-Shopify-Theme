@@ -102,20 +102,25 @@
   {%- if section.settings.enable_transparent_header -%}
     {%- assign transparent_opacity = section.settings.transparent_header_opacity | divided_by: 100.0 -%}
 
-    .shopify-section-group-header-group {
-      position: absolute;
+    /*
+      Shopify merges the section-group wrapper and section wrapper into
+      one element when the group has a single section. This element gets
+      classes from both (.shopify-section-group-header-group AND
+      .section-header AND .shopify-section-header-sticky). We use a
+      3-class compound selector to beat base.css's sticky rule (0,1,0)
+      and the z-index rule (0,2,0) which load after inline styles.
+    */
+    .shopify-section.shopify-section-group-header-group.section-header {
+      position: absolute !important;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1001;
-    }
-
-    .section-header {
       margin-bottom: 0;
     }
 
-    .section-header.shopify-section-header-sticky.scrolled-past-header {
-      position: sticky;
+    .shopify-section.shopify-section-group-header-group.section-header.scrolled-past-header {
+      position: sticky !important;
       top: 0;
     }
 
