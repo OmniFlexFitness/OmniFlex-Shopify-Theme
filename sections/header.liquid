@@ -100,6 +100,8 @@
   }
 
   {%- if section.settings.enable_transparent_header -%}
+    {%- assign transparent_opacity = section.settings.transparent_header_opacity | divided_by: 100.0 -%}
+
     .section-header {
       position: absolute;
       left: 0;
@@ -108,7 +110,7 @@
       margin-bottom: 0;
     }
 
-    .section-header.shopify-section-header-sticky {
+    .section-header.shopify-section-header-sticky.scrolled-past-header {
       position: sticky;
     }
 
@@ -140,21 +142,38 @@
       border-bottom-color: transparent;
     }
 
-    /* Glass morphism: semi-transparent background appears when scrolling up after scrolling past header */
+    /* Feathered bottom edge */
+    .header-wrapper.header-wrapper--transparent::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(var(--color-background), 0.12), transparent);
+      transform: translateY(100%);
+      pointer-events: none;
+      transition: opacity 0.35s ease-out;
+    }
+
+    /* Glass morphism: semi-transparent background when scrolled past header */
     .scrolled-past-header .header-wrapper.header-wrapper--transparent {
-      background-color: rgba(var(--color-background), 0.72);
+      background-color: rgba(var(--color-background), {{ transparent_opacity }});
       backdrop-filter: blur(12px) saturate(180%);
       -webkit-backdrop-filter: blur(12px) saturate(180%);
+    }
+
+    .scrolled-past-header .header-wrapper.header-wrapper--transparent::after {
+      background: linear-gradient(to bottom, rgba(var(--color-background), {{ transparent_opacity | times: 0.4 }}), transparent);
     }
 
     .scrolled-past-header .header-wrapper.header-wrapper--transparent.header-wrapper--border-bottom {
       border-bottom-color: rgba(var(--color-foreground), 0.08);
     }
 
-    /* Fallback for browsers without backdrop-filter support (e.g. older Firefox) */
     @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
       .scrolled-past-header .header-wrapper.header-wrapper--transparent {
-        background-color: rgba(var(--color-background), 0.92);
+        background-color: rgba(var(--color-background), {{ transparent_opacity | plus: 0.2 | at_most: 1.0 }});
       }
     }
   {%- endif -%}
@@ -647,6 +666,17 @@
       "default": "#ffffff",
       "label": "t:sections.header.settings.transparent_text_color.label",
       "info": "t:sections.header.settings.transparent_text_color.info"
+    },
+    {
+      "type": "range",
+      "id": "transparent_header_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 70,
+      "label": "t:sections.header.settings.transparent_header_opacity.label",
+      "info": "t:sections.header.settings.transparent_header_opacity.info"
     },
     {
       "type": "header",

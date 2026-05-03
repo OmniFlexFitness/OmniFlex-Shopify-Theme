@@ -1118,6 +1118,10 @@
           "label": "Transparent header text color",
           "info": "Color of menu items and icons when the header is transparent. Use white for dark backgrounds."
         },
+        "transparent_header_opacity": {
+          "label": "Sticky header background opacity",
+          "info": "Background opacity when the header becomes sticky on scroll. Lower values are more transparent."
+        },
         "header__1": {
           "content": "Color"
         },
