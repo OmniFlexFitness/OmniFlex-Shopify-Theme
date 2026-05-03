@@ -384,7 +384,14 @@
     {%- if settings.neon_global_buttons or settings.neon_global_glitch -%}
       <style>
         {%- if settings.neon_global_buttons -%}
-          /* Apply neon glow to every theme button while keeping Dawn's box model. */
+          /* Apply neon glow to every theme button while keeping Dawn's
+             box model. !important is required throughout because Dawn's
+             .animate--hover-3d-lift / .animate--hover-vertical-lift
+             rules carry higher selector specificity (0,4,1) than ours
+             and would otherwise wipe the glow + transform on hover.
+             Dawn's :focus-visible accessibility ring also overrides
+             box-shadow, so the focus rules below reassert the glow and
+             use outline (which Dawn zeroes) for the a11y ring. */
           .button--primary,
           .shopify-payment-button__button--unbranded {
             position: relative;
@@ -395,9 +402,14 @@
             box-shadow:
               0 0 12px rgba(var(--ofx-neon-rgb), 0.5),
               0 0 28px rgba(var(--ofx-neon-rgb), 0.3),
-              inset 0 0 8px rgba(255, 255, 255, 0.15);
+              inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
             transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
             overflow: hidden;
+          }
+          .button--primary::before,
+          .shopify-payment-button__button--unbranded::before,
+          .button--secondary::before {
+            box-shadow: none !important;
           }
           .button--primary::after,
           .shopify-payment-button__button--unbranded::after {
@@ -409,8 +421,19 @@
             box-shadow:
               0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
               0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
-              inset 0 0 12px rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
+              inset 0 0 12px rgba(255, 255, 255, 0.25) !important;
+            transform: translateY(-1px) !important;
+          }
+          .button--primary:focus-visible,
+          .button--primary:focus,
+          .shopify-payment-button__button--unbranded:focus-visible,
+          .shopify-payment-button__button--unbranded:focus {
+            outline: 2px solid rgb(var(--ofx-neon-rgb));
+            outline-offset: 3px;
+            box-shadow:
+              0 0 22px rgba(var(--ofx-neon-rgb), 0.8),
+              0 0 44px rgba(var(--ofx-neon-rgb), 0.45),
+              inset 0 0 12px rgba(255, 255, 255, 0.25) !important;
           }
           .button--secondary {
             position: relative;
@@ -421,7 +444,7 @@
             box-shadow:
               0 0 10px rgba(var(--ofx-neon-rgb), 0.3),
               0 0 20px rgba(var(--ofx-neon-rgb), 0.1),
-              inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08);
+              inset 0 0 12px rgba(var(--ofx-neon-rgb), 0.08) !important;
             transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
             overflow: hidden;
           }
@@ -431,8 +454,17 @@
             box-shadow:
               0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
               0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
-              inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18);
-            transform: translateY(-1px);
+              inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18) !important;
+            transform: translateY(-1px) !important;
+          }
+          .button--secondary:focus-visible,
+          .button--secondary:focus {
+            outline: 2px solid rgb(var(--ofx-neon-rgb));
+            outline-offset: 3px;
+            box-shadow:
+              0 0 18px rgba(var(--ofx-neon-rgb), 0.6),
+              0 0 34px rgba(var(--ofx-neon-rgb), 0.3),
+              inset 0 0 18px rgba(var(--ofx-neon-rgb), 0.18) !important;
           }
         {%- endif -%}
 

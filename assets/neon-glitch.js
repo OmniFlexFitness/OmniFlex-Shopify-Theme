@@ -614,6 +614,10 @@
       clone.removeAttribute('data-pg-bound');
       clone.setAttribute('aria-hidden', 'true');
       clone.setAttribute('tabindex', '-1');
+      // Marker so neon-glitch.css can hide Dawn's ::before sweep
+      // gradient + ::after ring on clones — those pseudo-elements are
+      // decorative chrome that interfere with the slice illusion.
+      clone.setAttribute('data-pg-slice', 'true');
       clone.style.position = 'absolute';
       clone.style.top = '0';
       clone.style.left = '0';

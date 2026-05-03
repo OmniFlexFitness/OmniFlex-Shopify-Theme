@@ -307,15 +307,25 @@
      soft falloff outward, plus two inset halos so the glow also
      pulses inward. The 0/0 offset on every shadow keeps the halo
      centered, so it spreads evenly on all four sides instead of
-     drifting toward Dawn's directional --buttons-shadow-* offsets. */
+     drifting toward Dawn's directional --buttons-shadow-* offsets.
+     !important needed so Dawn's --buttons-shadow-* drop shadow on
+     .button:before doesn't visually compete and so the focus-visible
+     ring inheritance can't wipe the resting glow. */
   box-shadow:
     0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
     0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
     0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14),
     inset 0 0 calc(8px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.3),
-    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14);
+    inset 0 0 calc(18px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.14) !important;
   transition: box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
   overflow: hidden;
+}
+
+/* Suppress Dawn's directional drop shadow on .button:before — it sits
+   behind the button (z-index: -1) and would peek out one side, breaking
+   the symmetric neon halo. */
+.button.button--neon::before {
+  box-shadow: none !important;
 }
 
 .button.button--neon::after {
@@ -354,14 +364,39 @@
   ) !important;
   /* Same symmetric inward + outward glow as the resting state, just
      punched up — outer halos brighter + reaching further, inner
-     halos thicker. */
+     halos thicker. !important is required so Dawn's
+     .animate--hover-3d-lift / .animate--hover-vertical-lift hover
+     rules (specificity 0,4,1 — higher than ours at 0,3,1) don't
+     wipe the glow with their own box-shadow / transform. */
   box-shadow:
     0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.7),
     0 0 calc(28px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
     0 0 calc(56px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22),
     inset 0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
-    inset 0 0 calc(26px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22);
-  transform: translateY(-1px);
+    inset 0 0 calc(26px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Keyboard-focus accessibility — preserve the neon halo while still
+   surfacing a clear focus indicator. Dawn's .button:focus-visible
+   (specificity 0,2,1) replaces box-shadow with a high-contrast ring
+   and would erase the neon glow; this rule reasserts the glow via
+   !important and uses outline (which Dawn zeroes) for the a11y ring. */
+.button.button--neon:focus-visible,
+.button.button--neon:focus,
+.button.button--neon-fill:focus-visible,
+.button.button--neon-fill:focus,
+.ofx-neon-button:focus-visible,
+.ofx-neon-button:focus,
+.ofx-neon-button-fill:focus-visible,
+.ofx-neon-button-fill:focus {
+  outline: 2px solid rgb(var(--ofx-neon-rgb));
+  outline-offset: 3px;
+  box-shadow:
+    0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.7),
+    0 0 calc(28px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45),
+    0 0 calc(56px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.22),
+    inset 0 0 calc(14px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.45) !important;
 }
 
 .button.button--neon:not([disabled]):hover::before {
@@ -416,8 +451,8 @@
     0 0 calc(36px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.55),
     0 0 calc(70px * var(--ofx-glow-intensity)) rgba(var(--ofx-neon-rgb), 0.28),
     inset 0 0 calc(10px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.35),
-    inset 0 0 calc(22px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
+    inset 0 0 calc(22px * var(--ofx-glow-intensity)) rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* Explicit color overrides — apply alongside .button--neon[-fill] to
@@ -911,6 +946,21 @@
 .ofx-neon-button[data-fx-glitch][data-pg-bound]:active,
 .ofx-neon-button-fill[data-fx-glitch][data-pg-bound]:active {
   animation: none;
+}
+
+/* PowerGlitch slice clones — JS deep-clones the button (so the slice
+   tints inherit the live background + border + label color) and stamps
+   data-pg-slice="true" on each clone. Dawn's .button::before draws a
+   directional drop shadow and animates a left-to-right sweep; Dawn's
+   .button::after draws an inner ring. Both are decorative chrome that
+   doesn't belong in a slice band — they cause flicker artifacts and
+   ghost rings that visually break the "shifted band of the live
+   button" illusion. Hiding them on clones is safe because the original
+   button keeps its own pseudo-elements untouched. */
+[data-pg-slice="true"]::before,
+[data-pg-slice="true"]::after {
+  display: none !important;
+  animation: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
