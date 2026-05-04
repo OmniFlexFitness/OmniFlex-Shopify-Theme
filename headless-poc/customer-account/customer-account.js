@@ -64,16 +64,63 @@ const TOKEN_KEY = 'of-customer-token';
 const PKCE_KEY = 'of-pkce-verifier';
 const STATE_KEY = 'of-oauth-state';
 
-function getToken() {
+function readToken() {
   try {
     const raw = localStorage.getItem(TOKEN_KEY);
-    if (!raw) return null;
-    const tok = JSON.parse(raw);
-    if (tok.expires_at && Date.now() > tok.expires_at - 30_000) return null;
-    return tok;
+    return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
+}
+
+function getToken() {
+  const tok = readToken();
+  if (!tok) return null;
+  if (tok.expires_at && Date.now() > tok.expires_at - 30_000) return null;
+  return tok;
+}
+
+let refreshInFlight = null;
+
+async function refreshToken() {
+  // Coalesce parallel callers so we only hit the token endpoint once.
+  if (refreshInFlight) return refreshInFlight;
+  const tok = readToken();
+  if (!tok?.refresh_token) return null;
+  refreshInFlight = (async () => {
+    try {
+      const body = new URLSearchParams({
+        grant_type: 'refresh_token',
+        client_id: CLIENT_ID,
+        refresh_token: tok.refresh_token,
+      });
+      const res = await fetch(TOKEN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      });
+      if (!res.ok) {
+        // Refresh tokens can be revoked or expired — clear and force re-login.
+        setToken(null);
+        return null;
+      }
+      const fresh = await res.json();
+      // Shopify rotates refresh tokens on every refresh; preserve any field
+      // (id_token, scope) the new response doesn't repeat.
+      const merged = { ...tok, ...fresh };
+      setToken(merged);
+      return readToken();
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+  return refreshInFlight;
+}
+
+async function getValidToken() {
+  const tok = getToken();
+  if (tok) return tok;
+  return refreshToken();
 }
 
 function setToken(tok) {
@@ -171,9 +218,9 @@ function logout() {
 // --------------------------------------------------------------------------
 
 async function customerGql(query, variables = {}) {
-  const tok = getToken();
+  let tok = await getValidToken();
   if (!tok) throw new Error('not authenticated');
-  const res = await fetch(API_URL, {
+  let res = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -181,6 +228,21 @@ async function customerGql(query, variables = {}) {
     },
     body: JSON.stringify({ query, variables }),
   });
+  // If the server still rejects the bearer (token revoked between expiry
+  // check and request, clock skew, etc.) try one refresh + retry.
+  if (res.status === 401) {
+    const fresh = await refreshToken();
+    if (fresh) {
+      res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: fresh.access_token,
+        },
+        body: JSON.stringify({ query, variables }),
+      });
+    }
+  }
   if (!res.ok) throw new Error(`customer api ${res.status}: ${await res.text()}`);
   const json = await res.json();
   if (json.errors) throw new Error(JSON.stringify(json.errors));

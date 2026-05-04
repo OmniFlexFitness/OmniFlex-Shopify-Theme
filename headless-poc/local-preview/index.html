@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>OmniFlex headless · local preview</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="of-shop"        content="REPLACE_WITH_YOUR.myshopify.com">
+  <meta name="of-token"       content="REPLACE_WITH_PUBLIC_STOREFRONT_TOKEN">
+  <meta name="of-api-version" content="2025-01">
+  <link rel="stylesheet" href="../omniflex-headless.css">
+  <link rel="stylesheet" href="./demo.css">
+  <script type="module" src="./config.local.js" onerror="void 0"></script>
+  <script type="module" src="../omniflex-headless.js"></script>
+</head>
+<body>
+  <div class="demo-banner">
+    Local preview · simulating a Webflow site with the headless script mounted.
+    Replace the <code>of-token</code> meta (or use <code>config.local.js</code>) with a real Storefront API token.
+  </div>
+
+  <header class="demo-header">
+    <a href="./index.html" class="demo-header__brand">OMNIFLEX</a>
+    <nav class="demo-nav">
+      <a href="./collection.html">Shop</a>
+      <a href="./product.html">Product</a>
+      <a href="./search.html">Search</a>
+    </nav>
+    <a href="#" class="demo-cart" data-of-cart-toggle>
+      Cart <span data-of-cart-count>0</span>
+    </a>
+  </header>
+
+  <main>
+    <h1>Local preview</h1>
+    <p>
+      This page mirrors what your Webflow site will look like once the script is mounted.
+      The header above contains the cart toggle and live count badge that you'll add to the
+      Webflow Designer header. The links below open the other preview pages.
+    </p>
+
+    <div class="demo-grid">
+      <a href="./collection.html">
+        <h2>Collection page →</h2>
+        <p>PLP rendered from a Shopify collection handle.</p>
+      </a>
+      <a href="./product.html">
+        <h2>Product page →</h2>
+        <p>PDP with variant picker, JSON-LD, and add-to-cart.</p>
+      </a>
+      <a href="./search.html">
+        <h2>Predictive search →</h2>
+        <p>Live Storefront API search with debounced input.</p>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

@@ -74,6 +74,51 @@
 .of-collection__name { font-size: 1rem; margin: 0.5rem 0 0.25rem; }
 .of-collection__price { font-size: 0.875rem; opacity: 0.8; }
 
+.of-search { position: relative; width: 100%; max-width: 24rem; }
+.of-search__input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid currentColor;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+.of-search__results {
+  position: absolute;
+  left: 0; right: 0; top: 100%;
+  background: #fff;
+  color: #111;
+  border: 1px solid #ddd;
+  border-top: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 100;
+}
+.of-search__products,
+.of-search__queries { list-style: none; margin: 0; padding: 0; }
+.of-search__product a {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+.of-search__product a:hover { background: #f4f4f4; }
+.of-search__product img { width: 48px; height: 48px; object-fit: cover; }
+.of-search__product-title { font-size: 0.875rem; }
+.of-search__product-price { font-size: 0.875rem; opacity: 0.7; }
+.of-search__query a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  border-top: 1px solid #eee;
+  font-size: 0.875rem;
+}
+.of-search__query a:hover { background: #f4f4f4; }
+
 .of-drawer {
   position: fixed; inset: 0;
   pointer-events: none;

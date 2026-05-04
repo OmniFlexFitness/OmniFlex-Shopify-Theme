@@ -116,6 +116,19 @@ const Q_COLLECTION = `query Collection($handle: String!, $first: Int!, $country:
     }
   }`;
 
+const Q_PREDICTIVE_SEARCH = `query Predict($q: String!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    predictiveSearch(query: $q, limit: 8, types: [PRODUCT, COLLECTION, QUERY]) {
+      products {
+        id handle title
+        featuredImage { url altText }
+        priceRange { minVariantPrice { amount currencyCode } }
+      }
+      collections { id handle title }
+      queries { text styledText }
+    }
+  }`;
+
 const CART_FIELDS = `
   id
   checkoutUrl
@@ -380,6 +393,69 @@ function renderProduct(host, product) {
   updateForSelection();
 }
 
+function debounce(fn, ms) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), ms);
+  };
+}
+
+function mountSearch(host) {
+  host.classList.add('of-search');
+  host.innerHTML = `
+    <input type="search" class="of-search__input"
+      placeholder="Search products…" autocomplete="off"
+      aria-label="Search">
+    <div class="of-search__results" hidden>
+      <ul class="of-search__products"></ul>
+      <ul class="of-search__queries"></ul>
+    </div>
+  `;
+  const input = host.querySelector('.of-search__input');
+  const panel = host.querySelector('.of-search__results');
+  const productsUl = host.querySelector('.of-search__products');
+  const queriesUl = host.querySelector('.of-search__queries');
+
+  const run = debounce(async (q) => {
+    if (!q || q.length < 2) {
+      panel.hidden = true;
+      return;
+    }
+    try {
+      const { predictiveSearch } = await gql(Q_PREDICTIVE_SEARCH, {
+        q,
+        country: cfg.country,
+        language: cfg.language,
+      });
+      productsUl.innerHTML = predictiveSearch.products.map((p) => `
+        <li class="of-search__product">
+          <a href="/product/${p.handle}">
+            <img src="${p.featuredImage?.url ?? ''}" alt="${p.featuredImage?.altText ?? ''}">
+            <span class="of-search__product-title">${p.title}</span>
+            <span class="of-search__product-price">${money(p.priceRange.minVariantPrice)}</span>
+          </a>
+        </li>`).join('');
+      queriesUl.innerHTML = predictiveSearch.queries.map((q) =>
+        `<li class="of-search__query"><a href="/search?q=${encodeURIComponent(q.text)}">${q.styledText ?? q.text}</a></li>`
+      ).join('');
+      panel.hidden =
+        predictiveSearch.products.length === 0 &&
+        predictiveSearch.queries.length === 0;
+    } catch (e) {
+      console.error('[omniflex] search failed', e);
+    }
+  }, 200);
+
+  input.addEventListener('input', (e) => run(e.target.value.trim()));
+  input.addEventListener('focus', () => {
+    if (input.value.trim().length >= 2) panel.hidden = false;
+  });
+  document.addEventListener('click', (e) => {
+    if (!host.contains(e.target)) panel.hidden = true;
+  });
+}
+
 function injectProductJsonLd(product) {
   if (!product) return;
   // Webflow does not SSR Shopify product data, so search engines will only
@@ -597,6 +673,11 @@ async function mountAll() {
     } catch (e) {
       console.error('[omniflex] PDP failed', handle, e);
     }
+  }
+
+  // Search mounts
+  for (const host of document.querySelectorAll('[data-of-search]')) {
+    mountSearch(host);
   }
 
   // PLP mounts

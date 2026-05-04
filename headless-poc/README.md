@@ -46,7 +46,8 @@ A working scaffold that demonstrates Option C from `docs/webflow-integration-inv
 | `sync/worker/` | Cloudflare Worker — same upsert logic but driven by Shopify webhooks for near-real-time. Replaces polling in production. See `sync/worker/README.md`. |
 | `customer-account/` | Customer Account API client (OAuth 2.0 + PKCE). Login, "my account" greeting, order history. See `customer-account/README.md`. |
 | `tests/` | Playwright e2e suite — PDP renders, add-to-cart, drawer persistence, checkout redirect, JSON-LD presence. Runs against a live staging URL. |
-| `webflow-setup.md` | Step-by-step setup walkthrough. |
+| `local-preview/` | Static HTML harness that simulates a Webflow site so you can iterate on the appearance/behavior locally **without paying for Webflow yet**. Run `python3 -m http.server 8000` from `headless-poc/`, open <http://localhost:8000/local-preview/>. See `local-preview/README.md`. |
+| `webflow-setup.md` | Step-by-step setup walkthrough for the actual Webflow site. |
 | `repo-strategy.md` | Recommendation on whether the headless frontend belongs in this repo or a new one (TL;DR: new repo). |
 
 ## Quickstart
@@ -71,6 +72,9 @@ A working scaffold that demonstrates Option C from `docs/webflow-integration-inv
 | Concern | Where |
 |---|---|
 | Multi-currency / Markets | `omniflex-headless.js` resolves country + language at boot from `<meta>`/`<html lang>`/`navigator.language` and threads them into every Storefront query via `@inContext`. The cart is created with matching `buyerIdentity.countryCode`. |
+| Predictive search | `data-of-search` mount → debounced live results from `predictiveSearch` query (products, collections, suggested queries). |
+| Refresh-token rotation | Customer Account module exchanges refresh tokens transparently and retries on 401, with in-flight de-duping so parallel calls only hit the token endpoint once. |
+| Local preview | `local-preview/` static HTML harness — see `local-preview/README.md`. |
 | JSON-LD SEO | `injectProductJsonLd()` in `omniflex-headless.js` writes a `Product` schema (with per-variant `offers`) into `<head>` after PDP load. |
 | Webhook-driven sync | `sync/worker/worker.mjs` — Cloudflare Worker, validates HMAC, dispatches on Shopify webhook topics, runs the actual Webflow write in `ctx.waitUntil`. |
 | Customer accounts | `customer-account/customer-account.js` — full OAuth 2.0 + PKCE against the Customer Account API. Login state in header, order history page, logout that also clears Shop Pay sessions. |
