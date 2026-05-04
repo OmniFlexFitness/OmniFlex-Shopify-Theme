@@ -1,0 +1,24 @@
+name = "omniflex-shopify-webhook-sync"
+main = "worker.mjs"
+compatibility_date = "2025-01-15"
+
+# Public vars (non-secret). Set with: wrangler deploy
+[vars]
+SHOPIFY_STORE = "omniflexfitness.myshopify.com"
+SHOPIFY_API_VERSION = "2025-01"
+WEBFLOW_COLLECTION_ID = "REPLACE_ME"
+# Optional — only needed if the worker should publish updated CMS items live.
+WEBFLOW_SITE_ID = "REPLACE_ME"
+
+# Secrets (set with: wrangler secret put <NAME>)
+# - SHOPIFY_WEBHOOK_SECRET
+# - SHOPIFY_ADMIN_TOKEN
+# - WEBFLOW_TOKEN
+
+[observability]
+enabled = true
+
+# Optional: route under a custom domain
+# [[routes]]
+# pattern = "webhooks.omniflex.example.com/*"
+# zone_name = "omniflex.example.com"

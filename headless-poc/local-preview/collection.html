@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>Collection · OmniFlex local preview</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="of-shop"        content="REPLACE_WITH_YOUR.myshopify.com">
+  <meta name="of-token"       content="REPLACE_WITH_PUBLIC_STOREFRONT_TOKEN">
+  <meta name="of-api-version" content="2025-01">
+  <link rel="stylesheet" href="../omniflex-headless.css">
+  <link rel="stylesheet" href="./demo.css">
+  <script type="module" src="./config.local.js" onerror="void 0"></script>
+  <script type="module" src="../omniflex-headless.js"></script>
+</head>
+<body>
+  <div class="demo-banner">
+    PLP demo (script-rendered variant). Change the handle below; "all" works on most stores.
+  </div>
+
+  <header class="demo-header">
+    <a href="./index.html" class="demo-header__brand">OMNIFLEX</a>
+    <nav class="demo-nav">
+      <a href="./collection.html">Shop</a>
+      <a href="./product.html">Product</a>
+      <a href="./search.html">Search</a>
+    </nav>
+    <a href="#" class="demo-cart" data-of-cart-toggle>
+      Cart <span data-of-cart-count>0</span>
+    </a>
+  </header>
+
+  <main>
+    <p>
+      <label>Collection handle:
+        <input class="demo-input" id="handle-input" value="all">
+      </label>
+      <button id="reload-btn">Load</button>
+    </p>
+
+    <div data-of-collection="all" data-of-limit="24" id="collection-mount"></div>
+  </main>
+
+  <script type="module">
+    const handleInput = document.getElementById('handle-input');
+    const reloadBtn = document.getElementById('reload-btn');
+    const url = new URL(location.href);
+    const initial = url.searchParams.get('handle');
+    if (initial) {
+      handleInput.value = initial;
+      document.getElementById('collection-mount').setAttribute('data-of-collection', initial);
+    }
+    reloadBtn.addEventListener('click', () => {
+      const h = handleInput.value.trim();
+      url.searchParams.set('handle', h);
+      location.href = url.toString();
+    });
+  </script>
+</body>
+</html>
