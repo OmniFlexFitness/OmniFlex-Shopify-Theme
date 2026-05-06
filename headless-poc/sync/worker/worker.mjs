@@ -91,7 +91,7 @@ async function handle(topic, payload, env) {
     case 'products/update':
       return upsertProduct(payload, env);
     case 'products/delete':
-      return deleteProduct(payload.id, env);
+      return deleteProduct(payload.handle ?? payload.slug, env);
     case 'inventory/update':
     case 'inventory_levels/update':
       return upsertProductByInventoryItem(payload.inventory_item_id, env);
@@ -159,12 +159,21 @@ function adminProductToWebhookShape(p) {
 // Webflow upsert
 // --------------------------------------------------------------------------
 
-async function findWebflowItem(shopifyId, env) {
-  // Webflow CMS v2 supports filtering items by fieldData on list endpoint.
-  // Fall back to a paginated scan if filter is unavailable for the field type.
+// The Webflow CMS v2 List Items endpoint only supports `name` and `slug` as
+// query filters — `fieldData.<other>` is silently ignored and returns the
+// first page of all items, which would corrupt the mirror with duplicates
+// and mis-targeted patches. We therefore look up by slug, which is the
+// Shopify product handle in our schema and uniquely identifies a row.
+//
+// Trade-off: if a Shopify handle changes, the rename appears as a new
+// product to this lookup. The polling sync.mjs reconciles by `shopify-id`
+// across the full collection and will clean up the orphan on its next
+// pass — keep it scheduled (e.g. nightly) as a safety net.
+async function findWebflowItemBySlug(slug, env) {
+  if (!slug) return null;
   const url =
     `${WEBFLOW_API}/collections/${env.WEBFLOW_COLLECTION_ID}/items` +
-    `?fieldData.shopify-id=${encodeURIComponent(shopifyId)}&limit=1`;
+    `?slug=${encodeURIComponent(slug)}`;
   const res = await wfFetch(url, env);
   return res?.items?.[0] ?? null;
 }
@@ -190,7 +199,7 @@ function productToFieldData(p) {
 
 async function upsertProduct(p, env) {
   const fieldData = productToFieldData(p);
-  const existing = await findWebflowItem(fieldData['shopify-id'], env);
+  const existing = await findWebflowItemBySlug(fieldData.slug, env);
   let itemId;
   if (existing) {
     await wfFetch(`${WEBFLOW_API}/collections/${env.WEBFLOW_COLLECTION_ID}/items/${existing.id}`, env, {
@@ -213,9 +222,11 @@ async function upsertProduct(p, env) {
   }
 }
 
-async function deleteProduct(shopifyNumericId, env) {
-  const gid = `gid://shopify/Product/${shopifyNumericId}`;
-  const existing = await findWebflowItem(gid, env);
+async function deleteProduct(handle, env) {
+  // products/delete webhooks deliver the full product object including
+  // handle. If a future webhook variant ever drops the handle, the
+  // polling sync will reap the orphan on its next reconciliation run.
+  const existing = await findWebflowItemBySlug(handle, env);
   if (!existing) return;
   await wfFetch(
     `${WEBFLOW_API}/collections/${env.WEBFLOW_COLLECTION_ID}/items/${existing.id}`,

@@ -430,7 +430,7 @@ function mountSearch(host) {
       });
       productsUl.innerHTML = predictiveSearch.products.map((p) => `
         <li class="of-search__product">
-          <a href="/product/${p.handle}">
+          <a href="/products/${p.handle}">
             <img src="${p.featuredImage?.url ?? ''}" alt="${p.featuredImage?.altText ?? ''}">
             <span class="of-search__product-title">${p.title}</span>
             <span class="of-search__product-price">${money(p.priceRange.minVariantPrice)}</span>
@@ -504,7 +504,7 @@ function renderCollection(host, collection) {
         .map(
           (p) => `
         <li class="of-collection__card">
-          <a class="of-collection__link" href="/product/${p.handle}">
+          <a class="of-collection__link" href="/products/${p.handle}">
             <img class="of-collection__image"
               src="${p.featuredImage?.url ?? ''}"
               alt="${p.featuredImage?.altText ?? p.title}">
