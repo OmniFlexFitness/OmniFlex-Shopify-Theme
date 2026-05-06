@@ -1,0 +1,16 @@
+<!--
+  PLP / Collection page — two options:
+
+  Option 1 (recommended): Use Webflow's CMS Collection List bound to the
+  synced "Products" collection so the layout is fully Webflow-designed.
+  Add `data-of-add-to-cart` and `data-of-handle` on each card's button:
+
+    <a data-of-add-to-cart data-of-handle="{{ Slug }}">Add to cart</a>
+
+  Option 2 (script-rendered): Drop a single empty container that the script
+  populates. Use this for quick-and-dirty pages where you don't want to wire
+  the CMS. Replace "all" with the Shopify collection handle.
+-->
+
+<!-- Option 2 -->
+<div data-of-collection="all" data-of-limit="24"></div>

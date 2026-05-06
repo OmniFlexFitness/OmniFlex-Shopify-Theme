@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>Product · OmniFlex local preview</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="of-shop"        content="REPLACE_WITH_YOUR.myshopify.com">
+  <meta name="of-token"       content="REPLACE_WITH_PUBLIC_STOREFRONT_TOKEN">
+  <meta name="of-api-version" content="2025-01">
+  <link rel="stylesheet" href="../omniflex-headless.css">
+  <link rel="stylesheet" href="./demo.css">
+  <script type="module" src="./config.local.js" onerror="void 0"></script>
+  <script type="module" src="../omniflex-headless.js"></script>
+</head>
+<body>
+  <div class="demo-banner">
+    PDP demo. Change the handle below to any product handle that exists in your Shopify store.
+  </div>
+
+  <header class="demo-header">
+    <a href="./index.html" class="demo-header__brand">OMNIFLEX</a>
+    <nav class="demo-nav">
+      <a href="./collection.html">Shop</a>
+      <a href="./product.html">Product</a>
+      <a href="./search.html">Search</a>
+    </nav>
+    <a href="#" class="demo-cart" data-of-cart-toggle>
+      Cart <span data-of-cart-count>0</span>
+    </a>
+  </header>
+
+  <main>
+    <p>
+      <label>Handle:
+        <input class="demo-input" id="handle-input" value="example-product-handle">
+      </label>
+      <button id="reload-btn">Load</button>
+    </p>
+
+    <!-- This is the only Webflow-relevant markup on the page.
+         In Webflow Designer this would be a Div Block with the
+         data-of-product attribute bound to the CMS Slug field. -->
+    <div data-of-product="example-product-handle" id="product-mount"></div>
+  </main>
+
+  <script type="module">
+    // Local-preview-only convenience: let the demo input change the
+    // mounted handle without manually editing the URL. This script does
+    // NOT ship to Webflow.
+    const handleInput = document.getElementById('handle-input');
+    const reloadBtn = document.getElementById('reload-btn');
+    const url = new URL(location.href);
+    const initial = url.searchParams.get('handle');
+    if (initial) {
+      handleInput.value = initial;
+      document.getElementById('product-mount').setAttribute('data-of-product', initial);
+    }
+    reloadBtn.addEventListener('click', () => {
+      const h = handleInput.value.trim();
+      url.searchParams.set('handle', h);
+      location.href = url.toString();
+    });
+  </script>
+</body>
+</html>
