@@ -160,7 +160,6 @@
   id="InteractiveWallpaperBanner-{{ section.id }}"
   class="interactive-wallpaper-banner color-{{ section.settings.color_scheme }} iwb iwb--pos-{{ section.settings.desktop_content_position }} iwb--align-{{ section.settings.desktop_content_alignment }} iwb--align-mobile-{{ section.settings.mobile_content_alignment }}{% unless section.settings.show_text_box %} iwb--no-box{% endunless %}{% if extend %} iwb--behind-header{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
   data-variant="{{ variant }}"
-  {% if needs_video %}data-video-url="{{ video_url }}"{% endif %}
 >
   {%- if needs_video -%}
     <video
@@ -248,15 +247,16 @@
       var interaction = root.querySelector('.iwb__interaction');
       var video = root.querySelector('.iwb__video');
 
+      function fallback() {
+        root.style.background = 'linear-gradient(135deg,#0a0524,#1a0a3d,#0a0524)';
+      }
+
       var gl = canvas.getContext('webgl2', {
         antialias: false,
         alpha: !!variant.hasAlpha,
         premultipliedAlpha: false,
       });
-      if (!gl) {
-        root.style.background = 'linear-gradient(135deg,#0a0524,#1a0a3d,#0a0524)';
-        return;
-      }
+      if (!gl) { fallback(); return; }
 
       if (video) {
         var pl = video.play && video.play();
@@ -269,15 +269,21 @@
         gl.compileShader(s);
         if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
           console.error('[interactive-wallpaper-banner] shader compile:\n' + gl.getShaderInfoLog(s));
+          gl.deleteShader(s);
+          return null;
         }
         return s;
       }
+      var vsh = compile(gl.VERTEX_SHADER, L.VERT);
+      var fsh = compile(gl.FRAGMENT_SHADER, L.COMMON + variant.source);
+      if (!vsh || !fsh) { fallback(); return; }
       var prog = gl.createProgram();
-      gl.attachShader(prog, compile(gl.VERTEX_SHADER, L.VERT));
-      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, L.COMMON + variant.source));
+      gl.attachShader(prog, vsh);
+      gl.attachShader(prog, fsh);
       gl.linkProgram(prog);
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
         console.error('[interactive-wallpaper-banner] link:\n' + gl.getProgramInfoLog(prog));
+        fallback();
         return;
       }
 
@@ -301,6 +307,15 @@
       var clickT = -100;
       var t0 = performance.now() / 1000;
 
+      // Track every listener / observer / RAF we register so we can dispose
+      // them when the Shopify theme editor unloads this section.
+      var listeners = [];
+      function on(target, event, handler, opts) {
+        target.addEventListener(event, handler, opts);
+        listeners.push({ t: target, e: event, h: handler, o: opts });
+      }
+      var observers = [];
+
       function resize() {
         var dpr = Math.min(window.devicePixelRatio || 1, 2);
         var w = canvas.clientWidth || root.clientWidth;
@@ -311,13 +326,13 @@
       }
       resize();
       if (window.ResizeObserver) {
-        new ResizeObserver(resize).observe(canvas);
+        var ro = new ResizeObserver(resize);
+        ro.observe(canvas);
+        observers.push(ro);
       } else {
-        window.addEventListener('resize', resize);
+        on(window, 'resize', resize);
       }
 
-      // Track mouse anywhere over the banner; clicks fire effects unless the
-      // pointer is over an interactive element (button/link).
       function setMouseFromEvent(e) {
         var r = canvas.getBoundingClientRect();
         mouse[0] = (e.clientX - r.left) / r.width;
@@ -329,29 +344,34 @@
         click[1] = 1 - (e.clientY - r.top) / r.height;
         clickT = performance.now() / 1000 - t0;
       }
+      function onMouseLeave() { mouse[0] = 0.5; mouse[1] = 0.5; }
+      function onTouchMove(e) { if (e.touches[0]) setMouseFromEvent(e.touches[0]); }
+      function onTouchStart(e) { if (e.touches[0]) setClickFromEvent(e.touches[0]); }
 
-      root.addEventListener('mousemove', setMouseFromEvent);
-      root.addEventListener('click', setClickFromEvent);
-      root.addEventListener('mouseleave', function () { mouse[0] = 0.5; mouse[1] = 0.5; });
-      root.addEventListener('touchmove', function (e) {
-        if (!e.touches[0]) return;
-        setMouseFromEvent(e.touches[0]);
-      }, { passive: true });
-      root.addEventListener('touchstart', function (e) {
-        if (!e.touches[0]) return;
-        setClickFromEvent(e.touches[0]);
-      }, { passive: true });
+      on(root, 'mousemove', setMouseFromEvent);
+      on(root, 'click', setClickFromEvent);
+      on(root, 'mouseleave', onMouseLeave);
+      on(root, 'touchmove', onTouchMove, { passive: true });
+      on(root, 'touchstart', onTouchStart, { passive: true });
 
       // Header extension — measure how far our section sits below the top of
       // the page (i.e. the cumulative header-group height) and expose it as
       // a CSS variable so the banner can pull itself up under the header.
       var behindHeader = root.classList.contains('iwb--behind-header');
+      var headerEls = [];
+      function refreshHeaderCache() {
+        var nodes = document.querySelectorAll('.shopify-section-group-header-group');
+        headerEls = [];
+        for (var i = 0; i < nodes.length; i++) {
+          if (!nodes[i].contains(root)) headerEls.push(nodes[i]);
+        }
+      }
+      refreshHeaderCache();
       function getHeaderHeight() {
         var total = 0;
-        document.querySelectorAll('.shopify-section-group-header-group').forEach(function (el) {
-          if (el.contains(root)) return;
-          total += el.getBoundingClientRect().height;
-        });
+        for (var i = 0; i < headerEls.length; i++) {
+          total += headerEls[i].getBoundingClientRect().height;
+        }
         return total;
       }
       function updateHeaderOffset() {
@@ -361,39 +381,45 @@
         }
         var h = getHeaderHeight();
         if (h === 0) {
-          // Initial render before header element is measured: estimate from
-          // the section's current top offset.
           var rect = root.getBoundingClientRect();
           h = rect.top + window.scrollY + parseFloat(getComputedStyle(root).marginTop || '0');
         }
         root.style.setProperty('--iwb-header-offset', h + 'px');
       }
+      function onWindowResize() {
+        refreshHeaderCache();
+        updateHeaderOffset();
+        if (syncHeaderTransparency) syncHeaderTransparency();
+      }
       updateHeaderOffset();
-      window.addEventListener('load', updateHeaderOffset);
-      window.addEventListener('resize', updateHeaderOffset);
+      on(window, 'load', updateHeaderOffset);
+      on(window, 'resize', onWindowResize);
       setTimeout(updateHeaderOffset, 50);
       setTimeout(updateHeaderOffset, 500);
 
-      // Toggle a body class while the wallpaper section overlaps the header
-      // strip, so the header background becomes transparent only when the
-      // wallpaper is actually behind it.
+      // Toggle a body class while *any* wallpaper section overlaps the header
+      // strip. Each instance writes its own overlap state to a data attribute
+      // so multiple banners on one page can coexist without fighting over
+      // body.iwb-header-transparent.
+      var syncHeaderTransparency = null;
       if (behindHeader) {
-        var transparent = false;
-        function syncHeaderTransparency() {
+        var rafThrottle = false;
+        function _sync() {
+          rafThrottle = false;
           var rect = root.getBoundingClientRect();
           var headerH = getHeaderHeight() || 80;
           var overlaps = rect.top < headerH && rect.bottom > 0;
-          if (overlaps && !transparent) {
-            document.body.classList.add('iwb-header-transparent');
-            transparent = true;
-          } else if (!overlaps && transparent) {
-            document.body.classList.remove('iwb-header-transparent');
-            transparent = false;
-          }
+          root.dataset.iwbOverlapsHeader = overlaps ? 'true' : 'false';
+          var anyOverlap = !!document.querySelector('[data-iwb-overlaps-header="true"]');
+          document.body.classList.toggle('iwb-header-transparent', anyOverlap);
         }
+        syncHeaderTransparency = function () {
+          if (rafThrottle) return;
+          rafThrottle = true;
+          requestAnimationFrame(_sync);
+        };
         syncHeaderTransparency();
-        window.addEventListener('scroll', syncHeaderTransparency, { passive: true });
-        window.addEventListener('resize', syncHeaderTransparency);
+        on(window, 'scroll', syncHeaderTransparency, { passive: true });
         setTimeout(syncHeaderTransparency, 100);
       }
 
@@ -419,9 +445,8 @@
       }
       frame();
 
-      // Pause rendering when offscreen to save battery.
       if (window.IntersectionObserver) {
-        new IntersectionObserver(function (entries) {
+        var io = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             visible = entry.isIntersecting;
             if (visible && rafId === null) frame();
@@ -431,7 +456,36 @@
               if (pl2 && pl2.catch) pl2.catch(function () {});
             }
           });
-        }, { rootMargin: '50px' }).observe(root);
+        }, { rootMargin: '50px' });
+        io.observe(root);
+        observers.push(io);
+      }
+
+      // Theme-editor cleanup. Shopify fires shopify:section:unload before
+      // re-rendering a section after a setting change; without this hook the
+      // animation loop, listeners, and WebGL context all leak.
+      function cleanup() {
+        visible = false;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        listeners.forEach(function (l) { l.t.removeEventListener(l.e, l.h, l.o); });
+        listeners.length = 0;
+        observers.forEach(function (o) { try { o.disconnect(); } catch (_) {} });
+        observers.length = 0;
+        delete root.dataset.iwbOverlapsHeader;
+        var anyOverlap = !!document.querySelector('[data-iwb-overlaps-header="true"]');
+        document.body.classList.toggle('iwb-header-transparent', anyOverlap);
+        try {
+          var loseExt = gl.getExtension('WEBGL_lose_context');
+          if (loseExt) loseExt.loseContext();
+        } catch (_) {}
+      }
+      if (typeof Shopify !== 'undefined' && Shopify.designMode) {
+        document.addEventListener('shopify:section:unload', function onUnload(e) {
+          if (e && e.detail && e.detail.sectionId === '{{ section.id }}') {
+            document.removeEventListener('shopify:section:unload', onUnload);
+            cleanup();
+          }
+        });
       }
     }
   })();
