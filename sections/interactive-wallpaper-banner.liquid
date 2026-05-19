@@ -20,6 +20,7 @@
     assign video_url = 'https://cdn.shopify.com/videos/c/o/v/39ce99635f904af785d3e41ac326bcc7.mp4'
   endif
   assign extend = section.settings.extend_behind_header
+  assign persist_transparent = section.settings.persist_transparent_header
 -%}
 
 <style>
@@ -159,6 +160,7 @@
   id="InteractiveWallpaperBanner-{{ section.id }}"
   class="interactive-wallpaper-banner color-{{ section.settings.color_scheme }} iwb iwb--pos-{{ section.settings.desktop_content_position }} iwb--align-{{ section.settings.desktop_content_alignment }} iwb--align-mobile-{{ section.settings.mobile_content_alignment }}{% unless section.settings.show_text_box %} iwb--no-box{% endunless %}{% if extend %} iwb--behind-header{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
   data-variant="{{ variant }}"
+  {% if persist_transparent %}data-persist-transparent-header="true"{% endif %}
 >
   {%- if needs_video -%}
     <video
@@ -400,15 +402,26 @@
       // strip. Each instance writes its own overlap state to a data attribute
       // so multiple banners on one page can coexist without fighting over
       // body.iwb-header-transparent.
+      //
+      // If data-persist-transparent-header is set, this section keeps the
+      // header transparent for the rest of the page (the data attribute is
+      // pinned to "true" so the body class stays applied past the banner).
+      var persistTransparent = root.dataset.persistTransparentHeader === 'true';
       var syncHeaderTransparency = null;
       if (behindHeader) {
+        if (persistTransparent) {
+          root.dataset.iwbOverlapsHeader = 'true';
+          document.body.classList.add('iwb-header-transparent');
+        }
         var rafThrottle = false;
         function _sync() {
           rafThrottle = false;
-          var rect = root.getBoundingClientRect();
-          var headerH = getHeaderHeight() || 80;
-          var overlaps = rect.top < headerH && rect.bottom > 0;
-          root.dataset.iwbOverlapsHeader = overlaps ? 'true' : 'false';
+          if (!persistTransparent) {
+            var rect = root.getBoundingClientRect();
+            var headerH = getHeaderHeight() || 80;
+            var overlaps = rect.top < headerH && rect.bottom > 0;
+            root.dataset.iwbOverlapsHeader = overlaps ? 'true' : 'false';
+          }
           var anyOverlap = !!document.querySelector('[data-iwb-overlaps-header="true"]');
           document.body.classList.toggle('iwb-header-transparent', anyOverlap);
         }
@@ -558,6 +571,13 @@
       "label": "Extend behind site header",
       "default": true,
       "info": "Pulls the banner up so its background fills the area behind the header. The header becomes transparent over this section."
+    },
+    {
+      "type": "checkbox",
+      "id": "persist_transparent_header",
+      "label": "Keep header transparent on the rest of the page",
+      "default": false,
+      "info": "When on, the site header stays transparent after you scroll past the banner — content below the banner shows through it. Otherwise the header reverts to its normal background once the banner has fully scrolled away."
     },
     {
       "type": "header",
