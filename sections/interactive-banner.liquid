@@ -111,12 +111,16 @@
     background: transparent !important;
     border: 0 !important;
   }
+  {%- liquid
+    assign glow_alpha_main = glow_intensity | times: 0.01
+    assign glow_alpha_secondary = glow_intensity | times: 0.005
+  -%}
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__subheading {
     display: block;
     font-size: 1.2rem;
     letter-spacing: .35em;
     text-transform: uppercase;
-    color: {% if color_subheading != blank %}{{ color_subheading }}{% else %}rgba(150, 200, 255, .8){% endif %};
+    color: {{ color_subheading }};
     margin: 0 0 1rem;
     {%- if font_subheading -%}
     font-family: {{ font_subheading.family }}, {{ font_subheading.fallback_families }};
@@ -128,20 +132,10 @@
     font-weight: 200;
     letter-spacing: .04em;
     margin: 0 0 1.4rem;
-    color: {% if color_heading != blank %}{{ color_heading }}{% else %}rgba(230, 235, 255, .98){% endif %};
-    {%- liquid
-      assign glow_alpha_main = glow_intensity | times: 0.01
-      assign glow_alpha_secondary = glow_intensity | times: 0.005
-    -%}
-    {%- if glow_color != blank -%}
+    color: {{ color_heading }};
     text-shadow:
       0 0 40px {{ glow_color | color_modify: 'alpha', glow_alpha_main }},
       0 0 80px {{ glow_color | color_modify: 'alpha', glow_alpha_secondary }};
-    {%- else -%}
-    text-shadow:
-      0 0 40px rgba(120, 100, 255, {{ glow_alpha_main }}),
-      0 0 80px rgba(255, 50, 180, {{ glow_alpha_secondary }});
-    {%- endif -%}
     {%- if font_heading -%}
     font-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
     font-style: {{ font_heading.style }};
@@ -151,7 +145,7 @@
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__description {
     font-size: clamp(1.1rem, 1.4vw, 1.35rem);
     line-height: 1.55;
-    color: {% if color_description != blank %}{{ color_description }}{% else %}rgba(220, 230, 255, .85){% endif %};
+    color: {{ color_description }};
     margin: 0 0 1.8rem;
     max-width: 60rem;
     {%- if font_description -%}
@@ -678,15 +672,13 @@
       "type": "color",
       "id": "color_heading",
       "label": "Title color",
-      "default": "",
-      "info": "Leave blank to use the default neon white."
+      "default": "#E6EBFF"
     },
     {
       "type": "color",
       "id": "heading_glow_color",
       "label": "Title glow color",
-      "default": "",
-      "info": "Leave blank to use the default purple/pink glow."
+      "default": "#7864FF"
     },
     {
       "type": "range",
@@ -696,7 +688,8 @@
       "max": 100,
       "step": 5,
       "unit": "%",
-      "default": 45
+      "default": 45,
+      "info": "Set to 0 to remove the neon halo behind the title."
     },
     {
       "type": "font_picker",
@@ -708,8 +701,7 @@
       "type": "color",
       "id": "color_subheading",
       "label": "Subtitle color",
-      "default": "",
-      "info": "Leave blank to use the default soft blue."
+      "default": "#96C8FF"
     },
     {
       "type": "font_picker",
@@ -721,8 +713,7 @@
       "type": "color",
       "id": "color_description",
       "label": "Description color",
-      "default": "",
-      "info": "Leave blank to use the default soft white."
+      "default": "#DCE6FF"
     },
     {
       "type": "header",
