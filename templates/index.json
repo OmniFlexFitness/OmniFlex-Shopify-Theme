@@ -64,6 +64,7 @@
         "text_Mc3tLN",
         "buttons_i6M38m"
       ],
+      "disabled": true,
       "name": "Interactive wallpaper",
       "settings": {
         "wallpaper_variant": "drive",
