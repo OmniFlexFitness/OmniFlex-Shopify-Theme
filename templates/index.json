@@ -24,6 +24,61 @@
         "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
+    "interactive_banner_kw6wFX": {
+      "type": "interactive-banner",
+      "blocks": {
+        "subheading_3UcWNN": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "OMNIFLEX FITNESS"
+          }
+        },
+        "heading_XPPx9N": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>Shop Activewear</strong>",
+            "heading_size": "hxxl"
+          }
+        },
+        "text_Mc3tLN": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Browse our latest products</p>"
+          }
+        },
+        "buttons_i6M38m": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Shop now",
+            "button_link_1": "",
+            "button_style_secondary_1": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": true
+          }
+        }
+      },
+      "block_order": [
+        "subheading_3UcWNN",
+        "heading_XPPx9N",
+        "text_Mc3tLN",
+        "buttons_i6M38m"
+      ],
+      "name": "Interactive wallpaper",
+      "settings": {
+        "wallpaper_variant": "drive",
+        "video_url": "",
+        "section_height": 100,
+        "image_overlay_opacity": 0,
+        "extend_behind_header": true,
+        "persist_transparent_header": true,
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "center",
+        "show_text_box": false,
+        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "mobile_content_alignment": "center"
+      }
+    },
     "video_banner_RmbCF8": {
       "type": "video-banner",
       "blocks": {
@@ -466,6 +521,7 @@
   },
   "order": [
     "animated_divider_QJJ4Xf",
+    "interactive_banner_kw6wFX",
     "video_banner_RmbCF8",
     "video_slideshow_GnmiVK",
     "slideshow_iRj3B6",
