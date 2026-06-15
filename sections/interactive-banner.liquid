@@ -21,7 +21,20 @@
   endif
   assign extend = section.settings.extend_behind_header
   assign persist_transparent = section.settings.persist_transparent_header
+  assign overlay_color = section.settings.overlay_color | default: '#000000'
+  assign font_heading = section.settings.font_heading
+  assign font_subheading = section.settings.font_subheading
+  assign font_description = section.settings.font_description
+  assign color_heading = section.settings.color_heading
+  assign color_subheading = section.settings.color_subheading
+  assign color_description = section.settings.color_description
+  assign glow_color = section.settings.heading_glow_color
+  assign glow_intensity = section.settings.heading_glow_intensity
 -%}
+
+{%- if font_heading -%}{{ font_heading | font_face: font_display: 'swap' }}{%- endif -%}
+{%- if font_subheading -%}{{ font_subheading | font_face: font_display: 'swap' }}{%- endif -%}
+{%- if font_description -%}{{ font_description | font_face: font_display: 'swap' }}{%- endif -%}
 
 <style>
   #InteractiveWallpaperBanner-{{ section.id }} {
@@ -64,7 +77,7 @@
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__overlay {
     position: absolute;
     inset: 0;
-    background: #000;
+    background: {{ overlay_color }};
     opacity: var(--iwb-overlay-opacity);
     pointer-events: none;
     z-index: 3;
@@ -103,22 +116,49 @@
     font-size: 1.2rem;
     letter-spacing: .35em;
     text-transform: uppercase;
-    color: rgba(150, 200, 255, .8);
+    color: {% if color_subheading != blank %}{{ color_subheading }}{% else %}rgba(150, 200, 255, .8){% endif %};
     margin: 0 0 1rem;
+    {%- if font_subheading -%}
+    font-family: {{ font_subheading.family }}, {{ font_subheading.fallback_families }};
+    font-style: {{ font_subheading.style }};
+    font-weight: {{ font_subheading.weight }};
+    {%- endif -%}
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__heading {
     font-weight: 200;
     letter-spacing: .04em;
     margin: 0 0 1.4rem;
-    color: rgba(230, 235, 255, .98);
-    text-shadow: 0 0 40px rgba(120, 100, 255, .45), 0 0 80px rgba(255, 50, 180, .2);
+    color: {% if color_heading != blank %}{{ color_heading }}{% else %}rgba(230, 235, 255, .98){% endif %};
+    {%- liquid
+      assign glow_alpha_main = glow_intensity | times: 0.01
+      assign glow_alpha_secondary = glow_intensity | times: 0.005
+    -%}
+    {%- if glow_color != blank -%}
+    text-shadow:
+      0 0 40px {{ glow_color | color_modify: 'alpha', glow_alpha_main }},
+      0 0 80px {{ glow_color | color_modify: 'alpha', glow_alpha_secondary }};
+    {%- else -%}
+    text-shadow:
+      0 0 40px rgba(120, 100, 255, {{ glow_alpha_main }}),
+      0 0 80px rgba(255, 50, 180, {{ glow_alpha_secondary }});
+    {%- endif -%}
+    {%- if font_heading -%}
+    font-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+    font-style: {{ font_heading.style }};
+    font-weight: {{ font_heading.weight }};
+    {%- endif -%}
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__description {
     font-size: clamp(1.1rem, 1.4vw, 1.35rem);
     line-height: 1.55;
-    color: rgba(220, 230, 255, .85);
+    color: {% if color_description != blank %}{{ color_description }}{% else %}rgba(220, 230, 255, .85){% endif %};
     margin: 0 0 1.8rem;
     max-width: 60rem;
+    {%- if font_description -%}
+    font-family: {{ font_description.family }}, {{ font_description.fallback_families }};
+    font-style: {{ font_description.style }};
+    font-weight: {{ font_description.weight }};
+    {%- endif -%}
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__buttons {
     display: flex;
@@ -562,6 +602,13 @@
       "info": "Darkens the background to improve text contrast."
     },
     {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000",
+      "info": "Tint laid over the wallpaper. Combine with overlay opacity for a colored wash."
+    },
+    {
       "type": "header",
       "content": "Layout"
     },
@@ -616,6 +663,66 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_heading",
+      "label": "Title font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "color",
+      "id": "color_heading",
+      "label": "Title color",
+      "default": "",
+      "info": "Leave blank to use the default neon white."
+    },
+    {
+      "type": "color",
+      "id": "heading_glow_color",
+      "label": "Title glow color",
+      "default": "",
+      "info": "Leave blank to use the default purple/pink glow."
+    },
+    {
+      "type": "range",
+      "id": "heading_glow_intensity",
+      "label": "Title glow intensity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 45
+    },
+    {
+      "type": "font_picker",
+      "id": "font_subheading",
+      "label": "Subtitle font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "color",
+      "id": "color_subheading",
+      "label": "Subtitle color",
+      "default": "",
+      "info": "Leave blank to use the default soft blue."
+    },
+    {
+      "type": "font_picker",
+      "id": "font_description",
+      "label": "Description font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "color",
+      "id": "color_description",
+      "label": "Description color",
+      "default": "",
+      "info": "Leave blank to use the default soft white."
     },
     {
       "type": "header",
