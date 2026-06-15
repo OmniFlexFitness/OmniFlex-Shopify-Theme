@@ -22,19 +22,16 @@
   assign extend = section.settings.extend_behind_header
   assign persist_transparent = section.settings.persist_transparent_header
   assign overlay_color = section.settings.overlay_color | default: '#000000'
-  assign font_heading = section.settings.font_heading
-  assign font_subheading = section.settings.font_subheading
-  assign font_description = section.settings.font_description
-  assign color_heading = section.settings.color_heading
-  assign color_subheading = section.settings.color_subheading
-  assign color_description = section.settings.color_description
-  assign glow_color = section.settings.heading_glow_color
-  assign glow_intensity = section.settings.heading_glow_intensity
+  assign canvas_opacity = section.settings.canvas_opacity
 -%}
 
-{%- if font_heading -%}{{ font_heading | font_face: font_display: 'swap' }}{%- endif -%}
-{%- if font_subheading -%}{{ font_subheading | font_face: font_display: 'swap' }}{%- endif -%}
-{%- if font_description -%}{{ font_description | font_face: font_display: 'swap' }}{%- endif -%}
+<style>
+  {%- for block in section.blocks -%}
+    {%- if block.settings.font != blank -%}
+      {{ block.settings.font | font_face: font_display: 'swap' }}
+    {%- endif -%}
+  {%- endfor -%}
+</style>
 
 <style>
   #InteractiveWallpaperBanner-{{ section.id }} {
@@ -67,6 +64,7 @@
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__canvas {
     z-index: 1;
+    opacity: {{ canvas_opacity | divided_by: 100.0 }};
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__interaction {
     position: absolute;
@@ -111,48 +109,46 @@
     background: transparent !important;
     border: 0 !important;
   }
-  {%- liquid
-    assign glow_alpha_main = glow_intensity | times: 0.01
-    assign glow_alpha_secondary = glow_intensity | times: 0.005
-  -%}
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__subheading {
     display: block;
     font-size: 1.2rem;
     letter-spacing: .35em;
     text-transform: uppercase;
-    color: {{ color_subheading }};
+    color: rgba(150, 200, 255, .8);
     margin: 0 0 1rem;
-    {%- if font_subheading -%}
-    font-family: {{ font_subheading.family }}, {{ font_subheading.fallback_families }};
-    font-style: {{ font_subheading.style }};
-    font-weight: {{ font_subheading.weight }};
-    {%- endif -%}
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__heading {
     font-weight: 200;
     letter-spacing: .04em;
     margin: 0 0 1.4rem;
-    color: {{ color_heading }};
-    text-shadow:
-      0 0 40px {{ glow_color | color_modify: 'alpha', glow_alpha_main }},
-      0 0 80px {{ glow_color | color_modify: 'alpha', glow_alpha_secondary }};
-    {%- if font_heading -%}
-    font-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
-    font-style: {{ font_heading.style }};
-    font-weight: {{ font_heading.weight }};
-    {%- endif -%}
+    color: rgba(230, 235, 255, .98);
+    text-shadow: 0 0 40px rgba(120, 100, 255, .45), 0 0 80px rgba(255, 50, 180, .2);
   }
-  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description {
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description,
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description.rte {
     font-size: clamp(1.1rem, 1.4vw, 1.35rem);
     line-height: 1.55;
-    color: {{ color_description }};
+    color: rgba(220, 230, 255, .85);
     margin: 0 0 1.8rem;
     max-width: 60rem;
-    {%- if font_description -%}
-    font-family: {{ font_description.family }}, {{ font_description.fallback_families }};
-    font-style: {{ font_description.style }};
-    font-weight: {{ font_description.weight }};
-    {%- endif -%}
+    text-align: inherit;
+  }
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description p,
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description.rte p,
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description > * {
+    text-align: inherit;
+  }
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="left"],
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="left"] p {
+    text-align: left;
+  }
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="center"],
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="center"] p {
+    text-align: center;
+  }
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="right"],
+  #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="right"] p {
+    text-align: right;
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__buttons {
     display: flex;
@@ -169,6 +165,51 @@
     #InteractiveWallpaperBanner-{{ section.id }}.iwb--align-mobile-right  .iwb__content { align-items: flex-end;   text-align: right; }
     #InteractiveWallpaperBanner-{{ section.id }} .iwb__box { padding: 1.5rem; }
   }
+</style>
+
+<style>
+{%- for block in section.blocks -%}
+  {%- assign sel = '#InteractiveWallpaperBanner-' | append: section.id | append: ' [data-iwb-block-id="' | append: block.id | append: '"]' -%}
+  {%- case block.type -%}
+    {%- when 'subheading' -%}
+      {{ sel }} {
+        {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        {%- if block.settings.font != blank -%}
+        font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
+        font-style: {{ block.settings.font.style }};
+        font-weight: {{ block.settings.font.weight }};
+        {%- endif -%}
+      }
+    {%- when 'heading' -%}
+      {%- assign gi = block.settings.glow_intensity | default: 45 -%}
+      {%- assign ga_main = gi | times: 0.01 -%}
+      {%- assign ga_secondary = gi | times: 0.005 -%}
+      {%- assign gcol = block.settings.glow_color | default: '#7864FF' -%}
+      {{ sel }} {
+        {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        text-shadow:
+          0 0 40px {{ gcol | color_modify: 'alpha', ga_main }},
+          0 0 80px {{ gcol | color_modify: 'alpha', ga_secondary }};
+        {%- if block.settings.font != blank -%}
+        font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
+        font-style: {{ block.settings.font.style }};
+        font-weight: {{ block.settings.font.weight }};
+        {%- endif -%}
+      }
+    {%- when 'text' -%}
+      {{ sel }} {
+        {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        {%- if block.settings.font != blank -%}
+        font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
+        font-style: {{ block.settings.font.style }};
+        font-weight: {{ block.settings.font.weight }};
+        {%- endif -%}
+      }
+      {{ sel }} p, {{ sel }} > * {
+        {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+      }
+  {%- endcase -%}
+{%- endfor -%}
 </style>
 
 {%- if extend -%}
@@ -215,20 +256,33 @@
   <div class="iwb__content page-width">
     <div class="iwb__box{% if section.settings.show_text_box %} content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient{% endif %}">
       {%- for block in section.blocks -%}
+        {%- assign align_attr = '' -%}
+        {%- if block.settings.text_alignment and block.settings.text_alignment != 'inherit' -%}
+          {%- assign align_attr = ' data-iwb-block-align="' | append: block.settings.text_alignment | append: '"' -%}
+        {%- endif -%}
         {%- case block.type -%}
           {%- when 'subheading' -%}
-            <span class="iwb__subheading caption-with-letter-spacing" {{ block.shopify_attributes }}>
+            <span
+              class="iwb__subheading caption-with-letter-spacing"
+              data-iwb-block-id="{{ block.id }}"{{ align_attr }}
+              {{ block.shopify_attributes }}
+            >
               {{- block.settings.subheading -}}
             </span>
           {%- when 'heading' -%}
             <h2
               class="iwb__heading inline-richtext {{ block.settings.heading_size }}"
+              data-iwb-block-id="{{ block.id }}"{{ align_attr }}
               {{ block.shopify_attributes }}
             >
               {{ block.settings.heading }}
             </h2>
           {%- when 'text' -%}
-            <div class="iwb__description rte" {{ block.shopify_attributes }}>
+            <div
+              class="iwb__description rte"
+              data-iwb-block-id="{{ block.id }}"{{ align_attr }}
+              {{ block.shopify_attributes }}
+            >
               {{ block.settings.text }}
             </div>
           {%- when 'buttons' -%}
@@ -395,7 +449,14 @@
       var behindHeader = root.classList.contains('iwb--behind-header');
       var headerEls = [];
       function refreshHeaderCache() {
-        var nodes = document.querySelectorAll('.shopify-section-group-header-group');
+        // Anything that visually sits above this section that should be
+        // treated as "header" for the purpose of extending behind it.
+        var nodes = document.querySelectorAll(
+          '.shopify-section-group-header-group, ' +
+          '.shopify-section.section-header, ' +
+          '.announcement-bar-section, ' +
+          '.utility-bar'
+        );
         headerEls = [];
         for (var i = 0; i < nodes.length; i++) {
           if (!nodes[i].contains(root)) headerEls.push(nodes[i]);
@@ -403,6 +464,16 @@
       }
       refreshHeaderCache();
       function getHeaderHeight() {
+        // Prefer the section's natural-position calculation when possible:
+        // the offset between the section's current top-of-document and its
+        // own (negative) margin-top, which is exactly how far above us
+        // sibling/ancestor content takes up. Falls back to summing cached
+        // header elements when the measurement is unavailable.
+        var ourSection = root.closest('.shopify-section') || root;
+        var rect = ourSection.getBoundingClientRect();
+        var marginTop = parseFloat(getComputedStyle(ourSection).marginTop || '0');
+        var natural = rect.top + window.scrollY - marginTop;
+        if (natural > 0 && isFinite(natural)) return natural;
         var total = 0;
         for (var i = 0; i < headerEls.length; i++) {
           total += headerEls[i].getBoundingClientRect().height;
@@ -603,6 +674,17 @@
       "info": "Tint laid over the wallpaper. Combine with overlay opacity for a colored wash."
     },
     {
+      "type": "range",
+      "id": "canvas_opacity",
+      "label": "Effect opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Lower this to fade the laser/shader effect and let the background video show through more."
+    },
+    {
       "type": "header",
       "content": "Layout"
     },
@@ -660,63 +742,6 @@
     },
     {
       "type": "header",
-      "content": "Typography"
-    },
-    {
-      "type": "font_picker",
-      "id": "font_heading",
-      "label": "Title font",
-      "default": "helvetica_n4"
-    },
-    {
-      "type": "color",
-      "id": "color_heading",
-      "label": "Title color",
-      "default": "#E6EBFF"
-    },
-    {
-      "type": "color",
-      "id": "heading_glow_color",
-      "label": "Title glow color",
-      "default": "#7864FF"
-    },
-    {
-      "type": "range",
-      "id": "heading_glow_intensity",
-      "label": "Title glow intensity",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 45,
-      "info": "Set to 0 to remove the neon halo behind the title."
-    },
-    {
-      "type": "font_picker",
-      "id": "font_subheading",
-      "label": "Subtitle font",
-      "default": "helvetica_n4"
-    },
-    {
-      "type": "color",
-      "id": "color_subheading",
-      "label": "Subtitle color",
-      "default": "#96C8FF"
-    },
-    {
-      "type": "font_picker",
-      "id": "font_description",
-      "label": "Description font",
-      "default": "helvetica_n4"
-    },
-    {
-      "type": "color",
-      "id": "color_description",
-      "label": "Description color",
-      "default": "#DCE6FF"
-    },
-    {
-      "type": "header",
       "content": "Mobile"
     },
     {
@@ -742,6 +767,35 @@
           "id": "subheading",
           "label": "Subtitle",
           "default": "Subtitle"
+        },
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "font_picker",
+          "id": "font",
+          "label": "Font",
+          "default": "helvetica_n4"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#96C8FF",
+          "info": "Inherits from the section's color scheme when left at the theme default."
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "inherit",
+          "options": [
+            { "value": "inherit", "label": "Match section" },
+            { "value": "left",    "label": "Left" },
+            { "value": "center",  "label": "Center" },
+            { "value": "right",   "label": "Right" }
+          ]
         }
       ]
     },
@@ -768,6 +822,51 @@
             { "value": "hxl",  "label": "Extra large" },
             { "value": "hxxl", "label": "Extra extra large" }
           ]
+        },
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "font_picker",
+          "id": "font",
+          "label": "Font",
+          "default": "helvetica_n4"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#E6EBFF"
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#7864FF"
+        },
+        {
+          "type": "range",
+          "id": "glow_intensity",
+          "label": "Glow intensity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 45,
+          "info": "Set to 0 to remove the neon halo."
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "inherit",
+          "options": [
+            { "value": "inherit", "label": "Match section" },
+            { "value": "left",    "label": "Left" },
+            { "value": "center",  "label": "Center" },
+            { "value": "right",   "label": "Right" }
+          ]
         }
       ]
     },
@@ -781,6 +880,34 @@
           "id": "text",
           "label": "Description",
           "default": "<p>Move your cursor to interact. Click anywhere for a burst effect.</p>"
+        },
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "font_picker",
+          "id": "font",
+          "label": "Font",
+          "default": "helvetica_n4"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color",
+          "default": "#DCE6FF"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "inherit",
+          "options": [
+            { "value": "inherit", "label": "Match section" },
+            { "value": "left",    "label": "Left" },
+            { "value": "center",  "label": "Center" },
+            { "value": "right",   "label": "Right" }
+          ]
         }
       ]
     },
