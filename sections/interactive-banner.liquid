@@ -23,6 +23,14 @@
   assign persist_transparent = section.settings.persist_transparent_header
   assign overlay_color = section.settings.overlay_color | default: '#000000'
   assign canvas_opacity = section.settings.canvas_opacity
+  assign filter_strength = section.settings.video_filter_strength | times: 0.01
+  assign vf_brightness_delta = filter_strength | times: 0.45
+  assign vf_brightness = 1.0 | minus: vf_brightness_delta
+  assign vf_contrast_delta = filter_strength | times: 0.15
+  assign vf_contrast = 1.0 | plus: vf_contrast_delta
+  assign vf_saturate_delta = filter_strength | times: 0.45
+  assign vf_saturate = 1.0 | minus: vf_saturate_delta
+  assign vf_hue = filter_strength | times: -15
 -%}
 
 <style>
@@ -60,7 +68,7 @@
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__video {
     object-fit: cover;
     z-index: 0;
-    filter: brightness(.55) contrast(1.15) saturate(.55) hue-rotate(-15deg);
+    filter: brightness({{ vf_brightness }}) contrast({{ vf_contrast }}) saturate({{ vf_saturate }}) hue-rotate({{ vf_hue }}deg);
   }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__canvas {
     z-index: 1;
@@ -683,6 +691,17 @@
       "unit": "%",
       "default": 100,
       "info": "Lower this to fade the laser/shader effect and let the background video show through more."
+    },
+    {
+      "type": "range",
+      "id": "video_filter_strength",
+      "label": "Video filter strength (Drive only)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "info": "Cinematic color grade applied to the background video. Set to 0 for the raw video; higher values darken/desaturate it for a moodier look."
     },
     {
       "type": "header",
