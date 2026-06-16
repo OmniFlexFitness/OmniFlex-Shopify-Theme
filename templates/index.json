@@ -17,7 +17,7 @@
           "settings": {
             "subheading": "OMNIFLEX FITNESS",
             "font": "montserrat_n5",
-            "color": "#95B1DF",
+            "color": "#95b1df",
             "text_alignment": "inherit"
           }
         },
@@ -50,7 +50,14 @@
             "button_style_secondary_1": true,
             "button_label_2": "",
             "button_link_2": "",
-            "button_style_secondary_2": true
+            "button_style_secondary_2": true,
+            "button_scheme": "cyan",
+            "custom_color": "#5be7ff",
+            "fill_text_color": "#ffffff",
+            "button_opacity": 100,
+            "corner_radius": 2,
+            "override_glow": false,
+            "glow_color": "#5be7ff"
           }
         }
       },
@@ -66,15 +73,19 @@
         "video_url": "",
         "section_height": 100,
         "image_overlay_opacity": 0,
-        "overlay_color": "#AB4CEA",
+        "overlay_color": "#ab4cea",
         "canvas_opacity": 50,
         "video_filter_strength": 0,
         "extend_behind_header": true,
         "persist_transparent_header": true,
+        "transparent_announcement_bar": true,
+        "glow_blur": 7,
+        "glow_spread": 1,
+        "glow_intensity": 100,
         "desktop_content_position": "middle",
         "desktop_content_alignment": "center",
         "show_text_box": false,
-        "color_scheme": "scheme-93a27643-ce64-44e8-967c-d5927b623ad0",
+        "color_scheme": "neon-cyan",
         "mobile_content_alignment": "center"
       }
     },
