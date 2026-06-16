@@ -311,6 +311,52 @@
         "unit": "px",
         "label": "t:settings_schema.global.settings.blur.label",
         "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Neon glow"
+      },
+      {
+        "type": "paragraph",
+        "content": "Adds a neon glow around buttons using each color scheme's button colors, so the effect adapts to every scheme. Fill buttons glow with their fill color; outline buttons glow with their outline color."
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_button_glow",
+        "label": "Enable neon button glow",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_button_glow_fill",
+        "label": "Glow on fill (solid) buttons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "neon_button_glow_outline",
+        "label": "Glow on outline buttons",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "neon_button_glow_blur",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Glow size",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "neon_button_glow_intensity",
+        "min": 0,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Glow intensity",
+        "default": 90
       }
     ]
   },
