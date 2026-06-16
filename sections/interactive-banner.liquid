@@ -137,7 +137,7 @@
     font-size: clamp(1.1rem, 1.4vw, 1.35rem);
     line-height: 1.55;
     color: rgba(220, 230, 255, .85);
-    margin: 0 0 1.8rem;
+    margin: 0 auto 1.8rem;
     max-width: 60rem;
     text-align: inherit;
   }
@@ -146,6 +146,13 @@
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__description > * {
     text-align: inherit;
   }
+  /* Constrained text blocks (the description has a max-width) must use auto
+     side-margins to actually sit under the centered/aligned heading, instead
+     of hugging the left edge of the content box. */
+  #InteractiveWallpaperBanner-{{ section.id }}.iwb--align-center .iwb__description { margin-left: auto;  margin-right: auto; }
+  #InteractiveWallpaperBanner-{{ section.id }}.iwb--align-left   .iwb__description { margin-left: 0;     margin-right: auto; }
+  #InteractiveWallpaperBanner-{{ section.id }}.iwb--align-right  .iwb__description { margin-left: auto;  margin-right: 0; }
+
   #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="left"],
   #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="left"] p {
     text-align: left;
@@ -158,6 +165,9 @@
   #InteractiveWallpaperBanner-{{ section.id }} [data-iwb-block-align="right"] p {
     text-align: right;
   }
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description[data-iwb-block-align="left"]   { margin-left: 0;    margin-right: auto; }
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description[data-iwb-block-align="center"] { margin-left: auto; margin-right: auto; }
+  #InteractiveWallpaperBanner-{{ section.id }} .iwb__description[data-iwb-block-align="right"]  { margin-left: auto; margin-right: 0; }
   #InteractiveWallpaperBanner-{{ section.id }} .iwb__buttons {
     display: flex;
     flex-wrap: wrap;
@@ -180,8 +190,17 @@
   {%- assign sel = '#InteractiveWallpaperBanner-' | append: section.id | append: ' [data-iwb-block-id="' | append: block.id | append: '"]' -%}
   {%- case block.type -%}
     {%- when 'subheading' -%}
+      {%- assign sgi = block.settings.glow_intensity | default: 0 -%}
+      {%- assign sgcol = block.settings.glow_color | default: '#5BE7FF' -%}
+      {%- assign sga1 = sgi | times: 0.012 | at_most: 1.0 -%}
+      {%- assign sga2 = sgi | times: 0.006 | at_most: 1.0 -%}
       {{ sel }} {
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        {%- if sgi > 0 -%}
+        text-shadow:
+          0 0 14px {{ sgcol | color_modify: 'alpha', sga1 }},
+          0 0 28px {{ sgcol | color_modify: 'alpha', sga2 }};
+        {%- endif -%}
         {%- if block.settings.font != blank -%}
         font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
         font-style: {{ block.settings.font.style }};
@@ -205,8 +224,17 @@
         {%- endif -%}
       }
     {%- when 'text' -%}
+      {%- assign tgi = block.settings.glow_intensity | default: 0 -%}
+      {%- assign tgcol = block.settings.glow_color | default: '#7864FF' -%}
+      {%- assign tga1 = tgi | times: 0.01 | at_most: 1.0 -%}
+      {%- assign tga2 = tgi | times: 0.005 | at_most: 1.0 -%}
       {{ sel }} {
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        {%- if tgi > 0 -%}
+        text-shadow:
+          0 0 12px {{ tgcol | color_modify: 'alpha', tga1 }},
+          0 0 24px {{ tgcol | color_modify: 'alpha', tga2 }};
+        {%- endif -%}
         {%- if block.settings.font != blank -%}
         font-family: {{ block.settings.font.family }}, {{ block.settings.font.fallback_families }};
         font-style: {{ block.settings.font.style }};
@@ -215,6 +243,11 @@
       }
       {{ sel }} p, {{ sel }} > * {
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
+        {%- if tgi > 0 -%}
+        text-shadow:
+          0 0 12px {{ tgcol | color_modify: 'alpha', tga1 }},
+          0 0 24px {{ tgcol | color_modify: 'alpha', tga2 }};
+        {%- endif -%}
       }
     {%- when 'buttons' -%}
       {%- comment -%}
@@ -987,6 +1020,27 @@
             { "value": "center",  "label": "Center" },
             { "value": "right",   "label": "Right" }
           ]
+        },
+        {
+          "type": "header",
+          "content": "Text glow"
+        },
+        {
+          "type": "range",
+          "id": "glow_intensity",
+          "label": "Glow intensity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 0,
+          "info": "Adds a subtle neon glow behind the text. 0 = off."
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#5BE7FF"
         }
       ]
     },
@@ -1099,6 +1153,27 @@
             { "value": "center",  "label": "Center" },
             { "value": "right",   "label": "Right" }
           ]
+        },
+        {
+          "type": "header",
+          "content": "Text glow"
+        },
+        {
+          "type": "range",
+          "id": "glow_intensity",
+          "label": "Glow intensity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 0,
+          "info": "Adds a subtle neon glow behind the text. 0 = off."
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#7864FF"
         }
       ]
     },
