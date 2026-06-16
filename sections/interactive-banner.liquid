@@ -598,57 +598,34 @@
       on(root, 'touchmove', onTouchMove, { passive: true });
       on(root, 'touchstart', onTouchStart, { passive: true });
 
-      // Header extension - measure how far our section sits below the top of
-      // the page (i.e. the cumulative header-group height) and expose it as
-      // a CSS variable so the banner can pull itself up under the header.
+      // Header extension - measure exactly how far this section sits below the
+      // top of the document in normal flow, so its negative margin can pull it
+      // all the way up to y=0 (behind the entire header stack: announcement
+      // bar + header). The negative margin lives on `root`, so we temporarily
+      // zero it, read the true offset, then restore - this is robust no matter
+      // how many header-group / announcement sections sit above us. The result
+      // is cached so scrolling never triggers a reflow.
       var behindHeader = root.classList.contains('iwb--behind-header');
-      var headerEls = [];
-      function refreshHeaderCache() {
-        // Anything that visually sits above this section that should be
-        // treated as "header" for the purpose of extending behind it.
-        var nodes = document.querySelectorAll(
-          '.shopify-section-group-header-group, ' +
-          '.shopify-section.section-header, ' +
-          '.announcement-bar-section, ' +
-          '.utility-bar'
-        );
-        headerEls = [];
-        for (var i = 0; i < nodes.length; i++) {
-          if (!nodes[i].contains(root)) headerEls.push(nodes[i]);
-        }
-      }
-      refreshHeaderCache();
-      function getHeaderHeight() {
-        // Prefer the section's natural-position calculation when possible:
-        // the offset between the section's current top-of-document and its
-        // own (negative) margin-top, which is exactly how far above us
-        // sibling/ancestor content takes up. Falls back to summing cached
-        // header elements when the measurement is unavailable.
-        var ourSection = root.closest('.shopify-section') || root;
-        var rect = ourSection.getBoundingClientRect();
-        var marginTop = parseFloat(getComputedStyle(ourSection).marginTop || '0');
-        var natural = rect.top + window.scrollY - marginTop;
-        if (natural > 0 && isFinite(natural)) return natural;
-        var total = 0;
-        for (var i = 0; i < headerEls.length; i++) {
-          total += headerEls[i].getBoundingClientRect().height;
-        }
-        return total;
+      var measuredHeaderHeight = 0;
+      function getHeaderHeight() { return measuredHeaderHeight; }
+      function measureHeaderHeight() {
+        if (!behindHeader) return 0;
+        var prev = root.style.marginTop;
+        root.style.marginTop = '0px';
+        // Force layout, then read the section's natural top in document coords.
+        var top = root.getBoundingClientRect().top + window.scrollY;
+        root.style.marginTop = prev;
+        return top > 0 && isFinite(top) ? top : 0;
       }
       function updateHeaderOffset() {
         if (!behindHeader) {
           root.style.setProperty('--iwb-header-offset', '0px');
           return;
         }
-        var h = getHeaderHeight();
-        if (h === 0) {
-          var rect = root.getBoundingClientRect();
-          h = rect.top + window.scrollY + parseFloat(getComputedStyle(root).marginTop || '0');
-        }
-        root.style.setProperty('--iwb-header-offset', h + 'px');
+        measuredHeaderHeight = measureHeaderHeight();
+        root.style.setProperty('--iwb-header-offset', measuredHeaderHeight + 'px');
       }
       function onWindowResize() {
-        refreshHeaderCache();
         updateHeaderOffset();
         if (syncHeaderTransparency) syncHeaderTransparency();
       }
