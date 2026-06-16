@@ -78,7 +78,7 @@
         "section_height": 100,
         "image_overlay_opacity": 0,
         "overlay_color": "#ab4cea",
-        "canvas_opacity": 50,
+        "canvas_opacity": 80,
         "video_filter_strength": 0,
         "extend_behind_header": true,
         "persist_transparent_header": true,
