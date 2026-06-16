@@ -217,7 +217,23 @@
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
       }
     {%- when 'buttons' -%}
-      {%- assign bglow = block.settings.glow_color | default: '#5BE7FF' -%}
+      {%- comment -%} Map the chosen neon scheme to one or two glow colors. {%- endcomment -%}
+      {%- assign bscheme = block.settings.button_scheme | default: 'cyan' -%}
+      {%- assign bglow2 = '' -%}
+      {%- case bscheme -%}
+        {%- when 'cyan' -%}{%- assign bglow = '#5BE7FF' -%}
+        {%- when 'blue' -%}{%- assign bglow = '#4A78FF' -%}
+        {%- when 'purple' -%}{%- assign bglow = '#9A6DFF' -%}
+        {%- when 'magenta' -%}{%- assign bglow = '#FF3AA9' -%}
+        {%- when 'lime' -%}{%- assign bglow = '#5BFF9A' -%}
+        {%- when 'amber' -%}{%- assign bglow = '#FFB54A' -%}
+        {%- when 'cyan_pink' -%}{%- assign bglow = '#5BE7FF' -%}{%- assign bglow2 = '#FF3AA9' -%}
+        {%- when 'purple_cyan' -%}{%- assign bglow = '#9A6DFF' -%}{%- assign bglow2 = '#5BE7FF' -%}
+        {%- when 'custom' -%}{%- assign bglow = block.settings.glow_color | default: '#5BE7FF' -%}{%- assign bglow2 = block.settings.glow_color_2 -%}
+        {%- else -%}{%- assign bglow = '#5BE7FF' -%}
+      {%- endcase -%}
+      {%- if bglow2 == blank -%}{%- assign bglow2 = bglow -%}{%- endif -%}
+      {%- assign bfill_text = block.settings.fill_text_color | default: '#06061A' -%}
       {%- assign bradius = block.settings.corner_radius | default: 2 -%}
       {{ sel }} .button {
         border-radius: {{ bradius }}px;
@@ -234,17 +250,17 @@
         display: none !important;
       }
       {{ sel }} .button--primary {
-        background: {{ bglow }};
-        color: #06061a;
+        background: linear-gradient(120deg, {{ bglow }}, {{ bglow2 }});
+        color: {{ bfill_text }};
+        border-color: {{ bglow2 }};
         box-shadow:
           0 0 14px {{ bglow | color_modify: 'alpha', 0.55 }},
-          0 0 36px {{ bglow | color_modify: 'alpha', 0.30 }};
+          0 0 36px {{ bglow2 | color_modify: 'alpha', 0.30 }};
       }
       {{ sel }} .button--primary:hover {
-        background: {{ bglow }};
         box-shadow:
-          0 0 22px {{ bglow | color_modify: 'alpha', 0.75 }},
-          0 0 60px {{ bglow | color_modify: 'alpha', 0.45 }};
+          0 0 22px {{ bglow | color_modify: 'alpha', 0.80 }},
+          0 0 60px {{ bglow2 | color_modify: 'alpha', 0.50 }};
         transform: translateY(-1px);
       }
       {{ sel }} .button--secondary {
@@ -1045,13 +1061,46 @@
         },
         {
           "type": "paragraph",
-          "content": "Fill buttons get a colored neon glow; outline buttons get a glowing neon border."
+          "content": "Fill buttons get a colored neon glow; outline buttons get a glowing neon border. Pick a scheme below."
+        },
+        {
+          "type": "select",
+          "id": "button_scheme",
+          "label": "Button color scheme",
+          "default": "cyan",
+          "options": [
+            { "value": "cyan",        "label": "Neon cyan" },
+            { "value": "blue",        "label": "Neon blue" },
+            { "value": "purple",      "label": "Neon purple" },
+            { "value": "magenta",     "label": "Neon magenta" },
+            { "value": "lime",        "label": "Neon lime" },
+            { "value": "amber",       "label": "Neon amber" },
+            { "value": "cyan_pink",   "label": "Cyan to pink (dual)" },
+            { "value": "purple_cyan", "label": "Purple to cyan (dual)" },
+            { "value": "custom",      "label": "Custom colors" }
+          ],
+          "info": "Affects both fill and outline buttons. Dual schemes blend two colors on fill buttons."
         },
         {
           "type": "color",
           "id": "glow_color",
-          "label": "Glow color",
-          "default": "#5BE7FF"
+          "label": "Custom glow color",
+          "default": "#5BE7FF",
+          "info": "Used when the scheme above is set to Custom colors."
+        },
+        {
+          "type": "color",
+          "id": "glow_color_2",
+          "label": "Custom second color",
+          "default": "#FF3AA9",
+          "info": "Second color for the fill-button gradient when using Custom colors. Set it equal to the first for a solid fill."
+        },
+        {
+          "type": "color",
+          "id": "fill_text_color",
+          "label": "Fill button text color",
+          "default": "#06061A",
+          "info": "Label color on solid (fill) buttons. Keep it dark for bright neon fills."
         },
         {
           "type": "range",
