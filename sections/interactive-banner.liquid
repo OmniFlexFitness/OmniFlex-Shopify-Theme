@@ -217,24 +217,80 @@
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
       }
     {%- when 'buttons' -%}
-      {%- comment -%} Map the chosen neon scheme to one or two glow colors. {%- endcomment -%}
+      {%- comment -%}
+        Resolve the neon palette from the chosen scheme. "scheme" mode derives
+        everything from the section's Shopify color scheme via CSS variables;
+        every other option uses fixed neon hex values. col1 is the primary
+        neon color (fill + outline + glow); col2 adds a second tone for the
+        dual gradient fills.
+      {%- endcomment -%}
       {%- assign bscheme = block.settings.button_scheme | default: 'cyan' -%}
-      {%- assign bglow2 = '' -%}
+      {%- assign use_vars = false -%}
+      {%- assign col2 = '' -%}
       {%- case bscheme -%}
-        {%- when 'cyan' -%}{%- assign bglow = '#5BE7FF' -%}
-        {%- when 'blue' -%}{%- assign bglow = '#4A78FF' -%}
-        {%- when 'purple' -%}{%- assign bglow = '#9A6DFF' -%}
-        {%- when 'magenta' -%}{%- assign bglow = '#FF3AA9' -%}
-        {%- when 'lime' -%}{%- assign bglow = '#5BFF9A' -%}
-        {%- when 'amber' -%}{%- assign bglow = '#FFB54A' -%}
-        {%- when 'cyan_pink' -%}{%- assign bglow = '#5BE7FF' -%}{%- assign bglow2 = '#FF3AA9' -%}
-        {%- when 'purple_cyan' -%}{%- assign bglow = '#9A6DFF' -%}{%- assign bglow2 = '#5BE7FF' -%}
-        {%- when 'custom' -%}{%- assign bglow = block.settings.glow_color | default: '#5BE7FF' -%}{%- assign bglow2 = block.settings.glow_color_2 -%}
-        {%- else -%}{%- assign bglow = '#5BE7FF' -%}
+        {%- when 'scheme' -%}{%- assign use_vars = true -%}
+        {%- when 'cyan' -%}{%- assign col1 = '#5BE7FF' -%}
+        {%- when 'blue' -%}{%- assign col1 = '#4A78FF' -%}
+        {%- when 'purple' -%}{%- assign col1 = '#9A6DFF' -%}
+        {%- when 'magenta' -%}{%- assign col1 = '#FF3AA9' -%}
+        {%- when 'lime' -%}{%- assign col1 = '#5BFF9A' -%}
+        {%- when 'amber' -%}{%- assign col1 = '#FFB54A' -%}
+        {%- when 'cyan_pink' -%}{%- assign col1 = '#5BE7FF' -%}{%- assign col2 = '#FF3AA9' -%}
+        {%- when 'purple_cyan' -%}{%- assign col1 = '#9A6DFF' -%}{%- assign col2 = '#5BE7FF' -%}
+        {%- when 'custom' -%}{%- assign col1 = block.settings.custom_color | default: '#5BE7FF' -%}
+        {%- else -%}{%- assign col1 = '#5BE7FF' -%}
       {%- endcase -%}
-      {%- if bglow2 == blank -%}{%- assign bglow2 = bglow -%}{%- endif -%}
-      {%- assign bfill_text = block.settings.fill_text_color | default: '#06061A' -%}
+      {%- if col2 == '' -%}{%- assign col2 = col1 -%}{%- endif -%}
+
+      {%- comment -%} Fill background, outline color. {%- endcomment -%}
+      {%- if use_vars -%}
+        {%- assign fill_bg = 'rgb(var(--color-button))' -%}
+        {%- assign outline_col = 'rgb(var(--color-button))' -%}
+      {%- else -%}
+        {%- if col2 == col1 -%}
+          {%- assign fill_bg = col1 -%}
+        {%- else -%}
+          {%- assign fill_bg = 'linear-gradient(120deg, ' | append: col1 | append: ', ' | append: col2 | append: ')' -%}
+        {%- endif -%}
+        {%- assign outline_col = col1 -%}
+      {%- endif -%}
+
+      {%- comment -%} Glow source: explicit override > scheme vars > neon hex. {%- endcomment -%}
+      {%- assign var_glow = false -%}
+      {%- if block.settings.override_glow -%}
+        {%- assign g1 = block.settings.glow_color | default: '#5BE7FF' -%}
+        {%- assign g2 = g1 -%}
+      {%- elsif use_vars -%}
+        {%- assign var_glow = true -%}
+      {%- else -%}
+        {%- assign g1 = col1 -%}
+        {%- assign g2 = col2 -%}
+      {%- endif -%}
+      {%- if var_glow -%}
+        {%- assign glow_55 = 'rgba(var(--color-button), .55)' -%}
+        {%- assign glow_30 = 'rgba(var(--color-button), .30)' -%}
+        {%- assign glow_80 = 'rgba(var(--color-button), .80)' -%}
+        {%- assign glow_50 = 'rgba(var(--color-button), .50)' -%}
+        {%- assign glow_40 = 'rgba(var(--color-button), .40)' -%}
+        {%- assign glow_12 = 'rgba(var(--color-button), .12)' -%}
+        {%- assign glow_60 = 'rgba(var(--color-button), .60)' -%}
+        {%- assign glow_20 = 'rgba(var(--color-button), .20)' -%}
+        {%- assign glow_70 = 'rgba(var(--color-button), .70)' -%}
+      {%- else -%}
+        {%- assign glow_55 = g1 | color_modify: 'alpha', 0.55 -%}
+        {%- assign glow_30 = g2 | color_modify: 'alpha', 0.30 -%}
+        {%- assign glow_80 = g1 | color_modify: 'alpha', 0.80 -%}
+        {%- assign glow_50 = g2 | color_modify: 'alpha', 0.50 -%}
+        {%- assign glow_40 = g1 | color_modify: 'alpha', 0.40 -%}
+        {%- assign glow_12 = g1 | color_modify: 'alpha', 0.12 -%}
+        {%- assign glow_60 = g1 | color_modify: 'alpha', 0.60 -%}
+        {%- assign glow_20 = g1 | color_modify: 'alpha', 0.20 -%}
+        {%- assign glow_70 = g1 | color_modify: 'alpha', 0.70 -%}
+      {%- endif -%}
+
+      {%- assign fill_text = block.settings.fill_text_color | default: '#FFFFFF' -%}
       {%- assign bradius = block.settings.corner_radius | default: 2 -%}
+      {%- assign bopacity = block.settings.button_opacity | default: 100 | divided_by: 100.0 -%}
       {{ sel }} .button {
         border-radius: {{ bradius }}px;
         text-transform: uppercase;
@@ -242,7 +298,8 @@
         font-weight: 500;
         min-height: 4.8rem;
         padding: 0 2.8rem;
-        border: 1.5px solid {{ bglow }};
+        opacity: {{ bopacity }};
+        border: 1.5px solid {{ outline_col }};
         transition: box-shadow .25s ease, background .25s ease, color .25s ease, transform .15s ease;
       }
       {{ sel }} .button::before,
@@ -250,33 +307,25 @@
         display: none !important;
       }
       {{ sel }} .button--primary {
-        background: linear-gradient(120deg, {{ bglow }}, {{ bglow2 }});
-        color: {{ bfill_text }};
-        border-color: {{ bglow2 }};
-        box-shadow:
-          0 0 14px {{ bglow | color_modify: 'alpha', 0.55 }},
-          0 0 36px {{ bglow2 | color_modify: 'alpha', 0.30 }};
+        background: {{ fill_bg }};
+        color: {{ fill_text }};
+        border-color: transparent;
+        box-shadow: 0 0 14px {{ glow_55 }}, 0 0 36px {{ glow_30 }};
       }
       {{ sel }} .button--primary:hover {
-        box-shadow:
-          0 0 22px {{ bglow | color_modify: 'alpha', 0.80 }},
-          0 0 60px {{ bglow2 | color_modify: 'alpha', 0.50 }};
+        box-shadow: 0 0 22px {{ glow_80 }}, 0 0 60px {{ glow_50 }};
         transform: translateY(-1px);
       }
       {{ sel }} .button--secondary {
         background: transparent;
-        color: {{ bglow }};
-        box-shadow:
-          0 0 12px {{ bglow | color_modify: 'alpha', 0.40 }},
-          inset 0 0 12px {{ bglow | color_modify: 'alpha', 0.12 }};
-        text-shadow: 0 0 8px {{ bglow | color_modify: 'alpha', 0.70 }};
+        color: {{ outline_col }};
+        box-shadow: 0 0 12px {{ glow_40 }}, inset 0 0 12px {{ glow_12 }};
+        text-shadow: 0 0 8px {{ glow_70 }};
       }
       {{ sel }} .button--secondary:hover {
-        background: {{ bglow | color_modify: 'alpha', 0.12 }};
+        background: {{ glow_12 }};
         color: #ffffff;
-        box-shadow:
-          0 0 22px {{ bglow | color_modify: 'alpha', 0.60 }},
-          inset 0 0 18px {{ bglow | color_modify: 'alpha', 0.20 }};
+        box-shadow: 0 0 22px {{ glow_60 }}, inset 0 0 18px {{ glow_20 }};
         transform: translateY(-1px);
       }
   {%- endcase -%}
@@ -1061,7 +1110,7 @@
         },
         {
           "type": "paragraph",
-          "content": "Fill buttons get a colored neon glow; outline buttons get a glowing neon border. Pick a scheme below."
+          "content": "Pick a neon scheme - it sets the fill color, outline color, and matching glow automatically. Outline buttons use the neon color on a transparent background; fill buttons use the neon color with white text."
         },
         {
           "type": "select",
@@ -1069,6 +1118,7 @@
           "label": "Button color scheme",
           "default": "cyan",
           "options": [
+            { "value": "scheme",      "label": "Match section color scheme" },
             { "value": "cyan",        "label": "Neon cyan" },
             { "value": "blue",        "label": "Neon blue" },
             { "value": "purple",      "label": "Neon purple" },
@@ -1077,30 +1127,32 @@
             { "value": "amber",       "label": "Neon amber" },
             { "value": "cyan_pink",   "label": "Cyan to pink (dual)" },
             { "value": "purple_cyan", "label": "Purple to cyan (dual)" },
-            { "value": "custom",      "label": "Custom colors" }
+            { "value": "custom",      "label": "Custom color" }
           ],
-          "info": "Affects both fill and outline buttons. Dual schemes blend two colors on fill buttons."
+          "info": "\"Match section color scheme\" pulls the neon color from this section's Color scheme setting."
         },
         {
           "type": "color",
-          "id": "glow_color",
-          "label": "Custom glow color",
+          "id": "custom_color",
+          "label": "Custom neon color",
           "default": "#5BE7FF",
-          "info": "Used when the scheme above is set to Custom colors."
-        },
-        {
-          "type": "color",
-          "id": "glow_color_2",
-          "label": "Custom second color",
-          "default": "#FF3AA9",
-          "info": "Second color for the fill-button gradient when using Custom colors. Set it equal to the first for a solid fill."
+          "info": "Used only when the scheme above is set to Custom color."
         },
         {
           "type": "color",
           "id": "fill_text_color",
           "label": "Fill button text color",
-          "default": "#06061A",
-          "info": "Label color on solid (fill) buttons. Keep it dark for bright neon fills."
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "button_opacity",
+          "label": "Button opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 100
         },
         {
           "type": "range",
@@ -1112,6 +1164,23 @@
           "unit": "px",
           "default": 2,
           "info": "0 = perfectly sharp corners."
+        },
+        {
+          "type": "header",
+          "content": "Glow override (optional)"
+        },
+        {
+          "type": "checkbox",
+          "id": "override_glow",
+          "label": "Use a custom glow color",
+          "default": false,
+          "info": "By default the glow matches the button color. Turn this on to set it separately."
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#5BE7FF"
         }
       ]
     }

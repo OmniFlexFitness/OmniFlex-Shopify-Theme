@@ -248,6 +248,61 @@
           "secondary_button_label": "#ffffff",
           "shadow": "#000000"
         }
+      },
+      "neon-cyan": {
+        "settings": {
+          "background": "#06061a",
+          "background_gradient": "",
+          "text": "#e6ebff",
+          "button": "#5be7ff",
+          "button_label": "#06061a",
+          "secondary_button_label": "#5be7ff",
+          "shadow": "#5be7ff"
+        }
+      },
+      "neon-blue": {
+        "settings": {
+          "background": "#05071f",
+          "background_gradient": "",
+          "text": "#e6ebff",
+          "button": "#4a78ff",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#4a78ff",
+          "shadow": "#4a78ff"
+        }
+      },
+      "neon-purple": {
+        "settings": {
+          "background": "#0c0828",
+          "background_gradient": "",
+          "text": "#ede9ff",
+          "button": "#9a6dff",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#9a6dff",
+          "shadow": "#9a6dff"
+        }
+      },
+      "neon-magenta": {
+        "settings": {
+          "background": "#160617",
+          "background_gradient": "",
+          "text": "#ffe6f5",
+          "button": "#ff3aa9",
+          "button_label": "#ffffff",
+          "secondary_button_label": "#ff3aa9",
+          "shadow": "#ff3aa9"
+        }
+      },
+      "neon-lime": {
+        "settings": {
+          "background": "#05140c",
+          "background_gradient": "",
+          "text": "#e6fff0",
+          "button": "#5bff9a",
+          "button_label": "#06061a",
+          "secondary_button_label": "#5bff9a",
+          "shadow": "#5bff9a"
+        }
       }
     }
   },
@@ -308,6 +363,61 @@
             "button_label": "#334FB4",
             "secondary_button_label": "#FFFFFF",
             "shadow": "#121212"
+          }
+        },
+        "neon-cyan": {
+          "settings": {
+            "background": "#06061a",
+            "background_gradient": "",
+            "text": "#e6ebff",
+            "button": "#5be7ff",
+            "button_label": "#06061a",
+            "secondary_button_label": "#5be7ff",
+            "shadow": "#5be7ff"
+          }
+        },
+        "neon-blue": {
+          "settings": {
+            "background": "#05071f",
+            "background_gradient": "",
+            "text": "#e6ebff",
+            "button": "#4a78ff",
+            "button_label": "#ffffff",
+            "secondary_button_label": "#4a78ff",
+            "shadow": "#4a78ff"
+          }
+        },
+        "neon-purple": {
+          "settings": {
+            "background": "#0c0828",
+            "background_gradient": "",
+            "text": "#ede9ff",
+            "button": "#9a6dff",
+            "button_label": "#ffffff",
+            "secondary_button_label": "#9a6dff",
+            "shadow": "#9a6dff"
+          }
+        },
+        "neon-magenta": {
+          "settings": {
+            "background": "#160617",
+            "background_gradient": "",
+            "text": "#ffe6f5",
+            "button": "#ff3aa9",
+            "button_label": "#ffffff",
+            "secondary_button_label": "#ff3aa9",
+            "shadow": "#ff3aa9"
+          }
+        },
+        "neon-lime": {
+          "settings": {
+            "background": "#05140c",
+            "background_gradient": "",
+            "text": "#e6fff0",
+            "button": "#5bff9a",
+            "button_label": "#06061a",
+            "secondary_button_label": "#5bff9a",
+            "shadow": "#5bff9a"
           }
         }
       },
