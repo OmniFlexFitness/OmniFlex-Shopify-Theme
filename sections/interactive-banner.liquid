@@ -216,6 +216,53 @@
       {{ sel }} p, {{ sel }} > * {
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
       }
+    {%- when 'buttons' -%}
+      {%- assign bglow = block.settings.glow_color | default: '#5BE7FF' -%}
+      {%- assign bradius = block.settings.corner_radius | default: 2 -%}
+      {{ sel }} .button {
+        border-radius: {{ bradius }}px;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        font-weight: 500;
+        min-height: 4.8rem;
+        padding: 0 2.8rem;
+        border: 1.5px solid {{ bglow }};
+        transition: box-shadow .25s ease, background .25s ease, color .25s ease, transform .15s ease;
+      }
+      {{ sel }} .button::before,
+      {{ sel }} .button::after {
+        display: none !important;
+      }
+      {{ sel }} .button--primary {
+        background: {{ bglow }};
+        color: #06061a;
+        box-shadow:
+          0 0 14px {{ bglow | color_modify: 'alpha', 0.55 }},
+          0 0 36px {{ bglow | color_modify: 'alpha', 0.30 }};
+      }
+      {{ sel }} .button--primary:hover {
+        background: {{ bglow }};
+        box-shadow:
+          0 0 22px {{ bglow | color_modify: 'alpha', 0.75 }},
+          0 0 60px {{ bglow | color_modify: 'alpha', 0.45 }};
+        transform: translateY(-1px);
+      }
+      {{ sel }} .button--secondary {
+        background: transparent;
+        color: {{ bglow }};
+        box-shadow:
+          0 0 12px {{ bglow | color_modify: 'alpha', 0.40 }},
+          inset 0 0 12px {{ bglow | color_modify: 'alpha', 0.12 }};
+        text-shadow: 0 0 8px {{ bglow | color_modify: 'alpha', 0.70 }};
+      }
+      {{ sel }} .button--secondary:hover {
+        background: {{ bglow | color_modify: 'alpha', 0.12 }};
+        color: #ffffff;
+        box-shadow:
+          0 0 22px {{ bglow | color_modify: 'alpha', 0.60 }},
+          inset 0 0 18px {{ bglow | color_modify: 'alpha', 0.20 }};
+        transform: translateY(-1px);
+      }
   {%- endcase -%}
 {%- endfor -%}
 </style>
@@ -225,12 +272,19 @@
   body.iwb-header-transparent .section-header,
   body.iwb-header-transparent .section-header .header-wrapper,
   body.iwb-header-transparent .section-header .header-wrapper.gradient,
-  body.iwb-header-transparent .shopify-section-group-header-group {
+  body.iwb-header-transparent .shopify-section-group-header-group
+  {%- if section.settings.transparent_announcement_bar -%},
+  body.iwb-header-transparent .utility-bar,
+  body.iwb-header-transparent .utility-bar.gradient,
+  body.iwb-header-transparent .announcement-bar-section,
+  body.iwb-header-transparent .announcement-bar
+  {%- endif -%} {
     background: transparent !important;
     background-color: transparent !important;
     background-image: none !important;
   }
-  body.iwb-header-transparent .header-wrapper--border-bottom {
+  body.iwb-header-transparent .header-wrapper--border-bottom,
+  body.iwb-header-transparent .utility-bar--bottom-border {
     border-bottom-color: transparent !important;
   }
   body.iwb-header-transparent .section-header {
@@ -294,7 +348,7 @@
               {{ block.settings.text }}
             </div>
           {%- when 'buttons' -%}
-            <div class="iwb__buttons" {{ block.shopify_attributes }}>
+            <div class="iwb__buttons" data-iwb-block-id="{{ block.id }}" {{ block.shopify_attributes }}>
               {%- if block.settings.button_label_1 != blank -%}
                 <a
                   {% if block.settings.button_link_1 == blank %}
@@ -722,6 +776,13 @@
       "info": "When on, the site header stays transparent after you scroll past the banner - content below the banner shows through it. Otherwise the header reverts to its normal background once the banner has fully scrolled away."
     },
     {
+      "type": "checkbox",
+      "id": "transparent_announcement_bar",
+      "label": "Also make announcement bar transparent",
+      "default": true,
+      "info": "Includes the announcement / utility bar above the header in the transparent treatment."
+    },
+    {
       "type": "header",
       "content": "Content"
     },
@@ -977,6 +1038,31 @@
           "id": "button_style_secondary_2",
           "label": "Use outline button style",
           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Neon style"
+        },
+        {
+          "type": "paragraph",
+          "content": "Fill buttons get a colored neon glow; outline buttons get a glowing neon border."
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#5BE7FF"
+        },
+        {
+          "type": "range",
+          "id": "corner_radius",
+          "label": "Corner radius",
+          "min": 0,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 2,
+          "info": "0 = perfectly sharp corners."
         }
       ]
     }
