@@ -30,8 +30,8 @@
             "heading_size": "hxxl",
             "font": "montserrat_n6",
             "color": "#e6ebff",
-            "glow_color": "#7864ff",
-            "glow_intensity": 45,
+            "glow_color": "#5BD9FF",
+            "glow_intensity": 0,
             "text_alignment": "inherit"
           }
         },
