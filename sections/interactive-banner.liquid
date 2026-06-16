@@ -191,7 +191,11 @@
   {%- case block.type -%}
     {%- when 'subheading' -%}
       {%- assign sgi = block.settings.glow_intensity | default: 0 -%}
-      {%- assign sgcol = block.settings.glow_color | default: '#5BE7FF' -%}
+      {%- if block.settings.inherit_neon_color -%}
+        {%- assign sgcol = section.settings.master_neon_color | default: '#5BE7FF' -%}
+      {%- else -%}
+        {%- assign sgcol = block.settings.glow_color | default: '#5BE7FF' -%}
+      {%- endif -%}
       {%- assign sga1 = sgi | times: 0.012 | at_most: 1.0 -%}
       {%- assign sga2 = sgi | times: 0.006 | at_most: 1.0 -%}
       {{ sel }} {
@@ -211,7 +215,11 @@
       {%- assign gi = block.settings.glow_intensity | default: 45 -%}
       {%- assign ga_main = gi | times: 0.01 -%}
       {%- assign ga_secondary = gi | times: 0.005 -%}
-      {%- assign gcol = block.settings.glow_color | default: '#7864FF' -%}
+      {%- if block.settings.inherit_neon_color -%}
+        {%- assign gcol = section.settings.master_neon_color | default: '#5BE7FF' -%}
+      {%- else -%}
+        {%- assign gcol = block.settings.glow_color | default: '#7864FF' -%}
+      {%- endif -%}
       {{ sel }} {
         {%- if block.settings.color != blank -%}color: {{ block.settings.color }};{%- endif -%}
         text-shadow:
@@ -225,7 +233,11 @@
       }
     {%- when 'text' -%}
       {%- assign tgi = block.settings.glow_intensity | default: 0 -%}
-      {%- assign tgcol = block.settings.glow_color | default: '#7864FF' -%}
+      {%- if block.settings.inherit_neon_color -%}
+        {%- assign tgcol = section.settings.master_neon_color | default: '#5BE7FF' -%}
+      {%- else -%}
+        {%- assign tgcol = block.settings.glow_color | default: '#7864FF' -%}
+      {%- endif -%}
       {%- assign tga1 = tgi | times: 0.01 | at_most: 1.0 -%}
       {%- assign tga2 = tgi | times: 0.005 | at_most: 1.0 -%}
       {{ sel }} {
@@ -257,10 +269,11 @@
         neon color (fill + outline + glow); col2 adds a second tone for the
         dual gradient fills.
       {%- endcomment -%}
-      {%- assign bscheme = block.settings.button_scheme | default: 'cyan' -%}
+      {%- assign bscheme = block.settings.button_scheme | default: 'master' -%}
       {%- assign use_vars = false -%}
       {%- assign col2 = '' -%}
       {%- case bscheme -%}
+        {%- when 'master' -%}{%- assign col1 = section.settings.master_neon_color | default: '#5BE7FF' -%}
         {%- when 'scheme' -%}{%- assign use_vars = true -%}
         {%- when 'cyan' -%}{%- assign col1 = '#5BE7FF' -%}
         {%- when 'blue' -%}{%- assign col1 = '#4A78FF' -%}
@@ -271,7 +284,7 @@
         {%- when 'cyan_pink' -%}{%- assign col1 = '#5BE7FF' -%}{%- assign col2 = '#FF3AA9' -%}
         {%- when 'purple_cyan' -%}{%- assign col1 = '#9A6DFF' -%}{%- assign col2 = '#5BE7FF' -%}
         {%- when 'custom' -%}{%- assign col1 = block.settings.custom_color | default: '#5BE7FF' -%}
-        {%- else -%}{%- assign col1 = '#5BE7FF' -%}
+        {%- else -%}{%- assign col1 = section.settings.master_neon_color | default: '#5BE7FF' -%}
       {%- endcase -%}
       {%- if col2 == '' -%}{%- assign col2 = col1 -%}{%- endif -%}
 
@@ -862,36 +875,18 @@
     },
     {
       "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "checkbox",
-      "id": "extend_behind_header",
-      "label": "Extend behind site header",
-      "default": true,
-      "info": "Pulls the banner up so its background fills the area behind the header. The header becomes transparent over this section."
-    },
-    {
-      "type": "checkbox",
-      "id": "persist_transparent_header",
-      "label": "Keep header transparent on the rest of the page",
-      "default": false,
-      "info": "When on, the site header stays transparent after you scroll past the banner - content below the banner shows through it. Otherwise the header reverts to its normal background once the banner has fully scrolled away."
-    },
-    {
-      "type": "checkbox",
-      "id": "transparent_announcement_bar",
-      "label": "Also make announcement bar transparent",
-      "default": true,
-      "info": "Includes the announcement / utility bar above the header in the transparent treatment."
-    },
-    {
-      "type": "header",
-      "content": "Button glow"
+      "content": "Neon style"
     },
     {
       "type": "paragraph",
-      "content": "Controls the neon glow shape for all buttons in this section. Lower blur with a little spread gives a sharp, tight neon edge."
+      "content": "The master neon color is reused everywhere: text glows, button fills, button glows. Each block can override it. The glow shape applies to every neon element in this section."
+    },
+    {
+      "type": "color",
+      "id": "master_neon_color",
+      "label": "Master neon color",
+      "default": "#5BE7FF",
+      "info": "Drives text glows and the Buttons block's \"Match section's master neon color\" scheme."
     },
     {
       "type": "range",
@@ -918,13 +913,38 @@
     {
       "type": "range",
       "id": "glow_intensity",
-      "label": "Glow intensity",
+      "label": "Button glow intensity",
       "min": 0,
       "max": 150,
       "step": 5,
       "unit": "%",
       "default": 100,
-      "info": "Overall brightness of the glow."
+      "info": "Overall brightness of the button glow. Each text block has its own glow-intensity slider."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "extend_behind_header",
+      "label": "Extend behind site header",
+      "default": true,
+      "info": "Pulls the banner up so its background fills the area behind the header. The header becomes transparent over this section."
+    },
+    {
+      "type": "checkbox",
+      "id": "persist_transparent_header",
+      "label": "Keep header transparent on the rest of the page",
+      "default": false,
+      "info": "When on, the site header stays transparent after you scroll past the banner - content below the banner shows through it. Otherwise the header reverts to its normal background once the banner has fully scrolled away."
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_announcement_bar",
+      "label": "Also make announcement bar transparent",
+      "default": true,
+      "info": "Includes the announcement / utility bar above the header in the transparent treatment."
     },
     {
       "type": "header",
@@ -1023,7 +1043,20 @@
         },
         {
           "type": "header",
-          "content": "Text glow"
+          "content": "Neon glow"
+        },
+        {
+          "type": "checkbox",
+          "id": "inherit_neon_color",
+          "label": "Use section's master neon color",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#5BE7FF",
+          "info": "Used when the box above is unchecked."
         },
         {
           "type": "range",
@@ -1035,12 +1068,6 @@
           "unit": "%",
           "default": 0,
           "info": "Adds a subtle neon glow behind the text. 0 = off."
-        },
-        {
-          "type": "color",
-          "id": "glow_color",
-          "label": "Glow color",
-          "default": "#5BE7FF"
         }
       ]
     },
@@ -1085,10 +1112,33 @@
           "default": "#E6EBFF"
         },
         {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "inherit",
+          "options": [
+            { "value": "inherit", "label": "Match section" },
+            { "value": "left",    "label": "Left" },
+            { "value": "center",  "label": "Center" },
+            { "value": "right",   "label": "Right" }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Neon glow"
+        },
+        {
+          "type": "checkbox",
+          "id": "inherit_neon_color",
+          "label": "Use section's master neon color",
+          "default": true
+        },
+        {
           "type": "color",
           "id": "glow_color",
           "label": "Glow color",
-          "default": "#7864FF"
+          "default": "#7864FF",
+          "info": "Used when the box above is unchecked."
         },
         {
           "type": "range",
@@ -1100,18 +1150,6 @@
           "unit": "%",
           "default": 45,
           "info": "Set to 0 to remove the neon halo."
-        },
-        {
-          "type": "select",
-          "id": "text_alignment",
-          "label": "Text alignment",
-          "default": "inherit",
-          "options": [
-            { "value": "inherit", "label": "Match section" },
-            { "value": "left",    "label": "Left" },
-            { "value": "center",  "label": "Center" },
-            { "value": "right",   "label": "Right" }
-          ]
         }
       ]
     },
@@ -1156,7 +1194,20 @@
         },
         {
           "type": "header",
-          "content": "Text glow"
+          "content": "Neon glow"
+        },
+        {
+          "type": "checkbox",
+          "id": "inherit_neon_color",
+          "label": "Use section's master neon color",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "glow_color",
+          "label": "Glow color",
+          "default": "#7864FF",
+          "info": "Used when the box above is unchecked."
         },
         {
           "type": "range",
@@ -1168,12 +1219,6 @@
           "unit": "%",
           "default": 0,
           "info": "Adds a subtle neon glow behind the text. 0 = off."
-        },
-        {
-          "type": "color",
-          "id": "glow_color",
-          "label": "Glow color",
-          "default": "#7864FF"
         }
       ]
     },
@@ -1237,9 +1282,10 @@
           "type": "select",
           "id": "button_scheme",
           "label": "Button color scheme",
-          "default": "cyan",
+          "default": "master",
           "options": [
-            { "value": "scheme",      "label": "Match section color scheme" },
+            { "value": "master",      "label": "Match section's master neon color" },
+            { "value": "scheme",      "label": "Match section Shopify color scheme" },
             { "value": "cyan",        "label": "Neon cyan" },
             { "value": "blue",        "label": "Neon blue" },
             { "value": "purple",      "label": "Neon purple" },
@@ -1250,7 +1296,7 @@
             { "value": "purple_cyan", "label": "Purple to cyan (dual)" },
             { "value": "custom",      "label": "Custom color" }
           ],
-          "info": "\"Match section color scheme\" pulls the neon color from this section's Color scheme setting."
+          "info": "The default uses the Neon style master color set on the section."
         },
         {
           "type": "color",
