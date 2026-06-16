@@ -17,7 +17,7 @@
           "settings": {
             "subheading": "OMNIFLEX FITNESS",
             "font": "montserrat_n5",
-            "color": "#95b1df",
+            "color": "#5BD9FF",
             "text_alignment": "inherit"
           }
         },
@@ -39,7 +39,7 @@
             "text": "<p>Browse our latest products</p>",
             "font": "montserrat_n4",
             "color": "#dce6ff",
-            "text_alignment": "inherit"
+            "text_alignment": "center"
           }
         },
         "buttons_i6M38m": {
@@ -138,6 +138,7 @@
         "text_Um6xiM",
         "buttons_pF9bnG"
       ],
+      "disabled": true,
       "custom_css": [
         ".banner__box {background: transparent !important; box-shadow: none !important;}"
       ],
