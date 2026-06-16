@@ -19,8 +19,9 @@
             "font": "montserrat_n5",
             "color": "#5bd9ff",
             "text_alignment": "inherit",
-            "glow_intensity": 0,
-            "glow_color": "#5be7ff"
+            "inherit_neon_color": true,
+            "glow_color": "#5be7ff",
+            "glow_intensity": 0
           }
         },
         "heading_XPPx9N": {
@@ -30,9 +31,10 @@
             "heading_size": "hxxl",
             "font": "montserrat_n6",
             "color": "#e6ebff",
-            "glow_color": "#5BD9FF",
-            "glow_intensity": 0,
-            "text_alignment": "inherit"
+            "text_alignment": "inherit",
+            "inherit_neon_color": true,
+            "glow_color": "#5bd9ff",
+            "glow_intensity": 0
           }
         },
         "text_Mc3tLN": {
@@ -42,8 +44,9 @@
             "font": "montserrat_n4",
             "color": "#dce6ff",
             "text_alignment": "center",
-            "glow_intensity": 100,
-            "glow_color": "#5BD9FF"
+            "inherit_neon_color": true,
+            "glow_color": "#5bd9ff",
+            "glow_intensity": 100
           }
         },
         "buttons_i6M38m": {
@@ -80,12 +83,13 @@
         "overlay_color": "#ab4cea",
         "canvas_opacity": 80,
         "video_filter_strength": 0,
-        "extend_behind_header": true,
-        "persist_transparent_header": true,
-        "transparent_announcement_bar": true,
+        "master_neon_color": "#5be7ff",
         "glow_blur": 7,
         "glow_spread": 1,
         "glow_intensity": 100,
+        "extend_behind_header": true,
+        "persist_transparent_header": true,
+        "transparent_announcement_bar": true,
         "desktop_content_position": "middle",
         "desktop_content_alignment": "center",
         "show_text_box": false,
@@ -430,7 +434,7 @@
       "custom_css": [],
       "settings": {
         "product": "zenith",
-        "color_scheme": "accent-2",
+        "color_scheme": "neon-purple",
         "secondary_background": false,
         "media_size": "medium",
         "constrain_to_viewport": true,

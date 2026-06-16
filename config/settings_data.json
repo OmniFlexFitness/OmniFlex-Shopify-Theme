@@ -276,10 +276,10 @@
           "background": "#0c0828",
           "background_gradient": "",
           "text": "#ede9ff",
-          "button": "#9a6dff",
+          "button": "#984CEA",
           "button_label": "#ffffff",
-          "secondary_button_label": "#9a6dff",
-          "shadow": "#9a6dff"
+          "secondary_button_label": "#984CEA",
+          "shadow": "#984CEA"
         }
       },
       "neon-magenta": {
