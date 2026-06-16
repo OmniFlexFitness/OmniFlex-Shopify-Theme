@@ -266,26 +266,54 @@
         {%- assign g1 = col1 -%}
         {%- assign g2 = col2 -%}
       {%- endif -%}
+
+      {%- comment -%}
+        Glow shape from the master section sliders. Lower blur + a little
+        spread = a sharp, tight neon glow. Intensity scales every layer's
+        opacity (capped at 1).
+      {%- endcomment -%}
+      {%- assign gblur = section.settings.glow_blur | default: 8 -%}
+      {%- assign gspread = section.settings.glow_spread | default: 1 -%}
+      {%- assign gint = section.settings.glow_intensity | default: 100 -%}
+      {%- assign gblur_outer = gblur | times: 2.6 | round -%}
+      {%- assign gblur_h = gblur | times: 1.5 | round -%}
+      {%- assign gblur_outer_h = gblur | times: 4.0 | round -%}
+      {%- assign gblur_text = gblur | times: 0.65 | round -%}
+
+      {%- comment -%} Per-layer opacities, scaled by intensity, capped at 1. {%- endcomment -%}
+      {%- assign a_f1 = 0.60 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_f2 = 0.30 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_fh1 = 0.85 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_fh2 = 0.50 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_o1 = 0.55 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_oin = 0.15 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_oh1 = 0.75 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_ohin = 0.22 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+      {%- assign a_txt = 0.80 | times: gint | divided_by: 100.0 | at_most: 1.0 -%}
+
+      {%- comment -%} Build the actual color strings for each layer. {%- endcomment -%}
       {%- if var_glow -%}
-        {%- assign glow_55 = 'rgba(var(--color-button), .55)' -%}
-        {%- assign glow_30 = 'rgba(var(--color-button), .30)' -%}
-        {%- assign glow_80 = 'rgba(var(--color-button), .80)' -%}
-        {%- assign glow_50 = 'rgba(var(--color-button), .50)' -%}
-        {%- assign glow_40 = 'rgba(var(--color-button), .40)' -%}
-        {%- assign glow_12 = 'rgba(var(--color-button), .12)' -%}
-        {%- assign glow_60 = 'rgba(var(--color-button), .60)' -%}
-        {%- assign glow_20 = 'rgba(var(--color-button), .20)' -%}
-        {%- assign glow_70 = 'rgba(var(--color-button), .70)' -%}
+        {%- assign c_f1 = 'rgba(var(--color-button), ' | append: a_f1 | append: ')' -%}
+        {%- assign c_f2 = 'rgba(var(--color-button), ' | append: a_f2 | append: ')' -%}
+        {%- assign c_fh1 = 'rgba(var(--color-button), ' | append: a_fh1 | append: ')' -%}
+        {%- assign c_fh2 = 'rgba(var(--color-button), ' | append: a_fh2 | append: ')' -%}
+        {%- assign c_o1 = 'rgba(var(--color-button), ' | append: a_o1 | append: ')' -%}
+        {%- assign c_oin = 'rgba(var(--color-button), ' | append: a_oin | append: ')' -%}
+        {%- assign c_oh1 = 'rgba(var(--color-button), ' | append: a_oh1 | append: ')' -%}
+        {%- assign c_ohin = 'rgba(var(--color-button), ' | append: a_ohin | append: ')' -%}
+        {%- assign c_txt = 'rgba(var(--color-button), ' | append: a_txt | append: ')' -%}
+        {%- assign c_outhoverbg = 'rgba(var(--color-button), 0.12)' -%}
       {%- else -%}
-        {%- assign glow_55 = g1 | color_modify: 'alpha', 0.55 -%}
-        {%- assign glow_30 = g2 | color_modify: 'alpha', 0.30 -%}
-        {%- assign glow_80 = g1 | color_modify: 'alpha', 0.80 -%}
-        {%- assign glow_50 = g2 | color_modify: 'alpha', 0.50 -%}
-        {%- assign glow_40 = g1 | color_modify: 'alpha', 0.40 -%}
-        {%- assign glow_12 = g1 | color_modify: 'alpha', 0.12 -%}
-        {%- assign glow_60 = g1 | color_modify: 'alpha', 0.60 -%}
-        {%- assign glow_20 = g1 | color_modify: 'alpha', 0.20 -%}
-        {%- assign glow_70 = g1 | color_modify: 'alpha', 0.70 -%}
+        {%- assign c_f1 = g1 | color_modify: 'alpha', a_f1 -%}
+        {%- assign c_f2 = g2 | color_modify: 'alpha', a_f2 -%}
+        {%- assign c_fh1 = g1 | color_modify: 'alpha', a_fh1 -%}
+        {%- assign c_fh2 = g2 | color_modify: 'alpha', a_fh2 -%}
+        {%- assign c_o1 = g1 | color_modify: 'alpha', a_o1 -%}
+        {%- assign c_oin = g1 | color_modify: 'alpha', a_oin -%}
+        {%- assign c_oh1 = g1 | color_modify: 'alpha', a_oh1 -%}
+        {%- assign c_ohin = g1 | color_modify: 'alpha', a_ohin -%}
+        {%- assign c_txt = g1 | color_modify: 'alpha', a_txt -%}
+        {%- assign c_outhoverbg = g1 | color_modify: 'alpha', 0.12 -%}
       {%- endif -%}
 
       {%- assign fill_text = block.settings.fill_text_color | default: '#FFFFFF' -%}
@@ -310,22 +338,22 @@
         background: {{ fill_bg }};
         color: {{ fill_text }};
         border-color: transparent;
-        box-shadow: 0 0 14px {{ glow_55 }}, 0 0 36px {{ glow_30 }};
+        box-shadow: 0 0 {{ gblur }}px {{ gspread }}px {{ c_f1 }}, 0 0 {{ gblur_outer }}px 0 {{ c_f2 }};
       }
       {{ sel }} .button--primary:hover {
-        box-shadow: 0 0 22px {{ glow_80 }}, 0 0 60px {{ glow_50 }};
+        box-shadow: 0 0 {{ gblur_h }}px {{ gspread }}px {{ c_fh1 }}, 0 0 {{ gblur_outer_h }}px 0 {{ c_fh2 }};
         transform: translateY(-1px);
       }
       {{ sel }} .button--secondary {
         background: transparent;
         color: {{ outline_col }};
-        box-shadow: 0 0 12px {{ glow_40 }}, inset 0 0 12px {{ glow_12 }};
-        text-shadow: 0 0 8px {{ glow_70 }};
+        box-shadow: 0 0 {{ gblur }}px {{ gspread }}px {{ c_o1 }}, inset 0 0 {{ gblur }}px {{ c_oin }};
+        text-shadow: 0 0 {{ gblur_text }}px {{ c_txt }};
       }
       {{ sel }} .button--secondary:hover {
-        background: {{ glow_12 }};
+        background: {{ c_outhoverbg }};
         color: #ffffff;
-        box-shadow: 0 0 22px {{ glow_60 }}, inset 0 0 18px {{ glow_20 }};
+        box-shadow: 0 0 {{ gblur_h }}px {{ gspread }}px {{ c_oh1 }}, inset 0 0 {{ gblur_h }}px {{ c_ohin }};
         transform: translateY(-1px);
       }
   {%- endcase -%}
@@ -846,6 +874,47 @@
       "label": "Also make announcement bar transparent",
       "default": true,
       "info": "Includes the announcement / utility bar above the header in the transparent treatment."
+    },
+    {
+      "type": "header",
+      "content": "Button glow"
+    },
+    {
+      "type": "paragraph",
+      "content": "Controls the neon glow shape for all buttons in this section. Lower blur with a little spread gives a sharp, tight neon edge."
+    },
+    {
+      "type": "range",
+      "id": "glow_blur",
+      "label": "Glow blur",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 7,
+      "info": "How soft the glow is. Lower = sharper."
+    },
+    {
+      "type": "range",
+      "id": "glow_spread",
+      "label": "Glow spread",
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "info": "How far the bright core extends before it fades. Higher = thicker neon line."
+    },
+    {
+      "type": "range",
+      "id": "glow_intensity",
+      "label": "Glow intensity",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Overall brightness of the glow."
     },
     {
       "type": "header",
