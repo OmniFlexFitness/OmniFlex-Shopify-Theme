@@ -440,7 +440,7 @@
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "media_position": "left",
-        "image_zoom": "lightbox",
+        "image_zoom": "hover",
         "hide_variants": false,
         "enable_video_looping": false,
         "padding_top": 36,
