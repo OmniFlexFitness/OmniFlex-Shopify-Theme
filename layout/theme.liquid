@@ -260,12 +260,20 @@
     {%- comment -%}
       Neon button glow. Loaded after base.css so the glow wins on equal
       specificity, but kept to single-class selectors so Dawn's focus-visible
-      ring (a higher-specificity box-shadow) is preserved for keyboard users.
+      ring (.button:focus-visible, specificity 0,2,0) still outranks it and the
+      keyboard focus indicator is preserved.
 
       Fill buttons glow with each color scheme's button color (--color-button);
       outline buttons glow with the scheme's outline label color
-      (--color-secondary-button-text). Because both are per-scheme CSS
-      variables, the glow adapts to every color scheme automatically.
+      (--color-secondary-button-text). Both are per-scheme CSS variables, so the
+      glow adapts to every color scheme automatically.
+
+      In Dawn an outline button is `.button.button--secondary`, so the fill rule
+      (`.button`) also matches it. When the outline glow is disabled we clear the
+      glow on secondary/outline buttons so the two toggles stay isolated. The
+      effect is deliberately limited to box-shadow / text-shadow only - no
+      transform or transition override - so Dawn's native hover animations
+      (Theme settings > Animations) and transitions are left untouched.
     {%- endcomment -%}
     {%- if settings.neon_button_glow -%}
       {%- liquid
@@ -292,13 +300,11 @@
             0 0 {{ nbg_blur }}px rgba(var(--color-button), {{ nbg_a1 }}),
             0 0 {{ nbg_blur_mid }}px rgba(var(--color-button), {{ nbg_a2 }}),
             0 0 {{ nbg_blur_far }}px rgba(var(--color-button), {{ nbg_a3 }});
-          transition: box-shadow var(--duration-short) ease, transform var(--duration-short) ease;
         }
         .button:hover {
           box-shadow:
             0 0 {{ nbg_blur_h }}px rgba(var(--color-button), {{ nbg_a1_h }}),
             0 0 {{ nbg_blur_h_far }}px rgba(var(--color-button), {{ nbg_a3_h }});
-          transform: translateY(-1px);
         }
         {%- endif -%}
         {%- if settings.neon_button_glow_outline -%}
@@ -309,7 +315,6 @@
             0 0 {{ nbg_blur_mid }}px rgba(var(--color-secondary-button-text), {{ nbg_a2 }}),
             inset 0 0 {{ nbg_blur }}px rgba(var(--color-secondary-button-text), {{ nbg_inset }});
           text-shadow: 0 0 {{ nbg_blur_text }}px rgba(var(--color-secondary-button-text), {{ nbg_text }});
-          transition: box-shadow var(--duration-short) ease, transform var(--duration-short) ease, background-color var(--duration-short) ease, color var(--duration-short) ease;
         }
         .button--secondary:hover,
         .button--outline:hover {
@@ -317,7 +322,13 @@
             0 0 {{ nbg_blur_h }}px rgba(var(--color-secondary-button-text), {{ nbg_a1_h }}),
             0 0 {{ nbg_blur_h_far }}px rgba(var(--color-secondary-button-text), {{ nbg_a2_h }}),
             inset 0 0 {{ nbg_blur_h }}px rgba(var(--color-secondary-button-text), {{ nbg_inset }});
-          transform: translateY(-1px);
+        }
+        {%- elsif settings.neon_button_glow_fill -%}
+        .button--secondary,
+        .button--outline,
+        .button--secondary:hover,
+        .button--outline:hover {
+          box-shadow: none;
         }
         {%- endif -%}
       </style>
