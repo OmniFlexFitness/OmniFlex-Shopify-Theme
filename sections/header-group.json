@@ -11,6 +11,17 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
+    "custom_liquid_LgpBN7": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "header": {
       "type": "header",
       "custom_css": [],
@@ -20,7 +31,7 @@
         "menu": "main-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "on-scroll-up",
-        "show_line_separator": true,
+        "show_line_separator": false,
         "color_scheme": "inverse",
         "menu_color_scheme": "inverse",
         "enable_country_selector": true,
@@ -33,6 +44,7 @@
     }
   },
   "order": [
+    "custom_liquid_LgpBN7",
     "header"
   ]
 }

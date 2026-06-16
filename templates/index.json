@@ -9,40 +9,37 @@
  */
 {
   "sections": {
-    "animated_divider_QJJ4Xf": {
-      "type": "animated-divider",
-      "custom_css": [],
-      "settings": {
-        "divider_height": 70,
-        "divider_color": "#000000",
-        "gradient_color": "#ffffff",
-        "use_gradient": false,
-        "animate_gradient": false,
-        "gradient_speed": 5,
-        "use_image": true,
-        "divider_image": "shopify://shop_images/Gradient_Divider.png"
-      }
-    },
     "interactive_banner_kw6wFX": {
       "type": "interactive-banner",
       "blocks": {
         "subheading_3UcWNN": {
           "type": "subheading",
           "settings": {
-            "subheading": "OMNIFLEX FITNESS"
+            "subheading": "OMNIFLEX FITNESS",
+            "font": "montserrat_n5",
+            "color": "#A0B6DB",
+            "text_alignment": "inherit"
           }
         },
         "heading_XPPx9N": {
           "type": "heading",
           "settings": {
             "heading": "<strong>Shop Activewear</strong>",
-            "heading_size": "hxxl"
+            "heading_size": "hxxl",
+            "font": "montserrat_n6",
+            "color": "#e6ebff",
+            "glow_color": "#7864ff",
+            "glow_intensity": 45,
+            "text_alignment": "inherit"
           }
         },
         "text_Mc3tLN": {
           "type": "text",
           "settings": {
-            "text": "<p>Browse our latest products</p>"
+            "text": "<p>Browse our latest products</p>",
+            "font": "montserrat_n4",
+            "color": "#dce6ff",
+            "text_alignment": "inherit"
           }
         },
         "buttons_i6M38m": {
@@ -50,7 +47,7 @@
           "settings": {
             "button_label_1": "Shop now",
             "button_link_1": "",
-            "button_style_secondary_1": false,
+            "button_style_secondary_1": true,
             "button_label_2": "",
             "button_link_2": "",
             "button_style_secondary_2": true
@@ -63,20 +60,37 @@
         "text_Mc3tLN",
         "buttons_i6M38m"
       ],
-      "disabled": true,
       "name": "Interactive wallpaper",
       "settings": {
         "wallpaper_variant": "drive",
         "video_url": "",
         "section_height": 100,
         "image_overlay_opacity": 0,
+        "overlay_color": "#AB4CEA",
+        "canvas_opacity": 50,
+        "video_filter_strength": 0,
         "extend_behind_header": true,
         "persist_transparent_header": true,
         "desktop_content_position": "middle",
         "desktop_content_alignment": "center",
         "show_text_box": false,
-        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "color_scheme": "scheme-93a27643-ce64-44e8-967c-d5927b623ad0",
         "mobile_content_alignment": "center"
+      }
+    },
+    "animated_divider_QJJ4Xf": {
+      "type": "animated-divider",
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "divider_height": 70,
+        "divider_color": "#000000",
+        "gradient_color": "#ffffff",
+        "use_gradient": false,
+        "animate_gradient": false,
+        "gradient_speed": 5,
+        "use_image": true,
+        "divider_image": "shopify://shop_images/Gradient_Divider.png"
       }
     },
     "video_banner_RmbCF8": {
@@ -520,8 +534,8 @@
     }
   },
   "order": [
-    "animated_divider_QJJ4Xf",
     "interactive_banner_kw6wFX",
+    "animated_divider_QJJ4Xf",
     "video_banner_RmbCF8",
     "video_slideshow_GnmiVK",
     "slideshow_iRj3B6",
