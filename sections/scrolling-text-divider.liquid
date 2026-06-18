@@ -1,0 +1,472 @@
+{{ 'section-scrolling-text-divider.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = section.settings
+  assign font = s.font
+
+  assign mode = s.animation_mode
+
+  comment
+    Italic checkbox: load the font's real italic variant via font_modify so the
+    correct face is downloaded (no browser faux-italics). If the font has no
+    italic variant, font_modify returns nil and we fall back to CSS font-style.
+  endcomment
+  assign font_style = font.style
+  if s.italic
+    assign italic_font = font | font_modify: 'style', 'italic'
+    if italic_font != blank
+      assign font = italic_font
+      assign font_style = italic_font.style
+    else
+      assign font_style = 'italic'
+    endif
+  endif
+-%}
+
+{%- style -%}
+  {{ font | font_face: font_display: 'swap' }}
+
+  #shopify-section-{{ section.id }} .cyber-divider--{{ section.id }} {
+    --cd-height: {{ s.divider_height }}px;
+    --cd-bg: {{ s.background_color }};
+    --cd-bg2: {{ s.gradient_color }};
+    --cd-bg-angle: {{ s.gradient_angle }}deg;
+    --cd-bg-duration: {{ s.background_speed }}s;
+    --cd-text-color: {{ s.text_color }};
+    --cd-font-family: {{ font.family }}, {{ font.fallback_families }};
+    --cd-font-weight: {{ font.weight }};
+    --cd-font-style: {{ font_style }};
+    --cd-font-size: {{ s.font_size }}px;
+    --cd-letter-spacing: {{ s.letter_spacing }}px;
+    --cd-transform: {{ s.text_transform }};
+    --cd-gap: {{ s.separator_gap }}px;
+    --cd-sep-size: {{ s.separator_size }}px;
+    --cd-sep-color: {{ s.separator_color }};
+    --cd-sep-opacity: {{ s.separator_opacity | divided_by: 100.0 }};
+    --cd-scroll-duration: {{ s.scroll_speed }}s;
+    --cd-spin-duration: {{ s.separator_spin_speed }}s;
+    --cd-effect: {{ s.effect_intensity }};
+    --cd-glow-color: {{ s.glow_color }};
+    --cd-glow-strength: {{ s.glow_strength }}px;
+    --cd-border-color: {{ s.border_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .cyber-divider--{{ section.id }} {
+      --cd-height: {{ s.divider_height_mobile }}px;
+      --cd-font-size: {{ s.font_size_mobile }}px;
+      --cd-sep-size: {{ s.separator_size_mobile }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div
+  class="cyber-divider cyber-divider--{{ section.id }} cyber-divider--{{ mode }}
+    {%- if s.background_type == 'gradient' %} cyber-divider--gradient{% endif -%}
+    {%- if s.background_type == 'gradient' and s.animate_background %} cyber-divider--animate-bg{% endif -%}
+    {%- if s.background_type == 'transparent' %} cyber-divider--transparent{% endif -%}
+    {%- if mode == 'scroll-reverse' %} cyber-divider--reverse{% endif -%}
+    {%- if s.enable_glow %} cyber-divider--glow{% endif -%}
+    {%- if s.show_borders %} cyber-divider--bordered{% endif -%}
+    {%- if s.show_scanlines %} cyber-divider--scanlines{% endif -%}
+    {%- if s.pause_on_hover %} cyber-divider--pause-hover{% endif -%}"
+  role="presentation"
+  style="margin-top: {{ s.margin_top }}px; margin-bottom: {{ s.margin_bottom }}px;"
+>
+  {%- if s.text != blank -%}
+    <span class="visually-hidden">{{ s.text }}</span>
+  {%- endif -%}
+
+  <div class="cyber-divider__track" aria-hidden="true">
+    {%- comment -%} Two identical groups so the -50% scroll loops seamlessly {%- endcomment -%}
+    {%- for group in (1..2) -%}
+      <div class="cyber-divider__group">
+        {%- for i in (1..s.repeat_count) -%}
+          <span class="cyber-divider__cell" style="--i: {{ forloop.index0 }};">
+            <span class="cyber-divider__text">{{ s.text }}</span>
+            {%- if s.separator_image != blank -%}
+              <img
+                class="cyber-divider__sep cyber-divider__sep--img{% if s.separator_spin %} cyber-divider__sep--spin{% endif %}"
+                src="{{ s.separator_image | image_url: width: 240 }}"
+                alt=""
+                role="presentation"
+                loading="lazy"
+                width="{{ s.separator_image.width }}"
+                height="{{ s.separator_image.height }}"
+              >
+            {%- elsif s.separator_text != blank -%}
+              <span class="cyber-divider__sep cyber-divider__sep--text{% if s.separator_spin %} cyber-divider__sep--spin{% endif %}">{{ s.separator_text }}</span>
+            {%- endif -%}
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Scrolling Text Divider",
+  "tag": "section",
+  "class": "section section--scrolling-text-divider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Height",
+      "min": 20,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "divider_height_mobile",
+      "label": "Height (mobile)",
+      "min": 16,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "default": 44
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "select",
+      "id": "background_type",
+      "label": "Background type",
+      "options": [
+        { "value": "solid", "label": "Solid color" },
+        { "value": "gradient", "label": "Gradient" },
+        { "value": "transparent", "label": "Transparent" }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ff2d55"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color",
+      "label": "Gradient second color",
+      "info": "Used when background type is Gradient.",
+      "default": "#7b2ff7"
+    },
+    {
+      "type": "range",
+      "id": "gradient_angle",
+      "label": "Gradient angle",
+      "min": 0,
+      "max": 360,
+      "step": 5,
+      "unit": "deg",
+      "default": 90
+    },
+    {
+      "type": "checkbox",
+      "id": "animate_background",
+      "label": "Animate gradient",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "background_speed",
+      "label": "Gradient animation duration",
+      "min": 2,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "WELCOME"
+    },
+    {
+      "type": "range",
+      "id": "repeat_count",
+      "label": "Repeats per loop",
+      "info": "How many times the text appears before the loop restarts. Increase if you see a gap on wide screens.",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "font_picker",
+      "id": "font",
+      "label": "Font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 120,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 8,
+      "max": 90,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": -2,
+      "max": 16,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "As typed" },
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "italic",
+      "label": "Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Separator symbol"
+    },
+    {
+      "type": "text",
+      "id": "separator_text",
+      "label": "Symbol",
+      "info": "Used when no image is set. Try ✦ ✱ + // ◆ ▰ ⬡ ★",
+      "default": "✦"
+    },
+    {
+      "type": "image_picker",
+      "id": "separator_image",
+      "label": "Symbol image",
+      "info": "Optional. Overrides the text symbol. Use a transparent PNG/SVG."
+    },
+    {
+      "type": "range",
+      "id": "separator_size",
+      "label": "Symbol size",
+      "min": 6,
+      "max": 120,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "separator_size_mobile",
+      "label": "Symbol size (mobile)",
+      "min": 6,
+      "max": 90,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Symbol color",
+      "info": "Applies to the text symbol only.",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "separator_opacity",
+      "label": "Symbol opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "separator_gap",
+      "label": "Spacing around symbol",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "separator_spin",
+      "label": "Spin symbol",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "separator_spin_speed",
+      "label": "Spin duration",
+      "min": 1,
+      "max": 20,
+      "step": 0.5,
+      "unit": "s",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "select",
+      "id": "animation_mode",
+      "label": "Text animation",
+      "options": [
+        { "value": "scroll", "label": "Scroll left" },
+        { "value": "scroll-reverse", "label": "Scroll right" },
+        { "value": "glitch", "label": "Glitch (scroll + RGB split)" },
+        { "value": "flicker", "label": "Neon flicker (scroll)" },
+        { "value": "wave", "label": "Wave (scroll + bob)" },
+        { "value": "pulse", "label": "Pulse (scroll + breathe)" },
+        { "value": "static", "label": "Static (no scroll)" }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll loop duration",
+      "info": "Lower is faster. Ignored in Static mode.",
+      "min": 4,
+      "max": 120,
+      "step": 1,
+      "unit": "s",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "effect_intensity",
+      "label": "Effect intensity",
+      "info": "Strength of Glitch, Wave and Pulse effects.",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Glow & borders"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_glow",
+      "label": "Neon text glow",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Glow color",
+      "default": "#ff2d55"
+    },
+    {
+      "type": "range",
+      "id": "glow_strength",
+      "label": "Glow strength",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_borders",
+      "label": "Top & bottom borders",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scanlines",
+      "label": "CRT scanlines overlay",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling Text Divider"
+    }
+  ]
+}
+{% endschema %}

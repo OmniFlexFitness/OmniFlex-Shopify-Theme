@@ -1,0 +1,272 @@
+/* ==========================================================================
+   Scrolling Text Divider — animated marquee band of repeating text + symbol
+   Cyberpunk / vapourwave aesthetic. Most behaviour is driven by CSS custom
+   properties set per-section in the section's {% style %} block.
+   ========================================================================== */
+
+.cyber-divider {
+  --cd-height: 56px;
+  --cd-font-size: 24px;
+  --cd-letter-spacing: 0px;
+  --cd-gap: 24px;
+  --cd-sep-size: 24px;
+  --cd-sep-opacity: 1;
+  --cd-scroll-duration: 28s;
+  --cd-spin-duration: 6s;
+  --cd-effect: 5;
+  --cd-glow-color: #ff2d55;
+  --cd-glow-strength: 8px;
+  --cd-border-color: #ffffff;
+  --cd-bg-angle: 90deg;
+  --cd-bg-duration: 10s;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--cd-height);
+  overflow: hidden;
+  background: var(--cd-bg, #ff2d55);
+  color: var(--cd-text-color, #ffffff);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.cyber-divider--transparent {
+  background: transparent;
+}
+
+.cyber-divider--gradient {
+  background: linear-gradient(
+    var(--cd-bg-angle),
+    var(--cd-bg) 0%,
+    var(--cd-bg2) 50%,
+    var(--cd-bg) 100%
+  );
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+}
+
+.cyber-divider--gradient.cyber-divider--animate-bg {
+  animation: cd-bg-shift var(--cd-bg-duration) ease-in-out infinite;
+}
+
+.cyber-divider--bordered {
+  border-top: 2px solid var(--cd-border-color);
+  border-bottom: 2px solid var(--cd-border-color);
+}
+
+/* Optional CRT scanline overlay */
+.cyber-divider--scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.18) 0,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Marquee track / groups / cells
+   -------------------------------------------------------------------------- */
+
+.cyber-divider__track {
+  display: flex;
+  flex: none;
+  width: max-content;
+  will-change: transform;
+}
+
+.cyber-divider:not(.cyber-divider--static) .cyber-divider__track {
+  animation: cd-scroll var(--cd-scroll-duration) linear infinite;
+}
+
+.cyber-divider--reverse .cyber-divider__track {
+  animation-direction: reverse;
+}
+
+.cyber-divider--pause-hover:hover .cyber-divider__track,
+.cyber-divider--pause-hover:hover .cyber-divider__cell,
+.cyber-divider--pause-hover:hover .cyber-divider__text {
+  animation-play-state: paused;
+}
+
+.cyber-divider__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.cyber-divider__cell {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--cd-gap);
+  padding-right: var(--cd-gap);
+}
+
+.cyber-divider__text {
+  display: inline-block;
+  font-family: var(--cd-font-family, inherit);
+  font-weight: var(--cd-font-weight, 700);
+  font-style: var(--cd-font-style, normal);
+  font-size: var(--cd-font-size);
+  letter-spacing: var(--cd-letter-spacing);
+  text-transform: var(--cd-transform, none);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cyber-divider--glow .cyber-divider__text {
+  text-shadow:
+    0 0 var(--cd-glow-strength) var(--cd-glow-color),
+    0 0 calc(var(--cd-glow-strength) * 2) var(--cd-glow-color);
+}
+
+.cyber-divider__sep {
+  flex: none;
+  line-height: 1;
+  opacity: var(--cd-sep-opacity);
+}
+
+.cyber-divider__sep--text {
+  font-size: var(--cd-sep-size);
+  color: var(--cd-sep-color, currentColor);
+}
+
+.cyber-divider__sep--img {
+  display: block;
+  height: var(--cd-sep-size);
+  width: auto;
+}
+
+.cyber-divider__sep--spin {
+  animation: cd-spin var(--cd-spin-duration) linear infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Animation modes
+   -------------------------------------------------------------------------- */
+
+@keyframes cd-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes cd-bg-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes cd-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Wave — each cell bobs vertically, staggered by --i for a travelling wave */
+.cyber-divider--wave .cyber-divider__cell {
+  animation: cd-wave 2.2s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.18s);
+}
+
+@keyframes cd-wave {
+  0%, 100% { transform: translateY(calc(var(--cd-effect) * -1px)); }
+  50%      { transform: translateY(calc(var(--cd-effect) * 1px)); }
+}
+
+/* Pulse / breathe — staggered scale + opacity */
+.cyber-divider--pulse .cyber-divider__cell {
+  transform-origin: center;
+  animation: cd-pulse 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.12s);
+}
+
+@keyframes cd-pulse {
+  0%, 100% { transform: scale(0.94); opacity: 0.6; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+
+/* Neon flicker — staggered opacity flicker like a failing sign */
+.cyber-divider--flicker .cyber-divider__text {
+  animation: cd-flicker 3.2s steps(1, end) infinite;
+  animation-delay: calc(var(--i, 0) * -0.21s);
+}
+
+@keyframes cd-flicker {
+  0%, 18%, 22%, 54%, 58%, 80%, 100% { opacity: 1; }
+  20%, 56% { opacity: 0.3; }
+  21%, 57% { opacity: 0.75; }
+}
+
+/* Glitch — chromatic-aberration jitter via animated text-shadow + micro shift */
+.cyber-divider--glitch .cyber-divider__text {
+  animation: cd-glitch 2.4s steps(2, end) infinite;
+}
+
+@keyframes cd-glitch {
+  0%, 100% {
+    transform: translateX(0);
+    text-shadow:
+      calc(var(--cd-effect) * 0.4px) 0 #0ff,
+      calc(var(--cd-effect) * -0.4px) 0 #f0f;
+  }
+  20% {
+    transform: translateX(calc(var(--cd-effect) * 0.3px));
+    text-shadow:
+      calc(var(--cd-effect) * -0.6px) 0 #0ff,
+      calc(var(--cd-effect) * 0.6px) 0 #f0f;
+  }
+  40% {
+    transform: translateX(calc(var(--cd-effect) * -0.3px));
+    text-shadow:
+      calc(var(--cd-effect) * 0.6px) 0 #0ff,
+      calc(var(--cd-effect) * -0.6px) 0 #f0f;
+  }
+  60% {
+    transform: translateX(0);
+    text-shadow:
+      calc(var(--cd-effect) * -0.4px) 0 #0ff,
+      calc(var(--cd-effect) * 0.4px) 0 #f0f;
+  }
+  80% {
+    transform: translateX(calc(var(--cd-effect) * 0.2px));
+    text-shadow:
+      calc(var(--cd-effect) * 0.5px) 0 #0ff,
+      calc(var(--cd-effect) * -0.5px) 0 #f0f;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility — respect reduced-motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cyber-divider .cyber-divider__track,
+  .cyber-divider .cyber-divider__cell,
+  .cyber-divider .cyber-divider__text,
+  .cyber-divider .cyber-divider__sep--spin,
+  .cyber-divider.cyber-divider--animate-bg {
+    animation: none !important;
+  }
+}
+
+/* Local fallback for the theme's visually-hidden helper */
+.cyber-divider .visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  word-wrap: normal !important;
+}
