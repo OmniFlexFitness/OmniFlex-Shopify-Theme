@@ -7,11 +7,19 @@
   assign mode = s.animation_mode
 
   comment
-    Italic checkbox overrides the picked font's style; otherwise inherit it.
+    Italic checkbox: load the font's real italic variant via font_modify so the
+    correct face is downloaded (no browser faux-italics). If the font has no
+    italic variant, font_modify returns nil and we fall back to CSS font-style.
   endcomment
   assign font_style = font.style
   if s.italic
-    assign font_style = 'italic'
+    assign italic_font = font | font_modify: 'style', 'italic'
+    if italic_font != blank
+      assign font = italic_font
+      assign font_style = italic_font.style
+    else
+      assign font_style = 'italic'
+    endif
   endif
 -%}
 
@@ -457,8 +465,7 @@
   ],
   "presets": [
     {
-      "name": "Scrolling Text Divider",
-      "category": "Decorative"
+      "name": "Scrolling Text Divider"
     }
   ]
 }
