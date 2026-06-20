@@ -547,17 +547,15 @@
       const circ = document.createElementNS('http://www.w3.org/2000/svg','circle');
       circ.setAttribute('class','seg');
       circ.setAttribute('cx',120); circ.setAttribute('cy',120); circ.setAttribute('r',R);
-      circ.setAttribute('stroke', getCSS(c.color));
+      // colors are CSS custom properties (var(--...)); set them via inline
+      // style so the browser resolves them — avoids getComputedStyle thrashing
+      circ.style.stroke = c.color;
       circ.setAttribute('stroke-dasharray', `${len.toFixed(2)} ${(C-len).toFixed(2)}`);
       circ.setAttribute('stroke-dashoffset', `${(-prefix).toFixed(2)}`);
-      circ.style.filter = 'drop-shadow(0 0 5px '+getCSS(c.color)+')';
+      circ.style.filter = 'drop-shadow(0 0 5px '+c.color+')';
       segG.appendChild(circ);
       prefix += len;
     });
-  }
-  function getCSS(v){
-    if(v.startsWith('var(')){ const name=v.slice(4,-1); return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-    return v;
   }
 
   // ---- stacked bar helper ----
@@ -707,7 +705,7 @@
   ];
   let ledgerFilter='all';
   const catColorMap={Physical:'var(--c-physical)',Website:'var(--c-website)',Design:'var(--c-design)',Growth:'var(--c-growth)',Video:'var(--c-video)',SaaS:'var(--c-saas)'};
-  function escapeHtml(s){return (''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  function escapeHtml(s){return (''+s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
   function renderLedger(){
     const acc = ledger.filter(x=>x.accounted).length;
@@ -728,12 +726,12 @@
       const row=document.createElement('div');
       row.className='led-row '+(x.accounted?'is-acc':'is-open');
       const linkHtml = x.link
-        ? '<a href="'+x.link+'" target="_blank" rel="noopener" class="led-link" title="'+escapeHtml(x.link)+'">listing &#8599;</a>'
+        ? '<a href="'+escapeHtml(x.link)+'" target="_blank" rel="noopener" class="led-link" title="'+escapeHtml(x.link)+'">listing &#8599;</a>'
         : '<span class="led-nolink">no link</span>';
       row.innerHTML =
-        '<button class="led-toggle" data-i="'+i+'" title="Toggle accounted" aria-label="Toggle accounted">'+(x.accounted?'&#9679;':'&#9675;')+'</button>'+
+        '<button class="led-toggle" data-i="'+i+'" title="Toggle accounted" aria-label="Toggle accounted" aria-pressed="'+x.accounted+'">'+(x.accounted?'&#9679;':'&#9675;')+'</button>'+
         '<span class="led-name">'+escapeHtml(x.name)+'</span>'+
-        '<span class="led-tag" style="border-color:'+(catColorMap[x.cat]||'#888')+';color:'+(catColorMap[x.cat]||'#888')+'">'+x.cat+'</span>'+
+        '<span class="led-tag" style="border-color:'+(catColorMap[x.cat]||'#888')+';color:'+(catColorMap[x.cat]||'#888')+'">'+escapeHtml(x.cat)+'</span>'+
         '<span class="led-cost">'+(x.cost? fmt(x.cost):'&mdash;')+'</span>'+
         linkHtml+
         '<button class="led-del" data-d="'+i+'" title="Remove" aria-label="Remove">&times;</button>';
@@ -749,7 +747,7 @@
     const cat=document.getElementById('inCat').value;
     let link=document.getElementById('inLink').value.trim();
     if(link && !/^https?:\/\//i.test(link)) link='https://'+link;
-    const cost=+document.getElementById('inCost').value||0;
+    const cost=Math.max(0, +document.getElementById('inCost').value||0);
     const accounted = !!link || document.getElementById('inAcc').checked;
     ledger.push({name,cat,link,cost,accounted});
     nameEl.value=''; document.getElementById('inLink').value=''; document.getElementById('inCost').value=''; document.getElementById('inAcc').checked=false;
@@ -786,18 +784,24 @@
     L.push('## Asset Ledger');
     L.push('| Item | Category | Status | Est. Cost | Link |');
     L.push('|---|---|---|---|---|');
-    ledger.forEach(x=> L.push('| '+x.name+' | '+x.cat+' | '+(x.accounted?'Accounted':'Open')+' | '+(x.cost?fmt(x.cost):'—')+' | '+(x.link||'—')+' |'));
+    const escPipe=v=>(''+v).replace(/\|/g,'\\|');
+    ledger.forEach(x=> L.push('| '+escPipe(x.name)+' | '+x.cat+' | '+(x.accounted?'Accounted':'Open')+' | '+(x.cost?fmt(x.cost):'—')+' | '+(x.link?escPipe(x.link):'—')+' |'));
     const acc=ledger.filter(x=>x.accounted).length;
     L.push('');
     L.push('Accounted: '+acc+' / '+ledger.length+' items.');
     document.getElementById('exportText').value=L.join('\n');
     document.getElementById('exportModal').classList.add('show');
   });
-  document.getElementById('copyExport').addEventListener('click',async()=>{
+  document.getElementById('copyExport').addEventListener('click',()=>{
     const ta=document.getElementById('exportText'); ta.select();
     const btn=document.getElementById('copyExport');
-    try{ await navigator.clipboard.writeText(ta.value); }catch(e){ document.execCommand('copy'); }
-    btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy to clipboard',1500);
+    const done=()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy to clipboard',1500); };
+    // execCommand fallback must run synchronously inside the click gesture; do
+    // not defer it into a promise microtask (modern browsers block it there).
+    const fallback=()=>{ try{ if(document.execCommand('copy')) done(); }catch(e){} };
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(ta.value).then(done).catch(fallback);
+    } else { fallback(); }
   });
   document.getElementById('closeExport').addEventListener('click',()=>document.getElementById('exportModal').classList.remove('show'));
   document.getElementById('exportModal').addEventListener('click',e=>{ if(e.target.id==='exportModal') document.getElementById('exportModal').classList.remove('show'); });
