@@ -438,7 +438,7 @@
   </div>
 
   <div class="foot">
-    <b>Note:</b> Balancing adjusts Media Spend inside the Growth Engine. One-time buys retain value; recurring lines define the runway. Figures here are working estimates for visualization — final line items get itemized in the Google Doc once this split is approved.
+    <b>Note:</b> Balancing pulls the total to $5,000 — it adjusts Media Spend first, then distributes any remainder across the other sliders. One-time buys retain value; recurring lines define the runway. Figures here are working estimates for visualization — final line items get itemized in the Google Doc once this split is approved.
   </div>
 
   <!-- export modal -->
@@ -663,12 +663,33 @@
     [...topCats,...subs].forEach(c=> document.getElementById('r_'+c.key).value=s[c.key]);
     render();
   });
+  // Auto-balance: pull the running total to exactly $5,000. Media Spend stays
+  // the primary lever; any residual beyond its 0–$2,000 range then cascades
+  // across the remaining sliders (growth sub-items first, then top categories)
+  // so the fund always reconciles.
   document.getElementById('balanceBtn').addEventListener('click', ()=>{
-    const diff = FUND - grandTotal();           // +under / -over
-    let media = s.g_media + diff;
-    media = Math.max(0, Math.min(2000, media));
-    s.g_media = Math.round(media/25)*25;
-    document.getElementById('r_g_media').value = s.g_media;
+    const order = [
+      {key:'g_media',         max:2000, step:25},
+      {key:'g_adMgmt',        max:1500, step:25},
+      {key:'g_largeCreators', max:1500, step:25},
+      {key:'g_microCreators', max:1500, step:25},
+      {key:'g_gifting',       max:1000, step:25},
+      {key:'physical',        max:2000, step:50},
+      {key:'website',         max:1500, step:50},
+      {key:'design',          max:1500, step:50},
+      {key:'video',           max:1500, step:50},
+      {key:'saas',            max:1000, step:50}
+    ];
+    let diff = FUND - grandTotal();             // +under / -over
+    for(const lf of order){
+      if(Math.abs(diff) < 1) break;
+      const cur = s[lf.key];
+      let target = Math.max(0, Math.min(lf.max, cur + diff));
+      target = Math.round(target/lf.step)*lf.step;
+      diff -= (target - cur);
+      s[lf.key] = target;
+    }
+    [...topCats,...subs].forEach(c=> document.getElementById('r_'+c.key).value = s[c.key]);
     render();
   });
 
