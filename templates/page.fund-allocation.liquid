@@ -1,0 +1,812 @@
+{% comment %}
+  ----------------------------------------------------------------------------
+  Private partner page template: Fund Allocation Console
+  ----------------------------------------------------------------------------
+  This is a standalone, self-contained page used for private partner sharing.
+
+  How to use:
+    1. In the Shopify admin go to Online Store > Pages > Add page.
+    2. Give the page a title (e.g. "Initial Fund Allocation").
+    3. Under "Theme template", choose "fund-allocation".
+    4. Save. The page is reachable directly at /pages/<handle>
+       (e.g. /pages/initial-fund-allocation) and will NOT appear in any
+       navigation menu unless it is manually added to one.
+
+  Notes:
+    - The "layout none" tag renders this document with no theme header,
+      footer, or global stylesheet, so the console's own dark UI is shown exactly
+      as designed (same pattern Dawn uses for gift_card.liquid).
+    - The markup below is wrapped in a raw block so Liquid never parses the
+      embedded CSS/JS (which contains brace sequences like double-braces and
+      percent-braces).
+  ----------------------------------------------------------------------------
+{% endcomment %}
+{% layout none %}
+{%- raw -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>OmniFlex // Fund Allocation Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#07060f;
+    --panel:rgba(18,16,38,0.62);
+    --panel-edge:rgba(120,110,255,0.22);
+    --ink:#e9e7ff;
+    --ink-dim:#9b97c4;
+    --cyan:#2de2ff;
+    --blue:#4361ff;
+    --purple:#b14aff;
+    --magenta:#ff2bd6;
+    --lav:#c77dff;
+    --sky:#48bfe3;
+    --good:#39f3c0;
+    --warn:#ffb454;
+    --bad:#ff3d7f;
+    /* category colors */
+    --c-physical:#ff2bd6;
+    --c-website:#2de2ff;
+    --c-design:#b14aff;
+    --c-growth:#5b8cff;
+    --c-video:#c77dff;
+    --c-saas:#48bfe3;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(67,97,255,0.18), transparent 60%),
+      radial-gradient(1000px 600px at 0% 110%, rgba(177,74,255,0.16), transparent 55%),
+      var(--void);
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ambient grid */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(120,110,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,110,255,0.06) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 85%);
+    animation:drift 26s linear infinite;
+  }
+  @keyframes drift{from{background-position:0 0,0 0}to{background-position:44px 88px,88px 44px}}
+
+  .wrap{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:38px 22px 60px}
+
+  /* header */
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.32em;
+    text-transform:uppercase; color:var(--cyan);
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:28px; height:1px; background:linear-gradient(90deg,var(--cyan),transparent)}
+  h1{
+    font-family:'Chakra Petch',sans-serif; font-weight:700;
+    font-size:clamp(30px,5vw,52px); line-height:1.02; margin:.28em 0 .1em;
+    letter-spacing:.5px;
+    text-shadow:0 0 24px rgba(91,140,255,0.45);
+  }
+  h1 .amt{color:var(--cyan); text-shadow:0 0 26px rgba(45,226,255,0.55)}
+  .sub{color:var(--ink-dim); max-width:62ch; font-size:15px; margin:0}
+
+  .total-chip{
+    display:inline-flex; align-items:baseline; gap:10px; margin-top:18px;
+    font-family:'JetBrains Mono',monospace;
+    padding:10px 16px; border-radius:12px;
+    border:1px solid var(--panel-edge); background:var(--panel);
+    backdrop-filter:blur(8px);
+  }
+  .total-chip .k{font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-dim)}
+  .total-chip .v{font-size:20px; font-weight:700}
+  .total-chip .status{font-size:12px; padding:3px 9px; border-radius:999px; letter-spacing:.08em}
+  .status.ok{color:var(--good); background:rgba(57,243,192,.12); border:1px solid rgba(57,243,192,.4)}
+  .status.under{color:var(--warn); background:rgba(255,180,84,.1); border:1px solid rgba(255,180,84,.4)}
+  .status.over{color:var(--bad); background:rgba(255,61,127,.12); border:1px solid rgba(255,61,127,.45)}
+
+  /* grid */
+  .grid{display:grid; grid-template-columns:0.92fr 1.08fr; gap:20px; margin-top:30px}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--panel); border:1px solid var(--panel-edge);
+    border-radius:18px; padding:22px 22px 24px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset, 0 18px 50px -30px rgba(67,97,255,.6);
+  }
+  .card-h{font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 16px; display:flex; align-items:center; gap:9px}
+  .card-h::before{content:""; width:7px; height:7px; border-radius:2px; background:var(--cyan); box-shadow:0 0 10px var(--cyan)}
+
+  /* donut */
+  .core{display:flex; flex-direction:column; align-items:center}
+  .donut-shell{position:relative; width:300px; max-width:100%}
+  svg.donut{width:100%; height:auto; display:block}
+  .donut circle.seg{fill:none; stroke-width:34; transition:stroke-dasharray .55s cubic-bezier(.4,0,.2,1), stroke-dashoffset .55s cubic-bezier(.4,0,.2,1); stroke-linecap:butt}
+  .donut .track{fill:none; stroke:rgba(120,110,255,0.1); stroke-width:34}
+  .center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+  .center .big{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; line-height:1}
+  .center .of{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-dim); margin-top:4px; letter-spacing:.1em}
+  .center .rem{margin-top:8px; font-size:12px; font-family:'JetBrains Mono',monospace; padding:3px 10px; border-radius:999px}
+
+  /* legend */
+  .legend{width:100%; margin-top:20px; display:flex; flex-direction:column; gap:9px}
+  .lg-row{display:grid; grid-template-columns:14px 1fr auto auto; align-items:center; gap:10px; font-size:14px}
+  .dot{width:11px; height:11px; border-radius:3px}
+  .lg-name{color:var(--ink)}
+  .lg-pct{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-dim); min-width:46px; text-align:right}
+  .lg-val{font-family:'JetBrains Mono',monospace; font-weight:700; min-width:64px; text-align:right}
+
+  /* controls */
+  .ctrl{padding:13px 0; border-bottom:1px solid rgba(120,110,255,0.1)}
+  .ctrl:last-child{border-bottom:none}
+  .ctrl-top{display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .ctrl-label{display:flex; align-items:center; gap:9px; font-size:14px; font-weight:500}
+  .ctrl-val{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:5px; margin:13px 0 2px;
+    border-radius:999px; background:rgba(120,110,255,0.18); outline:none; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--cyan);
+    box-shadow:0 0 12px var(--cyan); cursor:pointer; transition:transform .1s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.18)}
+  input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; background:var(--ink); border:2px solid var(--cyan); box-shadow:0 0 12px var(--cyan); cursor:pointer}
+  input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid #fff; outline-offset:2px}
+
+  /* growth nested */
+  .growth-wrap{margin-top:6px; border:1px solid rgba(91,140,255,.35); border-radius:14px; padding:4px 16px 8px; background:rgba(67,97,255,0.07)}
+  .growth-head{display:flex; align-items:center; justify-content:space-between; padding:13px 0; cursor:pointer; user-select:none}
+  .growth-head .ttl{display:flex; align-items:center; gap:10px; font-family:'Chakra Petch',sans-serif; font-weight:600; letter-spacing:.04em}
+  .badge{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--c-growth); border:1px solid rgba(91,140,255,.5); padding:2px 7px; border-radius:6px}
+  .chev{transition:transform .3s; color:var(--ink-dim)}
+  .growth-body{overflow:hidden; transition:max-height .4s ease, opacity .3s; max-height:0; opacity:0}
+  .growth-body.open{max-height:760px; opacity:1}
+  .sub-note{font-size:12px; color:var(--ink-dim); padding:4px 0 8px}
+
+  /* stacked bars */
+  .barblock{margin-top:8px}
+  .bar-label{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; margin-bottom:7px; letter-spacing:.05em; text-transform:uppercase}
+  .stack{display:flex; width:100%; height:30px; border-radius:9px; overflow:hidden; border:1px solid rgba(120,110,255,0.18)}
+  .seg-b{height:100%; transition:width .5s cubic-bezier(.4,0,.2,1); position:relative}
+  .stack-key{display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:11px}
+  .key{display:flex; align-items:center; gap:7px; font-size:12.5px}
+  .key .dot{width:9px; height:9px}
+  .key .kv{font-family:'JetBrains Mono',monospace; color:var(--ink-dim)}
+
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px}
+  @media(max-width:880px){.row2{grid-template-columns:1fr}}
+
+  /* runway */
+  .nature{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px}
+  .nbox{border:1px solid rgba(120,110,255,0.16); border-radius:12px; padding:13px 14px; background:rgba(10,8,24,0.4)}
+  .nbox .nk{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim); font-family:'JetBrains Mono',monospace}
+  .nbox .nv{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:21px; margin-top:5px}
+  .nbox.recurring .nv{color:var(--warn)}
+  .nbox.onetime .nv{color:var(--good)}
+  .runway-line{font-size:13.5px; color:var(--ink-dim); line-height:1.55}
+  .runway-line b{color:var(--ink)}
+  .months{display:flex; gap:7px; margin:12px 0 4px; flex-wrap:wrap}
+  .mbtn{font-family:'JetBrains Mono',monospace; font-size:12px; padding:6px 12px; border-radius:8px; border:1px solid rgba(120,110,255,.3); background:transparent; color:var(--ink-dim); cursor:pointer; transition:.15s}
+  .mbtn:hover{color:var(--ink); border-color:var(--cyan)}
+  .mbtn.active{color:var(--void); background:var(--cyan); border-color:var(--cyan); font-weight:700; box-shadow:0 0 14px rgba(45,226,255,.5)}
+
+  /* actions */
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:24px}
+  .btn{font-family:'Chakra Petch',sans-serif; font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-size:13px; padding:12px 20px; border-radius:11px; cursor:pointer; transition:.18s; border:1px solid}
+  .btn.primary{background:linear-gradient(120deg,var(--blue),var(--purple)); color:#fff; border-color:transparent; box-shadow:0 0 22px -6px rgba(91,140,255,.8)}
+  .btn.primary:hover{filter:brightness(1.12); transform:translateY(-1px)}
+  .btn.ghost{background:transparent; color:var(--ink-dim); border-color:rgba(120,110,255,.3)}
+  .btn.ghost:hover{color:var(--ink); border-color:var(--cyan)}
+
+  .foot{margin-top:30px; font-size:12.5px; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; line-height:1.6; border-top:1px solid rgba(120,110,255,.12); padding-top:16px}
+  .foot b{color:var(--lav)}
+
+  /* persistent HUD */
+  .hud{
+    position:fixed; right:20px; bottom:20px; z-index:50;
+    display:flex; align-items:center; gap:14px;
+    padding:12px 16px; border-radius:14px;
+    background:rgba(10,8,24,0.88); backdrop-filter:blur(12px);
+    border:1px solid var(--panel-edge);
+    box-shadow:0 14px 40px -12px rgba(0,0,0,.7);
+    font-family:'JetBrains Mono',monospace; transition:border-color .3s, box-shadow .3s;
+  }
+  .hud-left{display:flex; align-items:baseline; gap:7px}
+  .hud-k{font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-dim)}
+  .hud-total{font-size:18px; font-weight:700; color:var(--ink)}
+  .hud-of{font-size:11px; color:var(--ink-dim)}
+  .hud-track{width:88px; height:5px; border-radius:999px; background:rgba(120,110,255,.18); overflow:hidden}
+  .hud-bar{height:100%; width:100%; transition:width .5s, background .3s}
+  .hud-status{font-size:11px; letter-spacing:.1em; padding:4px 10px; border-radius:999px; font-weight:700}
+  .hud.ok{border-color:rgba(57,243,192,.5); box-shadow:0 0 24px -6px rgba(57,243,192,.45)}
+  .hud.ok .hud-bar{background:var(--good)} .hud.ok .hud-status{color:var(--good); background:rgba(57,243,192,.12)}
+  .hud.under{border-color:rgba(255,180,84,.5)}
+  .hud.under .hud-bar{background:var(--warn)} .hud.under .hud-status{color:var(--warn); background:rgba(255,180,84,.1)}
+  .hud.over{border-color:rgba(255,61,127,.6); box-shadow:0 0 24px -6px rgba(255,61,127,.55)}
+  .hud.over .hud-bar{background:var(--bad)} .hud.over .hud-status{color:var(--bad); background:rgba(255,61,127,.12)}
+
+  /* asset ledger */
+  .led-summary{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px}
+  .led-progresswrap{height:8px; border-radius:999px; background:rgba(120,110,255,.16); overflow:hidden}
+  .led-progress{height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--purple)); transition:width .5s; box-shadow:0 0 12px var(--purple)}
+  .led-progresslabel{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-dim); margin-top:7px; letter-spacing:.08em}
+  .led-form{display:grid; grid-template-columns:1.5fr 0.9fr 1.7fr 0.6fr auto auto; gap:9px; margin:18px 0 14px; align-items:center}
+  @media(max-width:760px){.led-form{grid-template-columns:1fr 1fr}}
+  .led-form input[type=text], .led-form input[type=number], .led-form select{
+    background:rgba(10,8,24,.6); border:1px solid rgba(120,110,255,.25); color:var(--ink);
+    border-radius:9px; padding:9px 11px; font-family:'Space Grotesk',sans-serif; font-size:13px; width:100%;
+  }
+  .led-form input:focus, .led-form select:focus{outline:none; border-color:var(--cyan); box-shadow:0 0 0 2px rgba(45,226,255,.15)}
+  .led-form input::placeholder{color:var(--ink-dim)}
+  .led-acc-toggle{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-dim); white-space:nowrap; font-family:'JetBrains Mono',monospace}
+  .led-acc-toggle input{accent-color:var(--cyan)}
+  .led-addbtn{padding:10px 16px!important}
+  .led-filters{display:flex; gap:8px; margin-bottom:12px}
+  .lfbtn{font-family:'JetBrains Mono',monospace; font-size:12px; padding:6px 14px; border-radius:8px; border:1px solid rgba(120,110,255,.3); background:transparent; color:var(--ink-dim); cursor:pointer; transition:.15s}
+  .lfbtn:hover{color:var(--ink); border-color:var(--cyan)}
+  .lfbtn.active{color:var(--void); background:var(--cyan); border-color:var(--cyan); font-weight:700}
+  .led-list{display:flex; flex-direction:column; gap:8px}
+  .led-row{display:grid; grid-template-columns:auto 1fr auto auto auto auto; align-items:center; gap:11px; padding:11px 13px; border-radius:11px; border:1px solid rgba(120,110,255,.14); background:rgba(10,8,24,.4)}
+  .led-row.is-acc{border-left:3px solid var(--good)}
+  .led-row.is-open{border-left:3px solid var(--lav)}
+  .led-toggle{background:none; border:none; font-size:16px; cursor:pointer; color:var(--good); line-height:1}
+  .led-row.is-open .led-toggle{color:var(--lav)}
+  .led-name{font-size:14px; color:var(--ink)}
+  .led-tag{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; border:1px solid; padding:3px 8px; border-radius:6px; white-space:nowrap}
+  .led-cost{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; color:var(--ink); min-width:48px; text-align:right}
+  .led-link{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan); text-decoration:none; white-space:nowrap}
+  .led-link:hover{text-decoration:underline}
+  .led-nolink{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-dim); white-space:nowrap}
+  .led-del{background:none; border:none; color:var(--ink-dim); font-size:18px; cursor:pointer; line-height:1; padding:0 4px}
+  .led-del:hover{color:var(--bad)}
+  .led-empty{font-size:13px; color:var(--ink-dim); padding:18px; text-align:center; font-family:'JetBrains Mono',monospace}
+  .led-actions{display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap}
+  .led-hint{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-dim)}
+
+  /* export modal */
+  .modal{position:fixed; inset:0; z-index:100; background:rgba(5,4,12,.78); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:22px}
+  .modal.show{display:flex}
+  .modal-box{width:min(680px,100%); max-height:84vh; overflow:auto; background:#0c0a1c; border:1px solid var(--panel-edge); border-radius:18px; padding:22px; box-shadow:0 30px 80px -20px #000}
+  #exportText{width:100%; height:300px; background:rgba(5,4,12,.6); color:var(--ink); border:1px solid rgba(120,110,255,.25); border-radius:11px; padding:14px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; resize:vertical; margin-top:6px}
+  .modal-actions{display:flex; gap:12px; margin-top:14px}
+
+  @media(max-width:880px){ .wrap{padding-bottom:120px} .hud{left:16px; right:16px; bottom:14px} }
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important; transition:none!important}
+  }
+</style>
+</head>
+<body>
+<!-- persistent HUD -->
+<div class="hud ok" id="hud" aria-live="polite" aria-label="Running allocation total">
+  <div class="hud-left">
+    <span class="hud-k">Allocated</span>
+    <span class="hud-total" id="hudTotal">$5,000</span>
+    <span class="hud-of">/ $5,000</span>
+  </div>
+  <div class="hud-track"><div class="hud-bar" id="hudBar"></div></div>
+  <span class="hud-status" id="hudStatus">BALANCED</span>
+</div>
+
+<div class="wrap">
+
+  <div class="eyebrow">OmniFlex Fitness // Use of Proceeds</div>
+  <h1><span class="amt">$5,000</span> Allocation Console</h1>
+  <p class="sub">Move capital across the deployment. The Growth Engine merges advertising and influencer spend into one pool — open it to negotiate the sub-items without disturbing the top-level structure.</p>
+
+  <div class="total-chip">
+    <span class="k">Allocated</span>
+    <span class="v" id="chipTotal">$5,000</span>
+    <span class="status ok" id="chipStatus">balanced</span>
+  </div>
+
+  <div class="grid">
+    <!-- CORE -->
+    <div class="card core">
+      <div class="card-h">Allocation Core</div>
+      <div class="donut-shell">
+        <svg class="donut" viewBox="0 0 240 240" role="img" aria-label="Fund allocation ring">
+          <circle class="track" cx="120" cy="120" r="92"></circle>
+          <g id="donutSegs" transform="rotate(-90 120 120)"></g>
+        </svg>
+        <div class="center">
+          <div class="big" id="coreTotal">$5,000</div>
+          <div class="of">of $5,000</div>
+          <div class="rem" id="coreRem"></div>
+        </div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="card">
+      <div class="card-h">Deployment Controls</div>
+      <div id="topControls"></div>
+
+      <div class="growth-wrap">
+        <div class="growth-head" id="growthHead" role="button" tabindex="0" aria-expanded="true">
+          <span class="ttl">
+            <span class="dot" style="background:var(--c-growth);box-shadow:0 0 10px var(--c-growth)"></span>
+            Growth Engine
+            <span class="badge">Ads + Influencer</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:12px">
+            <span class="ctrl-val" id="growthTotal" style="color:var(--c-growth)">$2,200</span>
+            <span class="chev" id="chev">&#9650;</span>
+          </span>
+        </div>
+        <div class="growth-body open" id="growthBody">
+          <div class="sub-note">These five sub-items are negotiable and reallocate freely inside the pool. The Growth total updates as you move them.</div>
+          <div id="subControls"></div>
+          <div class="barblock">
+            <div class="bar-label"><span>Growth split</span><span id="growthSplitTotal">$2,200</span></div>
+            <div class="stack" id="growthStack"></div>
+            <div class="stack-key" id="growthKey"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <!-- PHYSICAL VS DIGITAL -->
+    <div class="card">
+      <div class="card-h">Physical vs Digital</div>
+      <div class="barblock">
+        <div class="stack" style="height:40px" id="pdStack"></div>
+        <div class="stack-key" id="pdKey"></div>
+      </div>
+    </div>
+
+    <!-- RUNWAY -->
+    <div class="card">
+      <div class="card-h">Cost Nature &amp; Launch Runway</div>
+      <div class="nature">
+        <div class="nbox onetime"><div class="nk">One-time</div><div class="nv" id="oneTime">$0</div></div>
+        <div class="nbox recurring"><div class="nk">Recurring</div><div class="nv" id="recurring">$0</div></div>
+      </div>
+      <div class="runway-line">
+        Recurring lines (ad management, media spend, SaaS) burn monthly. Pick a campaign length to see the implied burn and what runway this fund buys.
+      </div>
+      <div class="months" id="months">
+        <button class="mbtn" data-m="1">1 mo</button>
+        <button class="mbtn" data-m="2">2 mo</button>
+        <button class="mbtn active" data-m="3">3 mo</button>
+        <button class="mbtn" data-m="4">4 mo</button>
+        <button class="mbtn" data-m="6">6 mo</button>
+      </div>
+      <div class="runway-line" style="margin-top:8px">
+        Implied monthly burn: <b id="burn">$0</b> &nbsp;·&nbsp; Runway funded: <b id="runwayMonths">0</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSET LEDGER -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-h">Asset Ledger — Concrete vs Open</div>
+    <div class="led-summary">
+      <div class="nbox onetime"><div class="nk">Accounted</div><div class="nv" id="ledAcc">0</div></div>
+      <div class="nbox"><div class="nk">Open</div><div class="nv" id="ledOpen" style="color:var(--lav)">0</div></div>
+      <div class="nbox"><div class="nk">Concretely sourced</div><div class="nv" id="ledCommitted" style="color:var(--cyan)">$0</div></div>
+    </div>
+    <div class="led-progresswrap"><div class="led-progress" id="ledProgress"></div></div>
+    <div class="led-progresslabel" id="ledProgressLabel">0% concretely accounted</div>
+
+    <div class="led-form">
+      <input id="inName" type="text" placeholder="Item / service name" aria-label="Item name">
+      <select id="inCat" aria-label="Category">
+        <option>Physical</option><option>Website</option><option>Design</option>
+        <option selected>Growth</option><option>Video</option><option>SaaS</option>
+      </select>
+      <input id="inLink" type="text" placeholder="Paste listing URL (optional)" aria-label="Listing link">
+      <input id="inCost" type="number" placeholder="$ est" min="0" step="25" aria-label="Estimated cost">
+      <label class="led-acc-toggle"><input type="checkbox" id="inAcc"> accounted</label>
+      <button class="btn primary led-addbtn" id="ledAdd">Add</button>
+    </div>
+
+    <div class="led-filters" id="ledFilters">
+      <button class="lfbtn active" data-f="all">All</button>
+      <button class="lfbtn" data-f="acc">Accounted</button>
+      <button class="lfbtn" data-f="open">Open</button>
+    </div>
+
+    <div class="led-list" id="ledgerList"></div>
+
+    <div class="led-actions">
+      <button class="btn ghost" id="exportBtn">Export ledger + allocation</button>
+      <span class="led-hint">Session only — export before closing to keep your picks.</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="balanceBtn">Auto-balance to $5,000</button>
+    <button class="btn ghost" id="resetBtn">Reset to baseline</button>
+  </div>
+
+  <div class="foot">
+    <b>Note:</b> Balancing adjusts Media Spend inside the Growth Engine. One-time buys retain value; recurring lines define the runway. Figures here are working estimates for visualization — final line items get itemized in the Google Doc once this split is approved.
+  </div>
+
+  <!-- export modal -->
+  <div class="modal" id="exportModal">
+    <div class="modal-box">
+      <div class="card-h">Export — paste this back to generate the doc</div>
+      <textarea id="exportText" readonly></textarea>
+      <div class="modal-actions">
+        <button class="btn primary" id="copyExport">Copy to clipboard</button>
+        <button class="btn ghost" id="closeExport">Close</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+  const FUND = 5000;
+
+  // ---- baseline state (leaf dollars) ----
+  const baseline = {
+    physical:1000, website:500, design:500, video:500, saas:300,
+    g_adMgmt:600, g_media:600, g_largeCreators:450, g_microCreators:400, g_gifting:150
+  };
+  let s = Object.assign({}, baseline);
+  let months = 3;
+
+  // ---- config ----
+  const topCats = [
+    {key:'physical', name:'Physical Assets',   color:'var(--c-physical)', max:2000},
+    {key:'website',  name:'Website / Storefront', color:'var(--c-website)', max:1500},
+    {key:'design',   name:'Design Services',   color:'var(--c-design)',   max:1500},
+    {key:'video',    name:'Video Editing',     color:'var(--c-video)',    max:1500},
+    {key:'saas',     name:'SaaS Subscriptions',color:'var(--c-saas)',     max:1000}
+  ];
+  const subs = [
+    {key:'g_adMgmt',        name:'Ad Management',     color:'#2de2ff', max:1500, recurring:true},
+    {key:'g_media',         name:'Media Spend',       color:'#4361ff', max:2000, recurring:true},
+    {key:'g_largeCreators', name:'Larger Creators',   color:'#7b5cff', max:1500, recurring:false},
+    {key:'g_microCreators', name:'Micro Creators',    color:'#b14aff', max:1500, recurring:false},
+    {key:'g_gifting',       name:'Product Gifting',   color:'#ff2bd6', max:1000, recurring:false}
+  ];
+  // recurring leaves used for runway math
+  const recurringKeys = ['g_adMgmt','g_media','saas'];
+
+  const growthTotal = () => subs.reduce((a,c)=>a+s[c.key],0);
+  const digitalTotal = () => s.website+s.design+s.video+s.saas+growthTotal();
+  const grandTotal = () => s.physical + digitalTotal();
+
+  // donut legend categories (Growth aggregated)
+  const donutCats = () => ([
+    {name:'Physical Assets', val:s.physical,      color:'var(--c-physical)'},
+    {name:'Website',         val:s.website,       color:'var(--c-website)'},
+    {name:'Design',          val:s.design,        color:'var(--c-design)'},
+    {name:'Growth Engine',   val:growthTotal(),   color:'var(--c-growth)'},
+    {name:'Video Editing',   val:s.video,         color:'var(--c-video)'},
+    {name:'SaaS',            val:s.saas,          color:'var(--c-saas)'}
+  ]);
+
+  // ---- build controls ----
+  const topWrap = document.getElementById('topControls');
+  topCats.forEach(c=>{
+    const row = document.createElement('div');
+    row.className='ctrl';
+    row.innerHTML = `
+      <div class="ctrl-top">
+        <span class="ctrl-label"><span class="dot" style="background:${c.color};box-shadow:0 0 10px ${c.color}"></span>${c.name}</span>
+        <span class="ctrl-val" id="v_${c.key}"></span>
+      </div>
+      <input type="range" min="0" max="${c.max}" step="50" value="${s[c.key]}" id="r_${c.key}" aria-label="${c.name} dollars">
+    `;
+    topWrap.appendChild(row);
+    row.querySelector('input').addEventListener('input', e=>{ s[c.key]=+e.target.value; render(); });
+  });
+
+  const subWrap = document.getElementById('subControls');
+  subs.forEach(c=>{
+    const row = document.createElement('div');
+    row.className='ctrl';
+    row.innerHTML = `
+      <div class="ctrl-top">
+        <span class="ctrl-label"><span class="dot" style="background:${c.color};box-shadow:0 0 10px ${c.color}"></span>${c.name}${c.recurring?' <span style="font-size:10px;color:var(--warn);font-family:JetBrains Mono">·rec</span>':''}</span>
+        <span class="ctrl-val" id="v_${c.key}"></span>
+      </div>
+      <input type="range" min="0" max="${c.max}" step="25" value="${s[c.key]}" id="r_${c.key}" aria-label="${c.name} dollars">
+    `;
+    subWrap.appendChild(row);
+    row.querySelector('input').addEventListener('input', e=>{ s[c.key]=+e.target.value; render(); });
+  });
+
+  // ---- donut ----
+  const R=92, C=2*Math.PI*R;
+  const segG = document.getElementById('donutSegs');
+  function drawDonut(){
+    const cats = donutCats();
+    const total = grandTotal();
+    segG.innerHTML='';
+    // segments scale against FUND when under/equal, against total when over
+    const base = total<=FUND ? FUND : total;
+    let prefix=0;
+    cats.forEach(c=>{
+      const frac = c.val/base;
+      const len = frac*C;
+      const circ = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circ.setAttribute('class','seg');
+      circ.setAttribute('cx',120); circ.setAttribute('cy',120); circ.setAttribute('r',R);
+      circ.setAttribute('stroke', getCSS(c.color));
+      circ.setAttribute('stroke-dasharray', `${len.toFixed(2)} ${(C-len).toFixed(2)}`);
+      circ.setAttribute('stroke-dashoffset', `${(-prefix).toFixed(2)}`);
+      circ.style.filter = 'drop-shadow(0 0 5px '+getCSS(c.color)+')';
+      segG.appendChild(circ);
+      prefix += len;
+    });
+  }
+  function getCSS(v){
+    if(v.startsWith('var(')){ const name=v.slice(4,-1); return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    return v;
+  }
+
+  // ---- stacked bar helper ----
+  function buildStack(stackEl, keyEl, items, denom){
+    stackEl.innerHTML=''; keyEl.innerHTML='';
+    items.forEach(it=>{
+      const seg=document.createElement('div');
+      seg.className='seg-b';
+      const pct = denom>0 ? (it.val/denom*100) : 0;
+      seg.style.width = pct+'%';
+      seg.style.background = it.color;
+      seg.style.boxShadow = 'inset 0 0 14px rgba(255,255,255,.12)';
+      seg.title = it.name+' '+fmt(it.val);
+      stackEl.appendChild(seg);
+      const k=document.createElement('div');
+      k.className='key';
+      k.innerHTML=`<span class="dot" style="background:${it.color}"></span>${it.name} <span class="kv">${fmt(it.val)}</span>`;
+      keyEl.appendChild(k);
+    });
+  }
+
+  // ---- main render ----
+  function render(){
+    // control values
+    topCats.forEach(c=> document.getElementById('v_'+c.key).textContent = fmt(s[c.key]));
+    subs.forEach(c=> document.getElementById('v_'+c.key).textContent = fmt(s[c.key]));
+
+    const gt = growthTotal(), total = grandTotal();
+    document.getElementById('growthTotal').textContent = fmt(gt);
+    document.getElementById('growthSplitTotal').textContent = fmt(gt);
+
+    // donut + center
+    drawDonut();
+    document.getElementById('coreTotal').textContent = fmt(total);
+    const rem = FUND - total;
+    const remEl = document.getElementById('coreRem');
+    const chipStatus = document.getElementById('chipStatus');
+    document.getElementById('chipTotal').textContent = fmt(total);
+    if(Math.abs(rem)<1){
+      remEl.textContent='fully allocated'; remEl.style.color='var(--good)'; remEl.style.background='rgba(57,243,192,.12)';
+      chipStatus.textContent='balanced'; chipStatus.className='status ok';
+    } else if(rem>0){
+      remEl.textContent=fmt(rem)+' unallocated'; remEl.style.color='var(--warn)'; remEl.style.background='rgba(255,180,84,.1)';
+      chipStatus.textContent=fmt(rem)+' left'; chipStatus.className='status under';
+    } else {
+      remEl.textContent='over by '+fmt(-rem); remEl.style.color='var(--bad)'; remEl.style.background='rgba(255,61,127,.12)';
+      chipStatus.textContent='over budget'; chipStatus.className='status over';
+    }
+
+    // legend
+    const leg=document.getElementById('legend'); leg.innerHTML='';
+    donutCats().forEach(c=>{
+      const r=document.createElement('div'); r.className='lg-row';
+      const pct = total>0 ? (c.val/FUND*100) : 0;
+      r.innerHTML=`<span class="dot" style="background:${c.color}"></span>
+        <span class="lg-name">${c.name}</span>
+        <span class="lg-pct">${pct.toFixed(1)}%</span>
+        <span class="lg-val">${fmt(c.val)}</span>`;
+      leg.appendChild(r);
+    });
+
+    // growth stack
+    buildStack(document.getElementById('growthStack'), document.getElementById('growthKey'),
+      subs.map(c=>({name:c.name,val:s[c.key],color:c.color})), gt);
+
+    // physical vs digital
+    const dig=digitalTotal();
+    buildStack(document.getElementById('pdStack'), document.getElementById('pdKey'),
+      [{name:'Physical',val:s.physical,color:'var(--c-physical)'},
+       {name:'Digital',val:dig,color:'var(--c-growth)'}], s.physical+dig);
+
+    // nature + runway
+    const recurring = recurringKeys.reduce((a,k)=>a+s[k],0);
+    const oneTime = total - recurring;
+    document.getElementById('recurring').textContent = fmt(recurring);
+    document.getElementById('oneTime').textContent = fmt(oneTime);
+    const burn = recurring/months;
+    document.getElementById('burn').textContent = fmt(burn)+'/mo';
+    document.getElementById('runwayMonths').textContent = months+' months';
+
+    updateHUD(total, rem);
+  }
+
+  // ---- growth expand ----
+  const gh=document.getElementById('growthHead'), gb=document.getElementById('growthBody'), chev=document.getElementById('chev');
+  function toggleGrowth(){
+    const open=gb.classList.toggle('open');
+    chev.style.transform = open?'rotate(0deg)':'rotate(180deg)';
+    gh.setAttribute('aria-expanded', open);
+  }
+  gh.addEventListener('click', toggleGrowth);
+  gh.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleGrowth();} });
+
+  // ---- months ----
+  document.getElementById('months').addEventListener('click', e=>{
+    const b=e.target.closest('.mbtn'); if(!b) return;
+    months=+b.dataset.m;
+    document.querySelectorAll('.mbtn').forEach(x=>x.classList.toggle('active', x===b));
+    render();
+  });
+
+  // ---- actions ----
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    s=Object.assign({},baseline);
+    [...topCats,...subs].forEach(c=> document.getElementById('r_'+c.key).value=s[c.key]);
+    render();
+  });
+  document.getElementById('balanceBtn').addEventListener('click', ()=>{
+    const diff = FUND - grandTotal();           // +under / -over
+    let media = s.g_media + diff;
+    media = Math.max(0, Math.min(2000, media));
+    s.g_media = Math.round(media/25)*25;
+    document.getElementById('r_g_media').value = s.g_media;
+    render();
+  });
+
+  // ===== Persistent HUD =====
+  function updateHUD(total, rem){
+    const ht=document.getElementById('hudTotal'); if(!ht) return;
+    ht.textContent = fmt(total);
+    const hud=document.getElementById('hud');
+    const hs=document.getElementById('hudStatus');
+    const hbar=document.getElementById('hudBar');
+    hbar.style.width = Math.min(100, total/FUND*100)+'%';
+    if(Math.abs(rem)<1){ hs.textContent='BALANCED'; hud.className='hud ok'; }
+    else if(rem>0){ hs.textContent=fmt(rem)+' LEFT'; hud.className='hud under'; }
+    else { hs.textContent='OVER '+fmt(-rem); hud.className='hud over'; }
+  }
+
+  // ===== Asset Ledger =====
+  // pre-seeded: items with concrete supplier links are marked accounted
+  let ledger = [
+    {name:'Canopy Tent — FEAMONT (aluminum)', cat:'Physical', link:'https://www.alibaba.com/product-detail/FEAMONT-Carpa-Para-Stands-Comerciales-Folding_1601673316579.html', cost:100, accounted:true},
+    {name:'Branded Bags — Guangzhou Quick Printing', cat:'Physical', link:'https://www.alibaba.com/product-detail/Customized-Branded-Logo-Luxury-Black-Paper_11000008180558.html', cost:200, accounted:true},
+    {name:'Mailer Boxes — Shenzhen Zhongtai', cat:'Physical', link:'https://www.alibaba.com/product-detail/Small-Custom-Printing-Black-Corrugated-Recyclable_1600478453816.html', cost:40, accounted:true},
+    {name:'Ad Manager (~$200/mo)', cat:'Growth', link:'', cost:600, accounted:true},
+    {name:'Website Build — Webflow + Shopify', cat:'Website', link:'', cost:500, accounted:false},
+    {name:'Flyers / Brochures', cat:'Design', link:'', cost:0, accounted:false},
+    {name:'Decals / Stickers', cat:'Design', link:'', cost:0, accounted:false},
+    {name:'Tent Art (editable source)', cat:'Design', link:'', cost:0, accounted:false},
+    {name:'Bag Print Art', cat:'Design', link:'', cost:0, accounted:false},
+    {name:'Box Print Art', cat:'Design', link:'', cost:0, accounted:false},
+    {name:'Larger Creators', cat:'Growth', link:'', cost:0, accounted:false},
+    {name:'Micro Creators', cat:'Growth', link:'', cost:0, accounted:false},
+    {name:'Video Editor', cat:'Video', link:'', cost:0, accounted:false},
+    {name:'SaaS Stack', cat:'SaaS', link:'', cost:0, accounted:false}
+  ];
+  let ledgerFilter='all';
+  const catColorMap={Physical:'var(--c-physical)',Website:'var(--c-website)',Design:'var(--c-design)',Growth:'var(--c-growth)',Video:'var(--c-video)',SaaS:'var(--c-saas)'};
+  function escapeHtml(s){return (''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+  function renderLedger(){
+    const acc = ledger.filter(x=>x.accounted).length;
+    const open = ledger.length - acc;
+    const committed = ledger.filter(x=>x.accounted).reduce((a,c)=>a+(+c.cost||0),0);
+    document.getElementById('ledAcc').textContent=acc;
+    document.getElementById('ledOpen').textContent=open;
+    document.getElementById('ledCommitted').textContent=fmt(committed);
+    const pct = ledger.length ? (acc/ledger.length*100) : 0;
+    document.getElementById('ledProgress').style.width=pct+'%';
+    document.getElementById('ledProgressLabel').textContent=Math.round(pct)+'% concretely accounted';
+
+    const list=document.getElementById('ledgerList'); list.innerHTML='';
+    const rows = ledger.filter(x=> ledgerFilter==='all' || (ledgerFilter==='acc'&&x.accounted) || (ledgerFilter==='open'&&!x.accounted));
+    if(rows.length===0){ list.innerHTML='<div class="led-empty">No items in this view.</div>'; return; }
+    rows.forEach(x=>{
+      const i=ledger.indexOf(x);
+      const row=document.createElement('div');
+      row.className='led-row '+(x.accounted?'is-acc':'is-open');
+      const linkHtml = x.link
+        ? '<a href="'+x.link+'" target="_blank" rel="noopener" class="led-link" title="'+escapeHtml(x.link)+'">listing &#8599;</a>'
+        : '<span class="led-nolink">no link</span>';
+      row.innerHTML =
+        '<button class="led-toggle" data-i="'+i+'" title="Toggle accounted" aria-label="Toggle accounted">'+(x.accounted?'&#9679;':'&#9675;')+'</button>'+
+        '<span class="led-name">'+escapeHtml(x.name)+'</span>'+
+        '<span class="led-tag" style="border-color:'+(catColorMap[x.cat]||'#888')+';color:'+(catColorMap[x.cat]||'#888')+'">'+x.cat+'</span>'+
+        '<span class="led-cost">'+(x.cost? fmt(x.cost):'&mdash;')+'</span>'+
+        linkHtml+
+        '<button class="led-del" data-d="'+i+'" title="Remove" aria-label="Remove">&times;</button>';
+      list.appendChild(row);
+    });
+  }
+
+  // add
+  document.getElementById('ledAdd').addEventListener('click',()=>{
+    const nameEl=document.getElementById('inName');
+    const name=nameEl.value.trim();
+    if(!name){ nameEl.focus(); return; }
+    const cat=document.getElementById('inCat').value;
+    let link=document.getElementById('inLink').value.trim();
+    if(link && !/^https?:\/\//i.test(link)) link='https://'+link;
+    const cost=+document.getElementById('inCost').value||0;
+    const accounted = !!link || document.getElementById('inAcc').checked;
+    ledger.push({name,cat,link,cost,accounted});
+    nameEl.value=''; document.getElementById('inLink').value=''; document.getElementById('inCost').value=''; document.getElementById('inAcc').checked=false;
+    renderLedger();
+  });
+  // enter-to-add from name field
+  document.getElementById('inName').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('ledAdd').click(); });
+  // toggle / delete (delegated)
+  document.getElementById('ledgerList').addEventListener('click',e=>{
+    const t=e.target.closest('.led-toggle'); const d=e.target.closest('.led-del');
+    if(t){ const i=+t.dataset.i; ledger[i].accounted=!ledger[i].accounted; renderLedger(); }
+    if(d){ const i=+d.dataset.d; ledger.splice(i,1); renderLedger(); }
+  });
+  // filters
+  document.getElementById('ledFilters').addEventListener('click',e=>{
+    const b=e.target.closest('.lfbtn'); if(!b) return;
+    ledgerFilter=b.dataset.f;
+    document.querySelectorAll('.lfbtn').forEach(x=>x.classList.toggle('active',x===b));
+    renderLedger();
+  });
+
+  // ===== Export =====
+  document.getElementById('exportBtn').addEventListener('click',()=>{
+    const L=[];
+    L.push('# OmniFlex — $5,000 Allocation Snapshot');
+    L.push('');
+    L.push('## Top-Level Allocation');
+    donutCats().forEach(c=> L.push('- '+c.name+': '+fmt(c.val)));
+    L.push('- TOTAL ALLOCATED: '+fmt(grandTotal())+' / '+fmt(FUND));
+    L.push('');
+    L.push('### Growth Engine sub-split');
+    subs.forEach(c=> L.push('- '+c.name+': '+fmt(s[c.key])));
+    L.push('');
+    L.push('## Asset Ledger');
+    L.push('| Item | Category | Status | Est. Cost | Link |');
+    L.push('|---|---|---|---|---|');
+    ledger.forEach(x=> L.push('| '+x.name+' | '+x.cat+' | '+(x.accounted?'Accounted':'Open')+' | '+(x.cost?fmt(x.cost):'—')+' | '+(x.link||'—')+' |'));
+    const acc=ledger.filter(x=>x.accounted).length;
+    L.push('');
+    L.push('Accounted: '+acc+' / '+ledger.length+' items.');
+    document.getElementById('exportText').value=L.join('\n');
+    document.getElementById('exportModal').classList.add('show');
+  });
+  document.getElementById('copyExport').addEventListener('click',async()=>{
+    const ta=document.getElementById('exportText'); ta.select();
+    const btn=document.getElementById('copyExport');
+    try{ await navigator.clipboard.writeText(ta.value); }catch(e){ document.execCommand('copy'); }
+    btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy to clipboard',1500);
+  });
+  document.getElementById('closeExport').addEventListener('click',()=>document.getElementById('exportModal').classList.remove('show'));
+  document.getElementById('exportModal').addEventListener('click',e=>{ if(e.target.id==='exportModal') document.getElementById('exportModal').classList.remove('show'); });
+
+  // initial draw
+  render();
+  renderLedger();
+})();
+</script>
+</body>
+</html>
+{%- endraw -%}
