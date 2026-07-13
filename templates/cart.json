@@ -12,7 +12,7 @@
     "cart-items": {
       "type": "main-cart-items",
       "settings": {
-        "color_scheme": "scheme-78a9ea19-c902-42c0-a751-2f655f6e3951",
+        "color_scheme": "neon-cyan",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -34,7 +34,7 @@
         "buttons"
       ],
       "settings": {
-        "color_scheme": "background-1",
+        "color_scheme": "neon-cyan",
         "padding_top": 20,
         "padding_bottom": 40
       }
