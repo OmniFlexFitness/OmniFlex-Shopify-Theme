@@ -1,6 +1,674 @@
+{% doc %}
+  @prompt
+    Create a new version of the "Featured product" section, but instead of the normal product image, allow for a 3D rotating product image to be featured, with a stage that fits the cyberpunk/vapourwave/neon-noire aesthetic for the product display. Also make sure that the rotation of the platform is interactive.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-featured-product-3d-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-featured-product-3d-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, {{ block.settings.glow_color_1 }}33 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, {{ block.settings.glow_color_2 }}33 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ai-featured-product-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.desktop_width_percent }}%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-featured-product-stage-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    perspective: 1000px;
+  }
+
+  .ai-featured-product-platform-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+  }
+
+  .ai-featured-product-base-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) rotateX(75deg);
+    width: 80%;
+    height: 80%;
+    background: linear-gradient(135deg, {{ block.settings.platform_color_1 }}, {{ block.settings.platform_color_2 }});
+    border-radius: 50%;
+    box-shadow: 
+      0 0 40px {{ block.settings.glow_color_1 }}80,
+      0 0 80px {{ block.settings.glow_color_2 }}40,
+      inset 0 0 40px {{ block.settings.platform_color_1 }}40;
+  }
+
+  .ai-featured-product-grid-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) rotateX(75deg);
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background-image: 
+      repeating-linear-gradient(0deg, {{ block.settings.grid_color }}40 0px, transparent 1px, transparent 20px),
+      repeating-linear-gradient(90deg, {{ block.settings.grid_color }}40 0px, transparent 1px, transparent 20px);
+    opacity: 0.6;
+  }
+
+  .ai-featured-product-image-wrapper-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    width: 70%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 20px 40px {{ block.settings.glow_color_1 }}60);
+  }
+
+  .ai-featured-product-image-{{ ai_gen_id }} {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-featured-product-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .ai-featured-product-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-featured-product-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-featured-product-rings-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .ai-featured-product-ring-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(75deg);
+    border-radius: 50%;
+    border: 2px solid;
+    opacity: 0.3;
+  }
+
+  .ai-featured-product-ring-{{ ai_gen_id }}:nth-child(1) {
+    width: 90%;
+    height: 90%;
+    border-color: {{ block.settings.glow_color_1 }};
+    animation: ai-pulse-ring-{{ ai_gen_id }} 3s ease-in-out infinite;
+  }
+
+  .ai-featured-product-ring-{{ ai_gen_id }}:nth-child(2) {
+    width: 100%;
+    height: 100%;
+    border-color: {{ block.settings.glow_color_2 }};
+    animation: ai-pulse-ring-{{ ai_gen_id }} 3s ease-in-out infinite 1s;
+  }
+
+  @keyframes ai-pulse-ring-{{ ai_gen_id }} {
+    0%, 100% {
+      opacity: 0.3;
+      transform: translate(-50%, -50%) rotateX(75deg) scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: translate(-50%, -50%) rotateX(75deg) scale(1.05);
+    }
+  }
+
+  .ai-featured-product-info-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-featured-product-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: {{ block.settings.title_color }};
+    text-shadow: 0 0 20px {{ block.settings.glow_color_1 }}40;
+  }
+
+  .ai-featured-product-vendor-{{ ai_gen_id }} {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .ai-featured-product-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: {{ block.settings.price_color }};
+  }
+
+  .ai-featured-product-description-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    opacity: 0.9;
+  }
+
+  .ai-featured-product-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, {{ block.settings.button_color_1 }}, {{ block.settings.button_color_2 }});
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_radius }}px;
+    font-weight: 600;
+    font-size: 16px;
+    border: 2px solid {{ block.settings.button_border_color }};
+    box-shadow: 
+      0 0 20px {{ block.settings.glow_color_1 }}60,
+      0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-featured-product-button-{{ ai_gen_id }}:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 0 30px {{ block.settings.glow_color_1 }}80,
+      0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-featured-product-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-featured-product-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.title_size }}px * 0.8);
+    }
+
+    .ai-featured-product-price-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.price_size }}px * 0.8);
+    }
+  }
+{% endstyle %}
+
+<featured-product-3d-{{ ai_gen_id }}
+  class="ai-featured-product-3d-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-featured-product-container-{{ ai_gen_id }}">
+    <div class="ai-featured-product-stage-{{ ai_gen_id }}">
+      <div class="ai-featured-product-platform-{{ ai_gen_id }}" data-platform>
+        <div class="ai-featured-product-base-{{ ai_gen_id }}"></div>
+        <div class="ai-featured-product-grid-{{ ai_gen_id }}"></div>
+        
+        <div class="ai-featured-product-rings-{{ ai_gen_id }}">
+          <div class="ai-featured-product-ring-{{ ai_gen_id }}"></div>
+          <div class="ai-featured-product-ring-{{ ai_gen_id }}"></div>
+        </div>
+
+        <div class="ai-featured-product-image-wrapper-{{ ai_gen_id }}">
+          {% if block.settings.product and block.settings.product.featured_image %}
+            <img
+              src="{{ block.settings.product.featured_image | image_url: width: 800 }}"
+              alt="{{ block.settings.product.featured_image.alt | escape }}"
+              class="ai-featured-product-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="800"
+              height="800"
+            >
+          {% else %}
+            <div class="ai-featured-product-image-placeholder-{{ ai_gen_id }}">
+              {{ 'product-1' | placeholder_svg_tag }}
+              <div class="ai-featured-product-empty-state-{{ ai_gen_id }}">
+                Select a product to display
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-featured-product-info-{{ ai_gen_id }}">
+      {% if block.settings.show_vendor and block.settings.product.vendor != blank %}
+        <div class="ai-featured-product-vendor-{{ ai_gen_id }}">
+          {{ block.settings.product.vendor }}
+        </div>
+      {% endif %}
+
+      <h2 class="ai-featured-product-title-{{ ai_gen_id }}">
+        {% if block.settings.product %}
+          {{ block.settings.product.title }}
+        {% else %}
+          Featured Product
+        {% endif %}
+      </h2>
+
+      {% if block.settings.product %}
+        <div class="ai-featured-product-price-{{ ai_gen_id }}">
+          {{ block.settings.product.price | money }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_description and block.settings.product.description != blank %}
+        <div class="ai-featured-product-description-{{ ai_gen_id }}">
+          {{ block.settings.product.description | strip_html | truncate: 200 }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.product %}
+        <a
+          href="{{ block.settings.product.url }}"
+          class="ai-featured-product-button-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</featured-product-3d-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FeaturedProduct3D{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.platform = null;
+        this.isRotating = false;
+        this.rotationX = 0;
+        this.rotationY = 0;
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+        this.autoRotateSpeed = {{ block.settings.auto_rotate_speed }};
+        this.sensitivity = {{ block.settings.rotation_sensitivity }};
+      }
+
+      connectedCallback() {
+        this.platform = this.querySelector('[data-platform]');
+        if (!this.platform) return;
+
+        this.setupEventListeners();
+        this.startAutoRotation();
+      }
+
+      setupEventListeners() {
+        this.platform.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.platform.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+        
+        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        
+        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+        document.addEventListener('touchend', this.handleTouchEnd.bind(this));
+
+        this.platform.addEventListener('mouseenter', () => {
+          this.stopAutoRotation();
+        });
+
+        this.platform.addEventListener('mouseleave', () => {
+          if (!this.isRotating) {
+            this.startAutoRotation();
+          }
+        });
+      }
+
+      handleMouseDown(e) {
+        this.isRotating = true;
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+        this.stopAutoRotation();
+        e.preventDefault();
+      }
+
+      handleTouchStart(e) {
+        this.isRotating = true;
+        this.lastX = e.touches[0].clientX;
+        this.lastY = e.touches[0].clientY;
+        this.stopAutoRotation();
+        e.preventDefault();
+      }
+
+      handleMouseMove(e) {
+        if (!this.isRotating) return;
+
+        const deltaX = e.clientX - this.lastX;
+        const deltaY = e.clientY - this.lastY;
+
+        this.targetRotationY += deltaX * this.sensitivity;
+        this.targetRotationX -= deltaY * this.sensitivity * 0.5;
+
+        this.targetRotationX = Math.max(-30, Math.min(30, this.targetRotationX));
+
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+
+        this.updateRotation();
+      }
+
+      handleTouchMove(e) {
+        if (!this.isRotating) return;
+
+        const deltaX = e.touches[0].clientX - this.lastX;
+        const deltaY = e.touches[0].clientY - this.lastY;
+
+        this.targetRotationY += deltaX * this.sensitivity;
+        this.targetRotationX -= deltaY * this.sensitivity * 0.5;
+
+        this.targetRotationX = Math.max(-30, Math.min(30, this.targetRotationX));
+
+        this.lastX = e.touches[0].clientX;
+        this.lastY = e.touches[0].clientY;
+
+        this.updateRotation();
+        e.preventDefault();
+      }
+
+      handleMouseUp() {
+        this.isRotating = false;
+        this.startAutoRotation();
+      }
+
+      handleTouchEnd() {
+        this.isRotating = false;
+        this.startAutoRotation();
+      }
+
+      updateRotation() {
+        this.rotationX += (this.targetRotationX - this.rotationX) * 0.1;
+        this.rotationY += (this.targetRotationY - this.rotationY) * 0.1;
+
+        this.platform.style.transform = `rotateX(${this.rotationX}deg) rotateY(${this.rotationY}deg)`;
+      }
+
+      startAutoRotation() {
+        if (this.autoRotateInterval) return;
+        
+        this.autoRotateInterval = setInterval(() => {
+          if (!this.isRotating) {
+            this.targetRotationY += this.autoRotateSpeed;
+            this.updateRotation();
+          }
+        }, 16);
+      }
+
+      stopAutoRotation() {
+        if (this.autoRotateInterval) {
+          clearInterval(this.autoRotateInterval);
+          this.autoRotateInterval = null;
+        }
+      }
+
+      disconnectedCallback() {
+        this.stopAutoRotation();
+      }
+    }
+
+    customElements.define('featured-product-3d-{{ ai_gen_id }}', FeaturedProduct3D{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "3D featured product",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "3D platform"
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate_speed",
+      "label": "Auto rotation speed",
+      "min": 0,
+      "max": 2,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "range",
+      "id": "rotation_sensitivity",
+      "label": "Rotation sensitivity",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "color",
+      "id": "platform_color_1",
+      "label": "Platform color 1",
+      "default": "#ff00ff"
+    },
+    {
+      "type": "color",
+      "id": "platform_color_2",
+      "label": "Platform color 2",
+      "default": "#00ffff"
+    },
+    {
+      "type": "color",
+      "id": "grid_color",
+      "label": "Grid color",
+      "default": "#00ffff"
+    },
+    {
+      "type": "color",
+      "id": "glow_color_1",
+      "label": "Glow color 1",
+      "default": "#ff00ff"
+    },
+    {
+      "type": "color",
+      "id": "glow_color_2",
+      "label": "Glow color 2",
+      "default": "#00ffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#0a0a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#00ffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "color",
+      "id": "button_color_1",
+      "label": "Button color 1",
+      "default": "#ff00ff"
+    },
+    {
+      "type": "color",
+      "id": "button_color_2",
+      "label": "Button color 2",
+      "default": "#00ffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#00ffff"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D featured product"
+    }
+  ]
+}
 {% endschema %}
