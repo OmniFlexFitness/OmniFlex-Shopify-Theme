@@ -256,6 +256,84 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- comment -%}
+      Neon button glow. Loaded after base.css so the glow wins on equal
+      specificity, but kept to single-class selectors so Dawn's focus-visible
+      ring (.button:focus-visible, specificity 0,2,0) still outranks it and the
+      keyboard focus indicator is preserved.
+
+      Fill buttons glow with each color scheme's button color (--color-button);
+      outline buttons glow with the scheme's outline label color
+      (--color-secondary-button-text). Both are per-scheme CSS variables, so the
+      glow adapts to every color scheme automatically.
+
+      In Dawn an outline button is `.button.button--secondary`, so the fill rule
+      (`.button`) also matches it. When the outline glow is disabled we clear the
+      glow on secondary/outline buttons so the two toggles stay isolated. The
+      effect is deliberately limited to box-shadow / text-shadow only - no
+      transform or transition override - so Dawn's native hover animations
+      (Theme settings > Animations) and transitions are left untouched.
+    {%- endcomment -%}
+    {%- if settings.neon_button_glow -%}
+      {%- liquid
+        assign nbg_blur = settings.neon_button_glow_blur | default: 14
+        assign nbg_int = settings.neon_button_glow_intensity | default: 90
+        assign nbg_blur_mid = nbg_blur | times: 2
+        assign nbg_blur_far = nbg_blur | times: 3
+        assign nbg_blur_h = nbg_blur | times: 1.6 | round
+        assign nbg_blur_h_far = nbg_blur | times: 3.2 | round
+        assign nbg_blur_text = nbg_blur | divided_by: 2
+        assign nbg_a1 = nbg_int | times: 0.006 | at_most: 1.0
+        assign nbg_a2 = nbg_int | times: 0.0035 | at_most: 1.0
+        assign nbg_a3 = nbg_int | times: 0.002 | at_most: 1.0
+        assign nbg_inset = nbg_int | times: 0.003 | at_most: 1.0
+        assign nbg_text = nbg_int | times: 0.005 | at_most: 1.0
+        assign nbg_a1_h = nbg_int | times: 0.009 | at_most: 1.0
+        assign nbg_a2_h = nbg_int | times: 0.006 | at_most: 1.0
+        assign nbg_a3_h = nbg_int | times: 0.004 | at_most: 1.0
+      -%}
+      <style>
+        {%- if settings.neon_button_glow_fill -%}
+        .button {
+          box-shadow:
+            0 0 {{ nbg_blur }}px rgba(var(--color-button), {{ nbg_a1 }}),
+            0 0 {{ nbg_blur_mid }}px rgba(var(--color-button), {{ nbg_a2 }}),
+            0 0 {{ nbg_blur_far }}px rgba(var(--color-button), {{ nbg_a3 }});
+        }
+        .button:hover {
+          box-shadow:
+            0 0 {{ nbg_blur_h }}px rgba(var(--color-button), {{ nbg_a1_h }}),
+            0 0 {{ nbg_blur_h_far }}px rgba(var(--color-button), {{ nbg_a3_h }});
+        }
+        {%- endif -%}
+        {%- if settings.neon_button_glow_outline -%}
+        .button--secondary,
+        .button--outline {
+          box-shadow:
+            0 0 {{ nbg_blur }}px rgba(var(--color-secondary-button-text), {{ nbg_a1 }}),
+            0 0 {{ nbg_blur_mid }}px rgba(var(--color-secondary-button-text), {{ nbg_a2 }}),
+            inset 0 0 {{ nbg_blur }}px rgba(var(--color-secondary-button-text), {{ nbg_inset }});
+          text-shadow: 0 0 {{ nbg_blur_text }}px rgba(var(--color-secondary-button-text), {{ nbg_text }});
+        }
+        .button--secondary:hover,
+        .button--outline:hover {
+          box-shadow:
+            0 0 {{ nbg_blur_h }}px rgba(var(--color-secondary-button-text), {{ nbg_a1_h }}),
+            0 0 {{ nbg_blur_h_far }}px rgba(var(--color-secondary-button-text), {{ nbg_a2_h }}),
+            inset 0 0 {{ nbg_blur_h }}px rgba(var(--color-secondary-button-text), {{ nbg_inset }});
+        }
+        {%- elsif settings.neon_button_glow_fill -%}
+        .button--secondary,
+        .button--outline,
+        .button--secondary:hover,
+        .button--outline:hover {
+          box-shadow: none;
+        }
+        {%- endif -%}
+      </style>
+    {%- endif -%}
+
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
