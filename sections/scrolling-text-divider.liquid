@@ -21,6 +21,18 @@
       assign font_style = 'italic'
     endif
   endif
+
+  comment
+    Glow follows text (element primary). Legacy glow_color is ignored when left
+    at the generic hot-pink default so white/custom text no longer gets a
+    mismatched pink halo.
+  endcomment
+  assign _glow = s.glow_color | downcase
+  if _glow == '#ff2d55' or _glow == 'ff2d55'
+    assign resolved_glow_color = s.text_color
+  else
+    assign resolved_glow_color = s.glow_color
+  endif
 -%}
 
 {%- style -%}
@@ -46,10 +58,7 @@
     --cd-scroll-duration: {{ s.scroll_speed }}s;
     --cd-spin-duration: {{ s.separator_spin_speed }}s;
     --cd-effect: {{ s.effect_intensity }};
-    /* Glow follows text (element primary). Legacy glow_color is ignored when it
-       was left at the generic hot-pink default so white/custom text no longer
-       gets a mismatched pink halo. */
-    --cd-glow-color: {% assign _glow = s.glow_color | downcase %}{% if _glow == '#ff2d55' or _glow == 'ff2d55' %}{{ s.text_color }}{% else %}{{ s.glow_color }}{% endif %};
+    --cd-glow-color: {{ resolved_glow_color }};
     --cd-glow-strength: {{ s.glow_strength }}px;
     --cd-border-color: {{ s.border_color }};
   }
