@@ -14,7 +14,8 @@
   --cd-scroll-duration: 28s;
   --cd-spin-duration: 6s;
   --cd-effect: 5;
-  --cd-glow-color: #ff2d55;
+  /* Glow tracks text/primary — never a generic brand pink by default */
+  --cd-glow-color: var(--cd-text-color, var(--of-text, #ffffff));
   --cd-glow-strength: 8px;
   --cd-border-color: #ffffff;
   --cd-bg-angle: 90deg;

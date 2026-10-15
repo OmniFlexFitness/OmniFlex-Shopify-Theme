@@ -1,0 +1,63 @@
+name: Theme Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feature/**, fix/**, chore/**]
+
+jobs:
+  theme-check:
+    name: Shopify Theme Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Theme Check
+        uses: shopify/theme-check-action@v2
+        with:
+          theme-root: .
+          # headless-poc is not a Liquid theme surface; skip it
+          flags: --fail-level error
+
+      - name: Validate JSON templates
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! python3 -m json.tool "$f" > /dev/null; then
+              echo "::error file=$f::Invalid JSON"
+              fail=1
+            fi
+          done < <(find templates config locales -type f -name '*.json' -print0 2>/dev/null)
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+          echo "All JSON templates/config/locales parsed cleanly."
+
+  # Preview push requires Shopify secrets — runs only when configured
+  preview-theme:
+    name: Development theme preview (optional)
+    runs-on: ubuntu-latest
+    needs: theme-check
+    if: >
+      github.event_name == 'pull_request' &&
+      vars.SHOPIFY_STORE != ''
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Shopify CLI
+        uses: shopify/cli-action@v1
+        with:
+          version: latest
+      - name: Push development theme
+        env:
+          SHOPIFY_FLAG_STORE: ${{ vars.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+        run: |
+          shopify theme push \
+            --unpublished \
+            --theme "PR #${{ github.event.pull_request.number }} cyber-pastel preview" \
+            --only 'assets/*' 'layout/*' 'sections/*' 'snippets/*' 'templates/*' 'config/*' 'locales/*' \
+            --json
+        continue-on-error: true
