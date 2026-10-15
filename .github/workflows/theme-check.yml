@@ -26,32 +26,8 @@ jobs:
           flags: --fail-level error
 
       - name: Validate JSON templates (hard gate)
-        # Locales use leading /* */ comments (JSONC) — skipped here; Theme Check covers them.
-        # Only templates + config/settings_schema.json must be strict JSON.
-        run: |
-          set -euo pipefail
-          fail=0
-          while IFS= read -r -d '' f; do
-            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$f"; then
-              echo "::error file=$f::Invalid JSON"
-              fail=1
-            fi
-          done < <(find templates -type f -name '*.json' -print0)
-          if [ -f config/settings_schema.json ]; then
-            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' config/settings_schema.json; then
-              echo "::error file=config/settings_schema.json::Invalid JSON"
-              fail=1
-            fi
-          fi
-          # settings_data.json is merchant state and may be huge; syntax-check only if present
-          if [ -f config/settings_data.json ]; then
-            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' config/settings_data.json; then
-              echo "::error file=config/settings_data.json::Invalid JSON"
-              fail=1
-            fi
-          fi
-          if [ "$fail" -ne 0 ]; then exit 1; fi
-          echo "Template/config JSON parsed cleanly."
+        # Shopify JSON templates/settings often start with a /* auto-generated */ header.
+        run: python3 scripts/validate-json.py
 
   preview-theme:
     name: Development theme preview (optional)
