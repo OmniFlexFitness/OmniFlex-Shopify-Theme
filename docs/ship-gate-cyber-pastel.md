@@ -9,14 +9,14 @@
 - [x] Cyber-divider glow tracks text color when glow left at generic `#ff2d55`
 - [x] Theme Check CI workflow added (`.github/workflows/theme-check.yml`)
 
-## Blocked on humans / Shopify access
+## Shopify admin steps
 
-- [ ] Bertin invites Jonny as Shopify collaborator (staff)
-- [ ] Create unpublished preview theme from `feature/cyber-pastel-reskin` and visual QA (desktop + mobile)
-- [ ] Bertin sets Zenith product price **$45** in Shopify Admin (not theme code)
-- [ ] Confirm homepage `custom_price: "$99.00"` block in `templates/index.json` is placeholder demo only (or update copy)
+- [x] Jonny has his own collaborator account with shared access (some owner-only areas stay with Bertin)
+- [x] Preview + visual QA of `OmniFlex-Shopify-Theme/main` (desktop + mobile)
+- [x] Zenith product price set to **$45** in Shopify Admin (not theme code)
+- [x] Homepage `custom_price: "$99.00"` confirmed placeholder: `ai_gen_block_0bd9121` block in `templates/index.json` is `"disabled": true` with no product attached, so it never renders
 - [x] Merge PR → `main` (OmniFlex-Shopify-Theme#28 + CI follow-ups #29–#31; Theme Check green on main)
-- [ ] Publish theme from Shopify admin; keep prior published version for rollback
+- [x] Published theme verified in Shopify admin; prior version kept in theme library for rollback
 
 ## Headless decision (after publish)
 
