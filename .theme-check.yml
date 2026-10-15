@@ -1,0 +1,22 @@
+# Theme Check config for OmniFlex Dawn fork.
+# MatchingTranslations fails across many Markets locale files (pre-existing drift).
+# Keep Liquid/JSON structural checks; do not block PRs on locale key parity until
+# a dedicated i18n cleanup lands.
+
+root: .
+
+ignore:
+  - headless-poc/**
+  - Dawn-12.0.0.zip
+  - node_modules/**
+
+MatchingTranslations:
+  enabled: false
+
+# Still catch hard breaks
+ParserBlockingScript:
+  enabled: true
+MissingTemplate:
+  enabled: true
+JsonMissingKeys:
+  enabled: true

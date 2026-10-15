@@ -3,13 +3,13 @@
   width: 100%;
   min-height: 100svh;
   overflow: hidden;
-  background: #07041f;
+  background: var(--of-ink, #07041f);
   isolation: isolate;
-  --neon-cyan: #0aeaed;
-  --neon-magenta: #fa0dfd;
-  --neon-purple: #210f61;
-  --neon-ink: #07041f;
-  --neon-mute: rgba(255, 255, 255, 0.6);
+  --neon-cyan: var(--of-neon-cyan, #0aeaed);
+  --neon-magenta: var(--of-neon-magenta, #fa0dfd);
+  --neon-purple: var(--of-neon-purple, #210f61);
+  --neon-ink: var(--of-ink, #07041f);
+  --neon-mute: var(--of-mute, rgba(255, 255, 255, 0.6));
 
   /* Typography vars (overridden inline by section settings) */
   --heading-font: inherit;

@@ -21,6 +21,18 @@
       assign font_style = 'italic'
     endif
   endif
+
+  comment
+    Glow follows text (element primary). Legacy glow_color is ignored when left
+    at the generic hot-pink default so white/custom text no longer gets a
+    mismatched pink halo.
+  endcomment
+  assign _glow = s.glow_color | downcase
+  if _glow == '#ff2d55' or _glow == 'ff2d55'
+    assign resolved_glow_color = s.text_color
+  else
+    assign resolved_glow_color = s.glow_color
+  endif
 -%}
 
 {%- style -%}
@@ -46,7 +58,7 @@
     --cd-scroll-duration: {{ s.scroll_speed }}s;
     --cd-spin-duration: {{ s.separator_spin_speed }}s;
     --cd-effect: {{ s.effect_intensity }};
-    --cd-glow-color: {{ s.glow_color }};
+    --cd-glow-color: {{ resolved_glow_color }};
     --cd-glow-strength: {{ s.glow_strength }}px;
     --cd-border-color: {{ s.border_color }};
   }
@@ -408,6 +420,7 @@
       "type": "color",
       "id": "glow_color",
       "label": "Glow color",
+      "info": "Leave at the default hot pink to auto-match Text color. Set a custom value only when the glow should differ from the text.",
       "default": "#ff2d55"
     },
     {

@@ -1,0 +1,69 @@
+/* ==========================================================================
+   OmniFlex design tokens — neon noir base + cyber pastel accent layer
+   Source of truth for brand colors on the Shopify storefront.
+   Meeting decision (2026-10): cyber pastel softens neon noir without replacing it.
+   ========================================================================== */
+
+:root {
+  /* --- Neon noir base --- */
+  --of-ink: #07041f;
+  --of-ink-elevated: #1e1e2a;
+  --of-surface: #2a2a3c;
+  --of-neon-cyan: #0aeaed;
+  --of-neon-magenta: #fa0dfd;
+  --of-neon-purple: #210f61;
+  --of-neon-pink: #ff2d55;
+  --of-mute: rgba(255, 255, 255, 0.6);
+  --of-text: #ffffff;
+  --of-text-soft: rgba(255, 255, 255, 0.78);
+
+  /* --- Cyber pastel accent layer --- */
+  --of-pastel-lavender: #b9b0ff;
+  --of-pastel-lilac: #d6b9ff;
+  --of-pastel-periwinkle: #7f9cf5;
+  --of-pastel-mint: #8bffc9;
+  --of-pastel-ice: #c9d6ff;
+  --of-pastel-mist: #e6f0ff;
+  --of-pastel-steel: #a0a8c3;
+
+  /* Gradients */
+  --of-gradient-neon: linear-gradient(136deg, var(--of-neon-cyan) 11%, var(--of-neon-magenta) 84%);
+  --of-gradient-pastel: linear-gradient(
+    120deg,
+    var(--of-pastel-mint) 0%,
+    var(--of-pastel-ice) 40%,
+    var(--of-pastel-lavender) 70%,
+    var(--of-pastel-lilac) 100%
+  );
+  --of-gradient-noir-wash: linear-gradient(
+    180deg,
+    rgba(7, 4, 31, 0.92) 0%,
+    rgba(33, 15, 97, 0.55) 45%,
+    rgba(185, 176, 255, 0.12) 100%
+  );
+
+  /* Glow helpers — consumers should set --of-glow-color to the element primary */
+  --of-glow-color: var(--of-neon-cyan);
+  --of-glow-soft: 0 0 8px var(--of-glow-color), 0 0 16px var(--of-glow-color);
+  --of-glow-pastel: 0 0 10px var(--of-pastel-lavender), 0 0 22px rgba(143, 255, 201, 0.35);
+}
+
+/* Utility: soft pastel wash over dark surfaces (marketing bands) */
+.of-pastel-wash {
+  background-image: var(--of-gradient-noir-wash);
+}
+
+.of-text-glow {
+  text-shadow: var(--of-glow-soft);
+}
+
+.of-text-glow--pastel {
+  text-shadow: var(--of-glow-pastel);
+}
+
+.of-gradient-text {
+  background-image: var(--of-gradient-pastel);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

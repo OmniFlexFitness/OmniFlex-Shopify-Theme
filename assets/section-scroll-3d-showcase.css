@@ -1,11 +1,11 @@
 .scroll3d {
   position: relative;
   width: 100%;
-  background: #07041f;
+  background: var(--of-ink, #07041f);
   isolation: isolate;
-  --neon-cyan: #0aeaed;
-  --neon-magenta: #fa0dfd;
-  --neon-mute: rgba(255, 255, 255, 0.6);
+  --neon-cyan: var(--of-neon-cyan, #0aeaed);
+  --neon-magenta: var(--of-neon-magenta, #fa0dfd);
+  --neon-mute: var(--of-mute, rgba(255, 255, 255, 0.6));
 
   /* Typography vars (overridden inline by section settings) */
   --heading-font: inherit;
