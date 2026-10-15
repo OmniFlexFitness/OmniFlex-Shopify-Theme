@@ -28,17 +28,39 @@ jobs:
       - name: Validate JSON templates (hard gate)
         run: |
           set -euo pipefail
-          fail=0
-          while IFS= read -r -d '' f; do
-            if ! python3 -m json.tool "$f" > /dev/null; then
-              echo "::error file=$f::Invalid JSON"
-              fail=1
-            fi
-          done < <(find templates config locales -type f -name '*.json' -print0 2>/dev/null)
-          if [ "$fail" -ne 0 ]; then
-            exit 1
-          fi
-          echo "All JSON templates/config/locales parsed cleanly."
+          python3 <<'PY'
+          import json, pathlib, re, sys
+          fail = 0
+
+          def check_strict(path: pathlib.Path) -> None:
+              global fail
+              try:
+                  json.loads(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  print(f"::error file={path}::{exc}")
+                  fail = 1
+
+          def check_locale(path: pathlib.Path) -> None:
+              """Shopify locale JSON allows a leading /* ... */ translation comment."""
+              global fail
+              text = path.read_text(encoding="utf-8")
+              text = re.sub(r"/\*.*?\*/", "", text, count=1, flags=re.S)
+              try:
+                  json.loads(text)
+              except Exception as exc:
+                  print(f"::error file={path}::{exc}")
+                  fail = 1
+
+          for root in ("templates", "config"):
+              for path in pathlib.Path(root).rglob("*.json"):
+                  check_strict(path)
+          for path in pathlib.Path("locales").rglob("*.json"):
+              check_locale(path)
+
+          if fail:
+              sys.exit(1)
+          print("All JSON templates/config/locales parsed cleanly.")
+          PY
 
   preview-theme:
     name: Development theme preview (optional)
