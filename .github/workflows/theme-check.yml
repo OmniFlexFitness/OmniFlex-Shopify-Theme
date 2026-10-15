@@ -26,41 +26,32 @@ jobs:
           flags: --fail-level error
 
       - name: Validate JSON templates (hard gate)
+        # Locales use leading /* */ comments (JSONC) — skipped here; Theme Check covers them.
+        # Only templates + config/settings_schema.json must be strict JSON.
         run: |
           set -euo pipefail
-          python3 <<'PY'
-          import json, pathlib, re, sys
-          fail = 0
-
-          def check_strict(path: pathlib.Path) -> None:
-              global fail
-              try:
-                  json.loads(path.read_text(encoding="utf-8"))
-              except Exception as exc:
-                  print(f"::error file={path}::{exc}")
-                  fail = 1
-
-          def check_locale(path: pathlib.Path) -> None:
-              """Shopify locale JSON allows a leading /* ... */ translation comment."""
-              global fail
-              text = path.read_text(encoding="utf-8")
-              text = re.sub(r"/\*.*?\*/", "", text, count=1, flags=re.S)
-              try:
-                  json.loads(text)
-              except Exception as exc:
-                  print(f"::error file={path}::{exc}")
-                  fail = 1
-
-          for root in ("templates", "config"):
-              for path in pathlib.Path(root).rglob("*.json"):
-                  check_strict(path)
-          for path in pathlib.Path("locales").rglob("*.json"):
-              check_locale(path)
-
-          if fail:
-              sys.exit(1)
-          print("All JSON templates/config/locales parsed cleanly.")
-          PY
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$f"; then
+              echo "::error file=$f::Invalid JSON"
+              fail=1
+            fi
+          done < <(find templates -type f -name '*.json' -print0)
+          if [ -f config/settings_schema.json ]; then
+            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' config/settings_schema.json; then
+              echo "::error file=config/settings_schema.json::Invalid JSON"
+              fail=1
+            fi
+          fi
+          # settings_data.json is merchant state and may be huge; syntax-check only if present
+          if [ -f config/settings_data.json ]; then
+            if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' config/settings_data.json; then
+              echo "::error file=config/settings_data.json::Invalid JSON"
+              fail=1
+            fi
+          fi
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+          echo "Template/config JSON parsed cleanly."
 
   preview-theme:
     name: Development theme preview (optional)
