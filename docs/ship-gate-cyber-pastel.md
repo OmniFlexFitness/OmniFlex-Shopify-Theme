@@ -15,7 +15,7 @@
 - [ ] Create unpublished preview theme from `feature/cyber-pastel-reskin` and visual QA (desktop + mobile)
 - [ ] Bertin sets Zenith product price **$45** in Shopify Admin (not theme code)
 - [ ] Confirm homepage `custom_price: "$99.00"` block in `templates/index.json` is placeholder demo only (or update copy)
-- [ ] Merge PR → `main` (Shopify GitHub sync may also push editor commits — coordinate)
+- [x] Merge PR → `main` (OmniFlex-Shopify-Theme#28 + CI follow-ups #29–#31; Theme Check green on main)
 - [ ] Publish theme from Shopify admin; keep prior published version for rollback
 
 ## Headless decision (after publish)
