@@ -20,7 +20,7 @@ jobs:
       # from npm. Shopify CLI 5.x needs Node >= 22.12. Pinned to the major so
       # a future CLI 6 cannot silently change push/delete flags.
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Install Shopify CLI
