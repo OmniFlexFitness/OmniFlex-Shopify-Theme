@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Theme Check (advisory — pre-existing Dawn fork debt)
         # MatchingTranslations disabled via .theme-check.yml. Remaining errors
@@ -46,7 +46,7 @@ jobs:
       # Must match the name in .github/workflows/theme-preview-cleanup.yml.
       PREVIEW_THEME_NAME: 'PR #${{ github.event.pull_request.number }} preview'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # shopify/cli-action does not exist on GitHub, so the CLI is installed
       # from npm. Shopify CLI 5.x needs Node >= 22.12. Pinned to the major so
       # a future CLI 6 cannot silently change push/delete flags.
@@ -102,7 +102,7 @@ jobs:
       # Lets LHCI post its scores as commit status checks via GITHUB_TOKEN.
       statuses: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check Lighthouse credentials
         # The action needs a Dev Dashboard app (client ID + secret, scopes
