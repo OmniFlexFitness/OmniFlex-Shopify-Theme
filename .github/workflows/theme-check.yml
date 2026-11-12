@@ -18,6 +18,7 @@ jobs:
         # MatchingTranslations disabled via .theme-check.yml. Remaining errors
         # (ValidSchemaName, ParserBlockingScript, etc.) are pre-existing on main.
         # Report them without failing the job until a dedicated cleanup PR lands.
+        # Baseline and plan: docs/theme-check-baseline.md
         # JSON syntax validation below remains a hard gate.
         uses: shopify/theme-check-action@v2
         continue-on-error: true
@@ -36,20 +37,51 @@ jobs:
     if: >
       github.event_name == 'pull_request' &&
       vars.SHOPIFY_STORE != ''
+    # One preview push per PR at a time, so two quick commits cannot both
+    # decide the theme is missing and create duplicates.
+    concurrency:
+      group: preview-theme-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    env:
+      # Must match the name in .github/workflows/theme-preview-cleanup.yml.
+      PREVIEW_THEME_NAME: 'PR #${{ github.event.pull_request.number }} preview'
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Shopify CLI
-        uses: shopify/cli-action@v1
+      # shopify/cli-action does not exist on GitHub, so the CLI is installed
+      # from npm. Shopify CLI 5.x needs Node >= 22.12. Pinned to the major so
+      # a future CLI 6 cannot silently change push/delete flags.
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          version: latest
-      - name: Push development theme
+          node-version: 22
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli@5
+      - name: Push preview theme
+        # No continue-on-error: a full theme library (20-theme cap) or a bad
+        # token must show as a failed check, not a silent pass.
+        #
+        # `--unpublished` always creates a NEW theme, so pushing it on every
+        # commit would add one theme per commit. Instead, look up this PR's
+        # preview by exact name (unpublished role only, never live) and push
+        # into it; create it only on the first run.
         env:
           SHOPIFY_FLAG_STORE: ${{ vars.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          shopify theme push \
-            --unpublished \
-            --theme "PR #${{ github.event.pull_request.number }} cyber-pastel preview" \
-            --only 'assets/*' 'layout/*' 'sections/*' 'snippets/*' 'templates/*' 'config/*' 'locales/*' \
-            --json
-        continue-on-error: true
+          set -euo pipefail
+          only=(--only 'assets/*' 'layout/*' 'sections/*' 'snippets/*' 'templates/*' 'config/*' 'locales/*')
+
+          existing_id="$(
+            shopify theme list --role unpublished --json \
+              | jq -r --arg name "$PREVIEW_THEME_NAME" \
+                  '[.. | objects | select(has("id") and has("name") and has("role"))
+                     | select(.name == $name and .role == "unpublished") | .id] | first // empty'
+          )"
+
+          if [ -n "$existing_id" ]; then
+            echo "Updating existing preview theme $existing_id ($PREVIEW_THEME_NAME)"
+            shopify theme push --theme "$existing_id" "${only[@]}" --json
+          else
+            echo "Creating preview theme: $PREVIEW_THEME_NAME"
+            shopify theme push --unpublished --theme "$PREVIEW_THEME_NAME" "${only[@]}" --json
+          fi
