@@ -1,0 +1,56 @@
+name: Delete PR preview theme
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    name: Delete preview theme
+    if: vars.SHOPIFY_STORE != ''
+    runs-on: ubuntu-latest
+    concurrency:
+      group: preview-theme-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    env:
+      # Must match PREVIEW_THEME_NAME in .github/workflows/theme-check.yml.
+      PREVIEW_THEME_NAME: 'PR #${{ github.event.pull_request.number }} preview'
+    steps:
+      # shopify/cli-action does not exist on GitHub, so the CLI is installed
+      # from npm. Shopify CLI 5.x needs Node >= 22.12. Pinned to the major so
+      # a future CLI 6 cannot silently change push/delete flags.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli@5
+
+      - name: Delete preview theme for this PR
+        # `shopify theme delete --theme` accepts a name, but this step resolves
+        # IDs first so that it (a) only ever touches themes with the
+        # `unpublished` role, never the live theme, and (b) removes every
+        # duplicate if more than one theme carries the name.
+        # A missing theme (preview never pushed) is a no-op, not a failure.
+        # Auth or API errors still fail the job so they get noticed.
+        env:
+          SHOPIFY_FLAG_STORE: ${{ vars.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+        run: |
+          set -euo pipefail
+          mapfile -t ids < <(
+            shopify theme list --role unpublished --json \
+              | jq -r --arg name "$PREVIEW_THEME_NAME" \
+                  '.. | objects | select(has("id") and has("name") and has("role"))
+                   | select(.name == $name and .role == "unpublished") | .id'
+          )
+
+          if [ "${#ids[@]}" -eq 0 ]; then
+            echo "No preview theme named '$PREVIEW_THEME_NAME'. Nothing to delete."
+            exit 0
+          fi
+
+          for id in "${ids[@]}"; do
+            echo "Deleting preview theme $id ($PREVIEW_THEME_NAME)"
+            shopify theme delete --theme "$id" --force
+          done

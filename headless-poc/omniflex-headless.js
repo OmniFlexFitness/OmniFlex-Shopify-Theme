@@ -5,7 +5,7 @@
  * Reads config from <meta> tags in the host page:
  *   <meta name="of-shop"        content="omniflexfitness.myshopify.com">
  *   <meta name="of-token"       content="public-storefront-api-token">
- *   <meta name="of-api-version" content="2025-01">
+ *   <meta name="of-api-version" content="2026-10">
  *
  * Mounts on data-attributes the Webflow Designer can add to elements:
  *   [data-of-product="<handle>"]      → render PDP into this element
@@ -22,7 +22,7 @@ const cfg = (() => {
   const get = (n) => document.querySelector(`meta[name="${n}"]`)?.content;
   const shop = get('of-shop');
   const token = get('of-token');
-  const apiVersion = get('of-api-version') || '2025-01';
+  const apiVersion = get('of-api-version') || '2026-10';
   // Country/language for @inContext — drives presentment currency & translations.
   // Resolution order: explicit <meta>, <html lang>, browser language, fallback.
   const country =

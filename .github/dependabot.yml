@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+  # No dependencies yet; kept so Dependabot picks them up once added.
+  - package-ecosystem: npm
+    directory: /headless-poc/sync
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+  - package-ecosystem: npm
+    directory: /headless-poc/tests
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
