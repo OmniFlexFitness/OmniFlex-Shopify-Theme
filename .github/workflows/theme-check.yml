@@ -85,3 +85,51 @@ jobs:
             echo "Creating preview theme: $PREVIEW_THEME_NAME"
             shopify theme push --unpublished --theme "$PREVIEW_THEME_NAME" "${only[@]}" --json
           fi
+
+  # Lighthouse CI starts ADVISORY. Raise lhci_min_score_performance and remove
+  # continue-on-error once the 3D/shader JS (iwb-shaders.js,
+  # scroll-3d-showcase.js, neon-cursor-hero.js) is code-split behind section
+  # presence and sparkle.gif is replaced. See docs/theme-audit-2026-10.md.
+  lighthouse:
+    name: Lighthouse CI (advisory)
+    runs-on: ubuntu-latest
+    needs: theme-check
+    if: >
+      github.event_name == 'pull_request' &&
+      vars.SHOPIFY_STORE != ''
+    permissions:
+      contents: read
+      # Lets LHCI post its scores as commit status checks via GITHUB_TOKEN.
+      statuses: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Lighthouse credentials
+        # The action needs a Dev Dashboard app (client ID + secret, scopes
+        # read_products and write_themes). A Theme Access password does not
+        # work here. Skip cleanly with a notice until the secrets exist.
+        id: creds
+        env:
+          HAS_ID: ${{ secrets.SHOPIFY_LHCI_CLIENT_ID != '' }}
+          HAS_SECRET: ${{ secrets.SHOPIFY_LHCI_CLIENT_SECRET != '' }}
+        run: |
+          if [ "$HAS_ID" = "true" ] && [ "$HAS_SECRET" = "true" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=Lighthouse skipped::Set SHOPIFY_LHCI_CLIENT_ID and SHOPIFY_LHCI_CLIENT_SECRET to enable Lighthouse CI."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Lighthouse
+        if: steps.creds.outputs.ready == 'true'
+        uses: shopify/lighthouse-ci-action@v1
+        continue-on-error: true
+        with:
+          store: ${{ vars.SHOPIFY_STORE }}
+          client_id: ${{ secrets.SHOPIFY_LHCI_CLIENT_ID }}
+          client_secret: ${{ secrets.SHOPIFY_LHCI_CLIENT_SECRET }}
+          product_handle: ${{ vars.LIGHTHOUSE_PRODUCT_HANDLE }}
+          collection_handle: ${{ vars.LIGHTHOUSE_COLLECTION_HANDLE }}
+          lhci_github_token: ${{ secrets.GITHUB_TOKEN }}
+          lhci_min_score_performance: 0.6
+          lhci_min_score_accessibility: 0.9
