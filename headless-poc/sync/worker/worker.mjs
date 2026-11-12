@@ -106,7 +106,7 @@ async function handle(topic, payload, env) {
 
 async function shopifyAdmin(env, query, variables) {
   const res = await fetch(
-    `https://${env.SHOPIFY_STORE}/admin/api/${env.SHOPIFY_API_VERSION || '2025-01'}/graphql.json`,
+    `https://${env.SHOPIFY_STORE}/admin/api/${env.SHOPIFY_API_VERSION || '2026-10'}/graphql.json`,
     {
       method: 'POST',
       headers: {

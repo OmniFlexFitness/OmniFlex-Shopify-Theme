@@ -30,7 +30,7 @@ const AUTH_BASE = SHOP_ID ? `https://shopify.com/${SHOP_ID}/account` : null;
 const AUTH_URL = AUTH_BASE ? `${AUTH_BASE}/oauth/authorize` : null;
 const TOKEN_URL = AUTH_BASE ? `${AUTH_BASE}/oauth/token` : null;
 const LOGOUT_URL = AUTH_BASE ? `${AUTH_BASE}/oauth/logout` : null;
-const API_URL = AUTH_BASE ? `${AUTH_BASE}/customer/api/2025-01/graphql` : null;
+const API_URL = AUTH_BASE ? `${AUTH_BASE}/customer/api/2026-10/graphql` : null;
 
 const SCOPES = ['openid', 'email', 'customer-account-api:full'].join(' ');
 

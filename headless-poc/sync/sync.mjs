@@ -5,7 +5,7 @@
  * Required env:
  *   SHOPIFY_STORE              "omniflexfitness.myshopify.com"
  *   SHOPIFY_ADMIN_TOKEN        Admin API access token (read_products)
- *   SHOPIFY_API_VERSION        defaults to 2025-01
+ *   SHOPIFY_API_VERSION        defaults to 2026-10
  *   WEBFLOW_TOKEN              Webflow site API token
  *   WEBFLOW_COLLECTION_ID      Target Webflow CMS collection ID
  *   WEBFLOW_SITE_ID            (optional) for publish
@@ -38,7 +38,7 @@ const env = (k, fallback) => {
 
 const SHOPIFY_STORE = env('SHOPIFY_STORE');
 const SHOPIFY_ADMIN_TOKEN = env('SHOPIFY_ADMIN_TOKEN');
-const SHOPIFY_API_VERSION = env('SHOPIFY_API_VERSION', '2025-01');
+const SHOPIFY_API_VERSION = env('SHOPIFY_API_VERSION', '2026-10');
 const WEBFLOW_TOKEN = env('WEBFLOW_TOKEN');
 const WEBFLOW_COLLECTION_ID = env('WEBFLOW_COLLECTION_ID');
 const WEBFLOW_SITE_ID = process.env.WEBFLOW_SITE_ID;
