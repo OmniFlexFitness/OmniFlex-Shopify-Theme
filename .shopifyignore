@@ -1,0 +1,27 @@
+# Files Shopify CLI must never upload (theme push, theme dev, and the
+# Lighthouse CI action, which pushes a development theme from the repo root).
+#
+# Syntax (Shopify CLI 5): one pattern per line, matched against the theme
+# file key (for example assets/base.css). Glob patterns match the basename
+# when they have no slash. Patterns wrapped in /.../ are regular expressions.
+# A bare directory such as "docs/" never matches; use a regex or "dir/*".
+#
+# CLI 5 only collects theme folders (assets, blocks, config, layout, locales,
+# sections, snippets, templates) plus root AGENTS.md and DESIGN.md, so the
+# non-theme folders below are listed as a guard against future CLI changes
+# and against copies placed inside a theme folder by mistake.
+#
+# config/settings_data.json is deliberately NOT ignored: the Shopify GitHub
+# integration owns it. To avoid overwriting live customizer settings on a
+# local push, use: shopify theme push --unpublished --ignore config/settings_data.json
+
+# Non-theme content. Never upload to Shopify.
+/^(docs|headless-poc|scripts|\.github|\.shopify)\//
+Dawn-12.0.0.zip
+*.zip
+*.backup
+*.md
+.theme-check.yml
+.gitattributes
+.gitignore
+.shopifyignore
