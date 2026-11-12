@@ -17,7 +17,6 @@
 
 # Non-theme content. Never upload to Shopify.
 /^(docs|headless-poc|scripts|\.github|\.shopify)\//
-Dawn-12.0.0.zip
 *.zip
 *.backup
 *.md
